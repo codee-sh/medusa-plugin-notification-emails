@@ -1,0 +1,86 @@
+{
+  "name": "@codee-sh/medusa-plugin-notification-emails",
+  "version": "0.0.1",
+  "description": "Medusa plugin for notifications emails.",
+  "author": "Codee Team (https://codee.dev)",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    ".medusa/server"
+  ],
+  "exports": {
+    "./package.json": "./package.json",
+    "./workflows": "./.medusa/server/src/workflows/index.js",
+    "./.medusa/server/src/modules/*": "./.medusa/server/src/modules/*/index.js",
+    "./modules/*": "./.medusa/server/src/modules/*/index.js",
+    "./providers/*": "./.medusa/server/src/providers/*/index.js",
+    "./templates/emails": "./.medusa/server/src/templates/emails/index.js",
+    "./templates/emails/*": "./.medusa/server/src/templates/emails/*/index.js",
+    "./templates/emails/types": "./.medusa/server/src/templates/emails/types.js",
+    "./utils": "./.medusa/server/src/utils/index.js",
+    "./*": "./.medusa/server/src/*.js",
+    "./admin": {
+      "import": "./.medusa/server/src/admin/index.mjs",
+      "require": "./.medusa/server/src/admin/index.js",
+      "default": "./.medusa/server/src/admin/index.js"
+    }
+  },
+  "keywords": [
+    "medusa",
+    "plugin",
+    "medusa-plugin-notification-emails",
+    "medusa-plugin",
+    "medusa-v2"
+  ],
+  "scripts": {
+    "build": "medusa plugin:build",
+    "dev": "medusa plugin:develop",
+    "prepublishOnly": "medusa plugin:build",
+    "publish-local": "npx medusa plugin:publish",
+    "publish-package": "dotenv npm publish --access public",
+    "email:dev": "email dev --dir emails-previews"
+  },
+  "dependencies": {
+    "@react-email/components": "^0.3.3",
+    "@react-email/preview-server": "^4.2.5",
+    "@react-email/render": "^1.1.4",
+    "react-email": "^4.2.5"
+  },
+  "devDependencies": {
+    "@medusajs/admin-sdk": "2.8.8",
+    "@medusajs/cli": "2.8.8",
+    "@medusajs/framework": "2.8.8",
+    "@medusajs/icons": "2.8.8",
+    "@medusajs/medusa": "2.8.8",
+    "@medusajs/test-utils": "2.8.8",
+    "@medusajs/ui": "^4.0.9",
+    "@mikro-orm/core": "6.4.3",
+    "@mikro-orm/knex": "6.4.3",
+    "@mikro-orm/migrations": "6.4.3",
+    "@mikro-orm/postgresql": "6.4.3",
+    "@react-email/components": "^0.3.3",
+    "@react-email/preview-server": "^4.2.5",
+    "@react-email/render": "^1.1.4",
+    "@swc/core": "1.5.7",
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.3.2",
+    "@types/react-dom": "^18.2.25",
+    "react-i18next": "^15.0.0",
+    "awilix": "^8.0.1",
+    "dotenv": "^17.2.3",
+    "prop-types": "^15.8.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-email": "^4.2.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.2",
+    "vite": "^5.2.11",
+    "yalc": "^1.0.0-pre.53"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "yarn@3.2.3+sha512.f26f951f67de0c6a33ee381e5ff364709c87e70eb5e65c694e4facde3512f1fa80b8679e6ba31ce7d340fbb46f08dd683af9457e240f25a204be7427940d767e"
+}
