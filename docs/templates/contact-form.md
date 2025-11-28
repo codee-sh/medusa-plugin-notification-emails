@@ -23,7 +23,7 @@ Email template for contact form submissions.
 ### Basic Usage
 
 ```typescript
-import { renderTemplate, TEMPLATES_NAMES } from "@codee-sh/medusa-plugin-notification/templates/emails"
+import { renderTemplate, TEMPLATES_NAMES } from "@codee-sh/medusa-plugin-notification-emails/templates/emails"
 
 const { html, text, subject } = await renderTemplate(
   TEMPLATES_NAMES.CONTACT_FORM,
@@ -74,7 +74,7 @@ const { html, text, subject } = await renderTemplate(
 ### With Notification Module
 
 ```typescript
-import { renderTemplate, TEMPLATES_NAMES } from "@codee-sh/medusa-plugin-notification/templates/emails"
+import { renderTemplate, TEMPLATES_NAMES } from "@codee-sh/medusa-plugin-notification-emails/templates/emails"
 import { Modules } from "@medusajs/framework/utils"
 
 const notificationModuleService = container.resolve(Modules.NOTIFICATION)

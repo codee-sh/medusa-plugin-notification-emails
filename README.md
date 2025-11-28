@@ -1,4 +1,4 @@
-# @codee-sh/medusa-plugin-notification
+# @codee-sh/medusa-plugin-notification-emails
 
 A comprehensive notification plugin for Medusa v2 that provides a flexible email template system with internationalization support, custom translations, and seamless integration with Medusa's notification module.
 
@@ -21,9 +21,9 @@ A comprehensive notification plugin for Medusa v2 that provides a flexible email
 ## Installation
 
 ```bash
-npm install @codee-sh/medusa-plugin-notification
+npm install @codee-sh/medusa-plugin-notification-emails
 # or
-yarn add @codee-sh/medusa-plugin-notification
+yarn add @codee-sh/medusa-plugin-notification-emails
 ```
 
 ## Quick Start
@@ -35,7 +35,7 @@ Add to your `medusa-config.ts`:
 ```typescript
 module.exports = defineConfig({
   plugins: [
-    "@codee-sh/medusa-plugin-notification"
+    "@codee-sh/medusa-plugin-notification-emails"
   ]
 })
 ```
@@ -49,7 +49,7 @@ Set up a notification provider - see [Configuration Documentation](./docs/config
 The plugin includes built-in subscribers that automatically send email notifications for various events. You can also use templates directly in your code:
 
 ```typescript
-import { renderTemplate, TEMPLATES_NAMES } from "@codee-sh/medusa-plugin-notification/templates/emails"
+import { renderTemplate, TEMPLATES_NAMES } from "@codee-sh/medusa-plugin-notification-emails/templates/emails"
 
 const { html, text, subject } = await renderTemplate(
   TEMPLATES_NAMES.ORDER_PLACED,
@@ -101,9 +101,9 @@ Access the template preview in Medusa Admin at `/app/notifications/render`. See 
 
 The plugin exports the following:
 
-- `@codee-sh/medusa-plugin-notification/templates/emails` - Template rendering functions
-- `@codee-sh/medusa-plugin-notification/templates/emails/types` - Template types and constants
-- `@codee-sh/medusa-plugin-notification/utils` - Utility functions
+- `@codee-sh/medusa-plugin-notification-emails/templates/emails` - Template rendering functions
+- `@codee-sh/medusa-plugin-notification-emails/templates/emails/types` - Template types and constants
+- `@codee-sh/medusa-plugin-notification-emails/utils` - Utility functions
 
 ## License
 

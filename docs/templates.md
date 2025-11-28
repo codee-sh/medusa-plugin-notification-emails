@@ -17,7 +17,7 @@ Each template has its own documentation with detailed examples and usage instruc
 The `renderTemplate` function is the main way to generate email content from templates:
 
 ```typescript
-import { renderTemplate, TEMPLATES_NAMES } from "@codee-sh/medusa-plugin-notification/templates/emails"
+import { renderTemplate, TEMPLATES_NAMES } from "@codee-sh/medusa-plugin-notification-emails/templates/emails"
 
 const { html, text, subject } = await renderTemplate(
   TEMPLATES_NAMES.CONTACT_FORM,
@@ -64,7 +64,7 @@ import {
   type SubscriberConfig,
 } from "@medusajs/medusa"
 import { Modules } from "@medusajs/framework/utils"
-import { renderTemplate, TEMPLATES_NAMES } from "@codee-sh/medusa-plugin-notification/templates/emails"
+import { renderTemplate, TEMPLATES_NAMES } from "@codee-sh/medusa-plugin-notification-emails/templates/emails"
 
 export default async function customEventHandler({
   event: { data },
@@ -104,7 +104,7 @@ export const config: SubscriberConfig = {
 You can also use templates directly in API routes or workflows:
 
 ```typescript
-import { renderTemplate, TEMPLATES_NAMES } from "@codee-sh/medusa-plugin-notification/templates/emails"
+import { renderTemplate, TEMPLATES_NAMES } from "@codee-sh/medusa-plugin-notification-emails/templates/emails"
 
 export async function POST(req: MedusaRequest, res: MedusaResponse) {
   const { html, text, subject } = await renderTemplate(
@@ -160,9 +160,9 @@ const { html, text, subject } = await renderTemplate(
 Use translations configured globally in `medusa-config.ts`:
 
 ```typescript
-import { getPluginOptions } from "@codee-sh/medusa-plugin-notification/utils/plugins"
+import { getPluginOptions } from "@codee-sh/medusa-plugin-notification-emails/utils/plugins"
 
-const pluginOptions = getPluginOptions(container, "@codee-sh/medusa-plugin-notification")
+const pluginOptions = getPluginOptions(container, "@codee-sh/medusa-plugin-notification-emails")
 
 const { html, text, subject } = await renderTemplate(
   TEMPLATES_NAMES.CONTACT_FORM,
@@ -184,7 +184,7 @@ const { html, text, subject } = await renderTemplate(
 You can also combine global translations with per-call overrides. Per-call translations will merge with global ones:
 
 ```typescript
-const pluginOptions = getPluginOptions(container, "@codee-sh/medusa-plugin-notification")
+const pluginOptions = getPluginOptions(container, "@codee-sh/medusa-plugin-notification-emails")
 
 const { html, text, subject } = await renderTemplate(
   TEMPLATES_NAMES.CONTACT_FORM,

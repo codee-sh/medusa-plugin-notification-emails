@@ -45,7 +45,7 @@ The `general` wrapper is automatically flattened, so you can access translations
 Translations are automatically applied when rendering templates:
 
 ```typescript
-import { renderTemplate, TEMPLATES_NAMES } from "@codee-sh/medusa-plugin-notification/templates/emails"
+import { renderTemplate, TEMPLATES_NAMES } from "@codee-sh/medusa-plugin-notification-emails/templates/emails"
 
 // Uses Polish translations (default)
 const { html, text, subject } = await renderTemplate(
@@ -118,7 +118,7 @@ Override translations globally in `medusa-config.ts`:
 module.exports = defineConfig({
   plugins: [
     {
-      resolve: "@codee-sh/medusa-plugin-notification",
+      resolve: "@codee-sh/medusa-plugin-notification-emails",
       options: {
         customTranslations: {
           "order-placed": {

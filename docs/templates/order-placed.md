@@ -42,7 +42,7 @@ Email template sent when an order is placed. Includes order details, items, ship
 ### Basic Usage
 
 ```typescript
-import { renderTemplate, TEMPLATES_NAMES } from "@codee-sh/medusa-plugin-notification/templates/emails"
+import { renderTemplate, TEMPLATES_NAMES } from "@codee-sh/medusa-plugin-notification-emails/templates/emails"
 
 const { html, text, subject } = await renderTemplate(
   TEMPLATES_NAMES.ORDER_PLACED,
@@ -108,7 +108,7 @@ const { html, text, subject } = await renderTemplate(
 ### With Notification Module
 
 ```typescript
-import { renderTemplate, TEMPLATES_NAMES } from "@codee-sh/medusa-plugin-notification/templates/emails"
+import { renderTemplate, TEMPLATES_NAMES } from "@codee-sh/medusa-plugin-notification-emails/templates/emails"
 import { Modules } from "@medusajs/framework/utils"
 
 const notificationModuleService = container.resolve(Modules.NOTIFICATION)

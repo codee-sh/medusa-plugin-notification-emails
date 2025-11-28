@@ -1,6 +1,6 @@
 # Configuration Documentation
 
-Complete guide to configuring the `@codee-sh/medusa-plugin-notification` plugin.
+Complete guide to configuring the `@codee-sh/medusa-plugin-notification-emails` plugin.
 
 ## Plugin Registration
 
@@ -10,7 +10,7 @@ Register the plugin in your `medusa-config.ts`:
 module.exports = defineConfig({
   plugins: [
     {
-      resolve: "@codee-sh/medusa-plugin-notification",
+      resolve: "@codee-sh/medusa-plugin-notification-emails",
       options: {
         // Plugin options here
       }
@@ -87,7 +87,7 @@ To customize subscriber behavior:
 module.exports = defineConfig({
   plugins: [
     {
-      resolve: "@codee-sh/medusa-plugin-notification",
+      resolve: "@codee-sh/medusa-plugin-notification-emails",
       options: {
         customTranslations: {
           "order-placed": {
@@ -127,7 +127,7 @@ If you need to disable a subscriber, you can create your own subscriber that han
 module.exports = defineConfig({
   plugins: [
     {
-      resolve: "@codee-sh/medusa-plugin-notification",
+      resolve: "@codee-sh/medusa-plugin-notification-emails",
       options: {
         customTranslations: {
           "order-placed": {
