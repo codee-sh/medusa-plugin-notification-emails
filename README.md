@@ -1,4 +1,4 @@
-# @codee-sh/medusa-plugin-notification-emails
+# Medusa plugin notification emails
 
 A comprehensive notification plugin for Medusa v2 that provides a flexible email template system with internationalization support, custom translations, and seamless integration with Medusa's notification module.
 
