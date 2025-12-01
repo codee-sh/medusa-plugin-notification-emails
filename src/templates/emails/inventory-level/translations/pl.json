@@ -1,0 +1,15 @@
+{
+  "general": {
+    "headerTitle": "Poziom magazynowy został zmieniony",
+    "headerDescription": "Poziom magazynowy został zmieniony. Sprawdź szczegóły.",
+    "labels": {
+      "inventoryLevelId": "ID",
+      "inventoryLevelLocation": "Lokalizacja",
+      "inventoryLevelStockedQuantity": "Ilość na stanie",
+      "inventoryLevelReservedQuantity": "Ilość zarezerwowana",
+      "inventoryLevelAvailableQuantity": "Ilość dostępna"
+    },
+    "footer": "Jeśli masz pytania dotyczące poziomu magazynowego, skontaktuj się z nami."
+  }
+}
+

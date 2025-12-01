@@ -1,0 +1,13 @@
+{
+  "general": {
+    "headerTitle": "#{{inventoryLevelId}} - Inventory level has been updated",
+    "headerDescription": "Inventory level has been updated. Check the details.",
+    "labels": {
+      "inventoryLevelId": "Inventory Level ID",
+      "inventoryLevelLocation": "Inventory Level Location",
+      "inventoryLevelDate": "Inventory Level Date"
+    },
+    "footer": "If you have any questions, please contact us."
+  }
+}
+
