@@ -1,10 +1,12 @@
 # Dependencies
+# Dependencies
 .medusa
 node_modules/
 package-lock.json
 .yarn/
-
 yarn.lock
+.yalc
+yalc.lock
 
 # Build outputs
 dist/
