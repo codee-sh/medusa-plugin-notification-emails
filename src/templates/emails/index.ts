@@ -5,7 +5,7 @@ import { getContactFormHtml, getContactFormText } from "./contact-form/index";
 import { getOrderCreatedHtml, getOrderCreatedText } from "./order-placed/index";
 import { getOrderCompletedHtml, getOrderCompletedText } from "./order-completed/index";
 import { getInventoryLevelHtml, getInventoryLevelText } from "./inventory-level/index";
-import { getBaseTemplateHtml, getBaseTemplateText } from "./base-template/index";
+import { getBaseTemplateHtml, getBaseTemplateText, getBaseTemplateReactNode } from "./base-template/index";
 
 import { TEMPLATES_NAMES } from "./types";
 import { translations as orderPlacedTranslations } from "./order-placed/translations";
@@ -33,7 +33,7 @@ export type TemplateData = any
  * Recursively interpolate text in blocks
  * Processes props.text in each block and nested blocks
  */
-function interpolateBlocks(blocks: any[], data: any, translator: any, config?: any): any[] {
+export function interpolateBlocks(blocks: any[], data: any, translator: any, config?: any): any[] {
   return blocks.map(block => {
     const processedBlock = { ...block };
     
@@ -91,7 +91,7 @@ const templateTranslationsRegistry: Partial<Record<TemplateName, Record<string, 
 /**
  * Template registry mapping template names to their renderers
  */
-const templateRegistry: Record<TemplateName, TemplateRenderer> = {
+const templateRegistry: Record<TemplateName, TemplateRenderer & { getReactNode?: (data: any, options?: TemplateOptionsType) => React.ReactNode }> = {
   [TEMPLATES_NAMES.CONTACT_FORM]: {
     getHtml: async (data: any, options?: TemplateOptionsType): Promise<string> => {
       return await getContactFormHtml(data, options as any);
@@ -131,6 +131,9 @@ const templateRegistry: Record<TemplateName, TemplateRenderer> = {
     getText: async (data: any, options?: TemplateOptionsType): Promise<string> => {
       return await getBaseTemplateText(data, options as any);
     },
+    getReactNode: (data: any, options?: TemplateOptionsType): React.ReactNode => {
+      return getBaseTemplateReactNode(data, options as any);
+    },
   },
 };
 
@@ -140,6 +143,7 @@ const templateRegistry: Record<TemplateName, TemplateRenderer> = {
 export interface TemplateRenderer {
   getHtml: (data: any, options?: TemplateOptionsType) => Promise<string>;
   getText: (data: any, options?: TemplateOptionsType) => Promise<string>;
+  getReactNode?: (data: any, options?: TemplateOptionsType) => any;
 }
 
 /**
@@ -175,7 +179,7 @@ export async function renderTemplate(
   data: TemplateData,
   options?: TemplateRenderOptionsType,
   createTemplate?: (data: TemplateData, options: TemplateOptionsType) => React.ReactElement<any>
-): Promise<{ html: any; text: any; subject: string }> {
+): Promise<{ html: any; text: any; subject: string; reactNode?: React.ReactNode }> {
   const locale = options?.locale || "pl";
   const blocks = options?.blocks || [];
   
@@ -258,6 +262,52 @@ export async function renderTemplate(
   return {
     html: await template.getHtml(data, renderOptions),
     text: await template.getText(data, renderOptions),
-    subject: multiInterpolate("{{translations.headerTitle}}", data, translator),
+    subject: multiInterpolate("{{translations.headerTitle}}", data, translator)
+  };
+}
+
+export function renderTemplateSync(
+  templateName: TemplateName | null,
+  data: TemplateData,
+  options?: TemplateRenderOptionsType
+): any {
+  const locale = options?.locale || "pl";
+  const blocks = options?.blocks || [];
+  
+  // Original behavior: use template from registry
+  if (!templateName) {
+    throw new Error("Either templateName or createTemplate must be provided");
+  }
+
+  const template = getTemplate(templateName);
+
+  // Get translations for this template
+  const translations = templateTranslationsRegistry[templateName] || {};
+  
+  // Process translations once in renderTemplate
+  const customTranslations = options?.customTranslations?.[templateName];
+
+  // Merge translations
+  const mergedTranslations = mergeTranslations(
+    translations,
+    customTranslations
+  )
+
+  // Create translator function
+  const translator = createTranslator(locale, mergedTranslations as any)
+
+  // Interpolate blocks if provided
+  const processedBlocks = blocks.length > 0 
+    ? interpolateBlocks(blocks, data, translator)
+    : blocks;
+
+  // Pass processed blocks in options to render functions
+  const renderOptions: TemplateOptionsType = {
+    ...options,
+    blocks: processedBlocks
+  };
+
+  return {
+    reactNode: template.getReactNode ? template.getReactNode(data, renderOptions) : undefined,
   };
 }

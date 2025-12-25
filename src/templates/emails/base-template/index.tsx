@@ -1,5 +1,5 @@
 import { TemplateOptionsType } from "../types";
-import { renderHTML, renderText } from "./template";
+import { renderHTML, renderText, renderHTMLReact } from "./template";
 
 /**
  * Generates HTML for base template
@@ -20,4 +20,11 @@ export async function getBaseTemplateText(
   options: TemplateOptionsType
 ): Promise<any> {
   return await renderText(data, options);
+}
+
+export function getBaseTemplateReactNode(
+  data: any, 
+  options: TemplateOptionsType
+): React.ReactNode {
+  return renderHTMLReact(data, options);
 }

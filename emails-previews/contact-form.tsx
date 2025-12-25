@@ -1,15 +1,5 @@
-import { renderHTMLReact } from "../src/templates/emails/base-template/template";
-import { ContactFormTemplateDataType } from "../src/templates/emails/contact-form/types";
-import { defaultTheme } from "../src/templates/shared/theme"  
-import { getTranslations } from "../src/templates/shared/i18n";
-
-import { translations as contactFormTranslations } from "../src/templates/emails/contact-form/translations";
-
-import {
-  createTranslator,
-  mergeTranslations,
-  interpolate,
-} from "../src/utils/i18n"
+import { defaultTheme } from "../src/templates/shared/theme";
+import { renderTemplateSync } from "../src/templates/emails";
 
 export const contactFormMockData: any = {
   name: "Test Name",
@@ -19,40 +9,83 @@ export const contactFormMockData: any = {
 };
 
 export default function ContactForm() {
-  const mergedTranslations = mergeTranslations(
-    contactFormTranslations,
+  const rawBlocks = [
     {
-      pl: {
-        headerTitle: "Cześć {{name}}",
-      },
-      en: {
-        headerTitle: "Hello, {{name}}",
-      },
-    }
-  )
-
-  // Create translator function
-  const t = createTranslator("pl", mergedTranslations)
-
-  return renderHTMLReact(contactFormMockData, {
-    blocks: [
-      {
-        type: "section",
-        props: {
-          blocks: [
-            {
-              type: "text",
-              props: {
-                text: interpolate("Hello, world! {{name}}", contactFormMockData),
-                // text: t("headerTitle", contactFormMockData),
-              },
+      type: "section",
+      id: "section-1",
+      props: {
+        blocks: [
+          {
+            id: "heading-1",
+            type: "heading",
+            props: {
+              value: "{{translations.headerTitle}}",
             },
-          ],
+          },
+        ],
+      },
+    },
+    {
+      type: "section",
+      id: "section-2",
+      props: {
+        blocks: [
+          {
+            id: "row-1",
+            type: "row",
+            props: {
+              label: "{{translations.email}}",
+              value: "{{data.email}}",
+            },
+          },
+          {
+            id: "separator-1",
+            type: "separator",
+          },
+          {
+            id: "row-2",
+            type: "row",
+            props: {
+              label: "{{translations.phone}}",
+              value: "{{data.phone}}",
+            },
+          },
+          {
+            id: "separator-2",
+            type: "separator",
+          },
+          {
+            id: "row-3",
+            type: "row",
+            props: {
+              label: "{{translations.message}}",
+              value: "{{data.message}}",
+            },
+          },
+        ],
+      },
+    },
+  ];
+
+  const renderTemplate = renderTemplateSync(
+    "base-template",
+    contactFormMockData,
+    {
+      blocks: rawBlocks,
+      locale: "pl",
+      theme: defaultTheme,
+      customTranslations: {
+        "base-template": {
+          pl: {
+            headerTitle: "Cześć {{data.name}}",
+            email: "Email",
+            phone: "Telefon",
+            message: "Wiadomość",
+          },
         },
       },
-    ],    
-    locale: "pl",
-    theme: defaultTheme,
-    i18n: getTranslations("pl", contactFormTranslations)
-  });
+    }
+  );
+
+  return renderTemplate.reactNode;
 }
