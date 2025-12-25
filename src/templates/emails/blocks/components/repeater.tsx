@@ -41,7 +41,6 @@ export function RepeaterBlock({
   
   return (
     <>
-    ss
       {array.map((item, index) => {
         return (
           <span key={id ? `${id}-${index}` : index}>{item.value}</span>

@@ -18,14 +18,13 @@ export const OrderPlacedTemplate = ({ orderId }: { orderId: string }) => {
     if (order?.display_id) {
       const shippingAddressText = getFormattedAddress({ address: order.shipping_address }).join("<br/>");
       const billingAddressText = getFormattedAddress({ address: order.billing_address }).join("<br/>");
-      const templateData = {
-        // subject: `#${order.display_id} - Zamówienie zostało złożone`,
+      const templateData: any = {
         orderNumber: `#${order.display_id}`,
         customerName: order.email,
         customerEmail: order.email,
         orderDate: formatDate({ date: order.created_at, includeTime: true, localeCode: "pl" }),
         totalAmount: order.items.reduce((acc, item) => acc + (item.variant?.prices?.[0]?.amount || 0) * item.quantity, 0),
-        currency: order.currency_code,
+        currency_code: order.currency_code,
         items: order.items.map((item) => ({
           thumbnail: item.thumbnail,
           title: item.title,
@@ -38,8 +37,7 @@ export const OrderPlacedTemplate = ({ orderId }: { orderId: string }) => {
           total: getLocaleAmount(order.summary.original_order_total, order.currency_code),
           paid_total: getLocaleAmount(getTotalCaptured(order.payment_collections || []), order.currency_code),
           tax_total: getLocaleAmount(order.tax_total, order.currency_code),
-          discount_total: getLocaleAmount(order.discount_total, order.currency_code),
-          currency: order.currency_code,
+          discount_total: getLocaleAmount(order.discount_total, order.currency_code)
         },
         sales_channel: {
           name: order?.sales_channel?.name,

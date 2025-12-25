@@ -1,15 +1,10 @@
 import React from "react";
 import { render, pretty, toPlainText } from "@react-email/render";
 import { TemplateOptionsType, TemplateRenderOptionsType } from "./types";
-import { getOrderCreatedHtml, getOrderCreatedText } from "./order-placed/index";
 import {
   getOrderCompletedHtml,
   getOrderCompletedText,
 } from "./order-completed/index";
-import {
-  getInventoryLevelHtml,
-  getInventoryLevelText,
-} from "./inventory-level/index";
 import {
   getBaseTemplateHtml,
   getBaseTemplateText,
@@ -17,14 +12,20 @@ import {
 } from "./base-template/index";
 
 import { TEMPLATES_NAMES } from "./types";
-import { translations as orderPlacedTranslations } from "./order-placed/translations";
 import { translations as orderCompletedTranslations } from "./order-completed/translations";
-import { translations as inventoryLevelTranslations } from "./inventory-level/translations";
 
 import {
   templateBlocks as ContactFormTemplateBlocks,
   translations as contactFormTranslations,
 } from "./contact-form";
+import {
+  templateBlocks as InventoryLevelTemplateBlocks,
+  translations as inventoryLevelTranslations,
+} from "./inventory-level";
+import {
+  templateBlocks as OrderPlacedTemplateBlocks,
+  translations as orderPlacedTranslations,
+} from "./order-placed";
 
 import {
   createTranslator,
@@ -54,7 +55,6 @@ export type TemplateData = any;
 const templateTranslationsRegistry: Partial<
   Record<TemplateName, Record<string, any>>
 > = {
-  [TEMPLATES_NAMES.ORDER_PLACED]: orderPlacedTranslations,
   [TEMPLATES_NAMES.ORDER_COMPLETED]: orderCompletedTranslations,
   [TEMPLATES_NAMES.INVENTORY_LEVEL]: inventoryLevelTranslations,
 };
@@ -105,17 +105,12 @@ const templateRegistry: Record<
     },
   },
   [TEMPLATES_NAMES.ORDER_PLACED]: {
-    getHtml: async (
-      data: any,
-      options?: TemplateOptionsType
-    ): Promise<string> => {
-      return await getOrderCreatedHtml(data, options as any);
-    },
-    getText: async (
-      data: any,
-      options?: TemplateOptionsType
-    ): Promise<string> => {
-      return await getOrderCreatedText(data, options as any);
+    ...baseTemplateConfig[TEMPLATES_NAMES.BASE_TEMPLATE],
+    getConfig: (): any => {
+      return {
+        blocks: OrderPlacedTemplateBlocks,
+        translations: orderPlacedTranslations,
+      };
     },
   },
   [TEMPLATES_NAMES.ORDER_COMPLETED]: {
@@ -133,17 +128,12 @@ const templateRegistry: Record<
     },
   },
   [TEMPLATES_NAMES.INVENTORY_LEVEL]: {
-    getHtml: async (
-      data: any,
-      options?: TemplateOptionsType
-    ): Promise<string> => {
-      return await getInventoryLevelHtml(data, options as any);
-    },
-    getText: async (
-      data: any,
-      options?: TemplateOptionsType
-    ): Promise<string> => {
-      return await getInventoryLevelText(data, options as any);
+    ...baseTemplateConfig[TEMPLATES_NAMES.BASE_TEMPLATE],
+    getConfig: (): any => {
+      return {
+        blocks: InventoryLevelTemplateBlocks,
+        translations: inventoryLevelTranslations,
+      };
     },
   }
 };
@@ -255,6 +245,61 @@ export function getTemplate(templateName: any): TemplateRenderer {
 }
 
 /**
+ * Prepare template data (translations, blocks, translator, processedBlocks)
+ * Shared logic for renderTemplate and renderTemplateSync
+ */
+function prepareTemplateData(
+  templateName: TemplateName,
+  data: TemplateData,
+  options?: TemplateRenderOptionsType
+): {
+  template: TemplateRenderer;
+  translator: { t: (key: string, data?: Record<string, any>) => string };
+  processedBlocks: any[];
+  renderOptions: TemplateOptionsType;
+} {
+  const locale = options?.locale || "pl";
+  const template = getTemplate(templateName);
+  const config = template.getConfig?.() || {};
+
+  // Get translations for this template
+  const translations = config?.translations || templateTranslationsRegistry[templateName] || {};
+
+  // If blocks are not provided, use basic blocks from config
+  const providedBlocks = options?.blocks || [];
+  let blocks = providedBlocks.length > 0 ? providedBlocks : config?.blocks || [];
+
+  // Process translations once
+  const customTranslations = options?.customTranslations?.[templateName];
+
+  // Merge translations
+  const mergedTranslations = mergeTranslations(
+    translations,
+    customTranslations
+  );
+
+  // Create translator function
+  const translator = createTranslator(locale, mergedTranslations as any);
+
+  // Interpolate blocks if provided
+  const processedBlocks =
+    blocks.length > 0 ? interpolateBlocks(blocks, data, translator) : blocks;
+
+  // Pass processed blocks in options to render functions
+  const renderOptions: TemplateOptionsType = {
+    ...options,
+    blocks: processedBlocks,
+  };
+
+  return {
+    template,
+    translator,
+    processedBlocks,
+    renderOptions,
+  };
+}
+
+/**
  * Generate HTML and text for a template
  *
  * @param templateName - Name of the template (optional if createTemplate is provided)
@@ -330,41 +375,7 @@ export async function renderTemplate(
     throw new Error("Either templateName or createTemplate must be provided");
   }
 
-  const template = getTemplate(templateName);
-  console.log("templateName", templateName);
-  console.log("template", template);
-  const config = template.getConfig?.() || {};
-
-  // Get translations for this template
-  const translations = config?.translations || {};
-
-  console.log("translations", translations);
-
-  // If blocks are not provided, use basic blocks
-  blocks = blocks?.length > 0 ? blocks : config?.blocks || [];
-  console.log("blocks", blocks);
-
-  // Process translations once in renderTemplate
-  const customTranslations = options?.customTranslations?.[templateName];
-
-  // Merge translations
-  const mergedTranslations = mergeTranslations(
-    translations,
-    customTranslations
-  );
-
-  // Create translator function
-  const translator = createTranslator(locale, mergedTranslations as any);
-
-  // Interpolate blocks if provided
-  const processedBlocks =
-    blocks.length > 0 ? interpolateBlocks(blocks, data, translator) : blocks;
-
-  // Pass processed blocks in options to render functions
-  const renderOptions: TemplateOptionsType = {
-    ...options,
-    blocks: processedBlocks,
-  };
+  const { template, translator, renderOptions } = prepareTemplateData(templateName, data, options);
 
   return {
     html: await template.getHtml(data, renderOptions),
@@ -378,40 +389,12 @@ export function renderTemplateSync(
   data: TemplateData,
   options?: TemplateRenderOptionsType
 ): any {
-  const locale = options?.locale || "pl";
-  const blocks = options?.blocks || [];
-
   // Original behavior: use template from registry
   if (!templateName) {
     throw new Error("Either templateName or createTemplate must be provided");
   }
 
-  const template = getTemplate(templateName);
-
-  // Get translations for this template
-  const translations = templateTranslationsRegistry[templateName] || {};
-
-  // Process translations once in renderTemplate
-  const customTranslations = options?.customTranslations?.[templateName];
-
-  // Merge translations
-  const mergedTranslations = mergeTranslations(
-    translations,
-    customTranslations
-  );
-
-  // Create translator function
-  const translator = createTranslator(locale, mergedTranslations as any);
-
-  // Interpolate blocks if provided
-  const processedBlocks =
-    blocks.length > 0 ? interpolateBlocks(blocks, data, translator) : blocks;
-
-  // Pass processed blocks in options to render functions
-  const renderOptions: TemplateOptionsType = {
-    ...options,
-    blocks: processedBlocks,
-  };
+  const { template, renderOptions } = prepareTemplateData(templateName, data, options);
 
   return {
     reactNode: template.getReactNode

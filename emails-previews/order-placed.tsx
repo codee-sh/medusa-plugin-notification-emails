@@ -1,10 +1,7 @@
-import { renderHTMLReact } from "../src/templates/emails/order-placed/template";
-import { OrderCreatedTemplateDataType } from "../src/templates/emails/order-placed/types";
-import { defaultTheme } from "../src/templates/shared/theme"
-import { getTranslations } from "../src/templates/shared/i18n";
-import { translations as orderPlacedTranslations } from "../src/templates/emails/order-placed/translations";
+import { defaultTheme } from "../src/templates/shared/theme";
+import { renderTemplateSync } from "../src/templates/emails";
 
-export const orderPlacedMockData: OrderCreatedTemplateDataType = {
+export const orderPlacedMockData: any = {
   sales_channel: {
     name: "Test Sales Channel",
     description: "Test Sales Channel Description"
@@ -14,12 +11,19 @@ export const orderPlacedMockData: OrderCreatedTemplateDataType = {
   customerEmail: "jan@example.com",
   orderDate: "2021-01-01",
   totalAmount: "100.00",
-  currency: "PLN",
-  items: [{
-    title: "Test Product",
-    quantity: 1,
-    price: "100.00"
-  }],
+  currency_code: "pln",
+  items: [
+    {
+      title: "Test Product 1",
+      quantity: 2,
+      price: "50.00"
+    },
+    {
+      title: "Test Product 2",
+      quantity: 1,
+      price: "100.00"
+    }
+  ],
   shippingAddress: "Test Shipping Address",
   billingAddress: "Test Billing Address",
   orderUrl: "https://example.com/order/1234567890",
@@ -27,15 +31,19 @@ export const orderPlacedMockData: OrderCreatedTemplateDataType = {
     total: "100.00",
     paid_total: "100.00",
     tax_total: "10.00",
-    discount_total: "0.00",
-    currency_code: "PLN"
+    discount_total: "0.00"
   }
 };
 
 export default function OrderPlaced() {
-  return renderHTMLReact(orderPlacedMockData, {
-    locale: "pl",
-    theme: defaultTheme,
-    i18n: getTranslations("pl", orderPlacedTranslations)
-  });
+  const renderTemplate = renderTemplateSync(
+    "order-placed",
+    orderPlacedMockData,
+    {
+      locale: "pl",
+      theme: defaultTheme,
+    }
+  );
+
+  return renderTemplate.reactNode;
 }

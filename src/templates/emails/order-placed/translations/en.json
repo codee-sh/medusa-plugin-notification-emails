@@ -1,6 +1,6 @@
 {
   "general": {
-    "headerTitle": "#{{orderNumber}} - Order placed",
+    "headerTitle": "{{data.orderNumber}} - Order placed",
     "headerDescription": "Your order has been received and is being processed. You will receive an email with information about the status of your order shortly.",
     "labels": {
       "salesChannel": "Sales Channel",
