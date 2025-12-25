@@ -5,13 +5,39 @@ import { ContactFormTemplateDataType } from "./types";
 import { TemplateOptionsType } from "../types";
 import { escapeHtml } from "../../shared/utils";
 
+function BlockRenderer({ blocks }: { blocks: any[] }) {
+  return (
+    <>
+      {blocks.map((block) => {
+        switch (block.type) {
+          case "section":
+            return (
+              <Section key={block.id}>
+                <BlockRenderer blocks={block.props.blocks || []} />
+              </Section>
+            );
+          case "text":
+            return (
+              <Text key={block.id}>
+                {block.props.text}
+              </Text>
+            );
+          default:
+            return null;
+        }
+      })}
+    </>
+  );
+}
+
 export function renderHTMLReact(
   data: ContactFormTemplateDataType,
   options: TemplateOptionsType
 ): React.ReactNode {
   const theme = options.theme || {};
   const i18n = options.i18n;
-  
+  const blocks = options.blocks || [];
+
   if (!i18n) {
     throw new Error("i18n is required in options. It should be provided by renderTemplate.");
   }
@@ -27,6 +53,9 @@ export function renderHTMLReact(
       >
         <Body className="mx-auto my-auto px-4 font-arial font-normal text-base bg-ui-bg text-ui-text">         
           <Container>
+
+            <BlockRenderer blocks={blocks} />
+            
             <Section>
               <Heading className="text-xl text-center font-bold mb-4">
                 {i18n.t('headerTitle', data)}
