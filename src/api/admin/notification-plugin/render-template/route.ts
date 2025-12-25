@@ -22,7 +22,7 @@ export async function POST(
   const { html, text } = await renderTemplate(
     templateName,
     templateData,
-    { 
+    {
       locale: locale,
       theme: pluginOptions?.theme || defaultTheme,
       customTranslations: pluginOptions?.customTranslations?.[templateName]

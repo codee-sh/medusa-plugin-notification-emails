@@ -34,7 +34,7 @@ export default function ContactForm() {
             id: "row-1",
             type: "row",
             props: {
-              label: "{{translations.email}}",
+              label: "{{translations.labels.email}}",
               value: "{{data.email}}",
             },
           },
@@ -46,7 +46,7 @@ export default function ContactForm() {
             id: "row-2",
             type: "row",
             props: {
-              label: "{{translations.phone}}",
+              label: "{{translations.labels.phone}}",
               value: "{{data.phone}}",
             },
           },
@@ -58,7 +58,7 @@ export default function ContactForm() {
             id: "row-3",
             type: "row",
             props: {
-              label: "{{translations.message}}",
+              label: "{{translations.labels.message}}",
               value: "{{data.message}}",
             },
           },
@@ -78,9 +78,11 @@ export default function ContactForm() {
         "base-template": {
           pl: {
             headerTitle: "Cześć {{data.name}}",
-            email: "Email",
-            phone: "Telefon",
-            message: "Wiadomość",
+            labels: {
+              email: "Email",
+              phone: "Telefon",
+              message: "Wiadomość",
+            },
           },
         },
       },
