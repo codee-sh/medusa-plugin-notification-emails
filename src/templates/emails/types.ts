@@ -11,7 +11,6 @@ export interface TemplateRenderOptionsType {
   theme?: any;
   locale?: any;  
   customTranslations?: Record<string, Record<string, any>>;
-  i18n?: any; // Pre-processed translations object from renderTemplate
 }
 
 export interface TemplateOptionsType {
@@ -19,5 +18,4 @@ export interface TemplateOptionsType {
   theme?: any;
   locale?: any;  
   customTranslations?: Record<string, Record<string, any>>;
-  i18n?: any; // Pre-processed translations object from renderTemplate
 }

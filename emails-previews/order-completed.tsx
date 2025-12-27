@@ -25,8 +25,8 @@ export const orderCompletedMockData: any = {
       price: "100.00"
     }
   ],
-  shippingAddress: "Test Shipping Address",
-  billingAddress: "Test Billing Address",
+  shippingAddress: "Test Shipping Address <br />Test Shipping Address 2",
+  billingAddress: "Test Billing Address<br />Test Billing Address 2",
   orderUrl: "https://example.com/order/1234567890",
   summary: {
     total: "100.00",

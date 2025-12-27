@@ -315,50 +315,50 @@ export async function renderTemplate(
   subject: string;
   reactNode?: React.ReactNode;
 }> {
-  // If createTemplate is provided, use custom template
-  if (createTemplate) {
-    // Create basic i18n if not provided (for custom templates)
-    let i18n = options?.i18n;
-    if (!i18n) {
-      // Create a simple i18n object for custom templates
-      i18n = {
-        t: (key: string, data?: any) => {
-          // Try to get from customTranslations if available
-          if (options?.customTranslations && templateName) {
-            const custom = options.customTranslations[templateName];
-            if (custom && custom[key]) {
-              return typeof custom[key] === "function"
-                ? custom[key](data)
-                : custom[key];
-            }
-          }
-          // Fallback to key or empty string
-          return key;
-        },
-      };
-    }
+  // // If createTemplate is provided, use custom template
+  // if (createTemplate) {
+  //   // Create basic i18n if not provided (for custom templates)
+  //   let i18n = options?.customTranslations?.[templateName];
+  //   if (!i18n) {
+  //     // Create a simple i18n object for custom templates
+  //     i18n = {
+  //       t: (key: string, data?: any) => {
+  //         // Try to get from customTranslations if available
+  //         if (options?.customTranslations && templateName) {
+  //           const custom = options.customTranslations[templateName];
+  //           if (custom && custom[key]) {
+  //             return typeof custom[key] === "function"
+  //               ? custom[key](data)
+  //               : custom[key];
+  //           }
+  //         }
+  //         // Fallback to key or empty string
+  //         return key;
+  //       },
+  //     };
+  //   }
 
-    // Pass processed i18n in options to render functions
-    const renderOptions: TemplateOptionsType = {
-      ...options,
-      i18n,
-    };
+  //   // Pass processed i18n in options to render functions
+  //   const renderOptions: TemplateOptionsType = {
+  //     ...options,
+  //     i18n,
+  //   };
 
-    // Render React component to HTML
-    const reactNode = createTemplate(data, renderOptions);
-    const htmlRendered = await render(reactNode);
-    const html = await pretty(htmlRendered);
-    const text = toPlainText(htmlRendered);
+  //   // Render React component to HTML
+  //   const reactNode = createTemplate(data, renderOptions);
+  //   const htmlRendered = await render(reactNode);
+  //   const html = await pretty(htmlRendered);
+  //   const text = toPlainText(htmlRendered);
 
-    // Get subject from i18n or use default
-    const subject = i18n.t("headerTitle", data) || "Email";
+  //   // Get subject from i18n or use default
+  //   const subject = i18n.t("headerTitle", data) || "Email";
 
-    return {
-      html,
-      text,
-      subject,
-    };
-  }
+  //   return {
+  //     html,
+  //     text,
+  //     subject,
+  //   };
+  // }
 
   // Original behavior: use template from registry
   if (!templateName) {
