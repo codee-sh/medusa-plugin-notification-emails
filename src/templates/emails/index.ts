@@ -2,17 +2,12 @@ import React from "react";
 import { render, pretty, toPlainText } from "@react-email/render";
 import { TemplateOptionsType, TemplateRenderOptionsType } from "./types";
 import {
-  getOrderCompletedHtml,
-  getOrderCompletedText,
-} from "./order-completed/index";
-import {
   getBaseTemplateHtml,
   getBaseTemplateText,
   getBaseTemplateReactNode,
 } from "./base-template/index";
 
 import { TEMPLATES_NAMES } from "./types";
-import { translations as orderCompletedTranslations } from "./order-completed/translations";
 
 import {
   templateBlocks as ContactFormTemplateBlocks,
@@ -26,6 +21,10 @@ import {
   templateBlocks as OrderPlacedTemplateBlocks,
   translations as orderPlacedTranslations,
 } from "./order-placed";
+import {
+  templateBlocks as OrderCompletedTemplateBlocks,
+  translations as orderCompletedTranslations,
+} from "./order-completed";
 
 import {
   createTranslator,
@@ -55,7 +54,6 @@ export type TemplateData = any;
 const templateTranslationsRegistry: Partial<
   Record<TemplateName, Record<string, any>>
 > = {
-  [TEMPLATES_NAMES.ORDER_COMPLETED]: orderCompletedTranslations,
   [TEMPLATES_NAMES.INVENTORY_LEVEL]: inventoryLevelTranslations,
 };
 
@@ -114,17 +112,12 @@ const templateRegistry: Record<
     },
   },
   [TEMPLATES_NAMES.ORDER_COMPLETED]: {
-    getHtml: async (
-      data: any,
-      options?: TemplateOptionsType
-    ): Promise<string> => {
-      return await getOrderCompletedHtml(data, options as any);
-    },
-    getText: async (
-      data: any,
-      options?: TemplateOptionsType
-    ): Promise<string> => {
-      return await getOrderCompletedText(data, options as any);
+    ...baseTemplateConfig[TEMPLATES_NAMES.BASE_TEMPLATE],
+    getConfig: (): any => {
+      return {
+        blocks: OrderCompletedTemplateBlocks,
+        translations: orderCompletedTranslations,
+      };
     },
   },
   [TEMPLATES_NAMES.INVENTORY_LEVEL]: {
@@ -322,9 +315,6 @@ export async function renderTemplate(
   subject: string;
   reactNode?: React.ReactNode;
 }> {
-  const locale = options?.locale || "pl";
-  let blocks = options?.blocks || [];
-
   // If createTemplate is provided, use custom template
   if (createTemplate) {
     // Create basic i18n if not provided (for custom templates)
@@ -389,7 +379,6 @@ export function renderTemplateSync(
   data: TemplateData,
   options?: TemplateRenderOptionsType
 ): any {
-  // Original behavior: use template from registry
   if (!templateName) {
     throw new Error("Either templateName or createTemplate must be provided");
   }

@@ -1,6 +1,6 @@
 {
   "general": {
-    "headerTitle": "#{{orderNumber}} - Order completed",
+    "headerTitle": "{{data.orderNumber}} - Order completed",
     "headerDescription": "Your order has been completed and shipped. Thank you for your purchase!",
     "labels": {
       "salesChannel": "Sales Channel",
