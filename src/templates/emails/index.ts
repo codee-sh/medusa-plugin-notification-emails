@@ -161,7 +161,7 @@ export function interpolateBlocks(
       for (const [key, value] of Object.entries(processedProps)) {
         // Skip non-string values and special properties (blocks, itemBlocks, separator, arrayPath)
         if (
-          typeof value === "string" &&
+          (typeof value === "string") &&
           key !== "blocks" &&
           key !== "itemBlocks" &&
           key !== "arrayPath"
@@ -203,8 +203,8 @@ export function interpolateBlocks(
           const interpolatedItemBlocks = array.map((item: any) =>
             interpolateBlocks(itemBlocks, item, translator, {
               arrayPath: arrayPath,
-            })
-          )[0];
+            })[0]
+          );
 
           processedBlock.props = {
             ...processedBlock.props,

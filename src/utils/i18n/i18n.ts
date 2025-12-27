@@ -127,9 +127,14 @@ export function multiInterpolate(
       const escapedPrefix = dataPrefixString.replace(/\./g, '\\.')
       const dataPath = variable.replace(new RegExp(`^${escapedPrefix}\\.`), "")
       const value = pickValueFromObject(dataPath, data)
-      replacement = value !== undefined && value !== null
-        ? String(value)
-        : undefined
+
+      // Convert value to string, preserving false as "false" and true as "true"
+      // String(false) = "false", String(true) = "true", String(0) = "0", etc.
+      if (value === undefined || value === null) {
+        replacement = undefined
+      } else {
+        replacement = String(value)
+      }
     }
     // Check if variable starts with translations. prefix
     else if (variable.startsWith("translations.")) {

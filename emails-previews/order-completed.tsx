@@ -15,7 +15,7 @@ export const orderCompletedMockData: any = {
   currency_code: "pln",
   items: [
     {
-      thumbnail: "https://placehold.co/150",
+      thumbnail: "",
       title: "Test Product 1",
       quantity: 10,
       price: "50.00"
@@ -23,7 +23,7 @@ export const orderCompletedMockData: any = {
     {
       thumbnail: "https://placehold.co/150",
       title: "Test Product 2",
-      quantity: 11,
+      quantity: 1,
       price: "100.00"
     }
   ],

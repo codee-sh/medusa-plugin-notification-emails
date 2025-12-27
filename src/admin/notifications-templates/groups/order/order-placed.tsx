@@ -26,7 +26,7 @@ export const OrderPlacedTemplate = ({ orderId }: { orderId: string }) => {
         totalAmount: order.items.reduce((acc, item) => acc + (item.variant?.prices?.[0]?.amount || 0) * item.quantity, 0),
         currency_code: order.currency_code,
         items: order.items.map((item) => ({
-          thumbnail: item.thumbnail,
+          thumbnail: item.thumbnail == null ? "" : item.thumbnail,
           title: item.title,
           quantity: item.quantity,
           price: getLocaleAmount(item.unit_price, order.currency_code),

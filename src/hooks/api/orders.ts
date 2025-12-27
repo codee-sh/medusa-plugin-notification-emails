@@ -14,7 +14,8 @@ export type UseOrdersParams = {
   offset?: number;
   extraKey?: unknown[];
   enabled?: boolean;
-  fields?: string;
+  fields?: string;  
+  order?: string;
 };
 
 type OrdersQueryData = {
@@ -29,7 +30,7 @@ export const useOrders = (
     "queryFn" | "queryKey"
   >
 ) => {
-  const { limit = 100, offset = 0, extraKey = [], enabled, fields = "id,display_id" } = params;
+  const { limit = 100, offset = 0, extraKey = [], enabled, fields = "id,display_id", order = "-created_at" } = params;
 
   const queryKey: QueryKey = [
     "orders", 
@@ -40,6 +41,7 @@ export const useOrders = (
     limit,
     offset,
     fields,
+    order,
   } as any;
 
   const { data, ...rest } = useQuery<
