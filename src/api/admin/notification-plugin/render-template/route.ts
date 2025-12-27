@@ -1,9 +1,8 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import { MedusaError } from "@medusajs/framework/utils"
-import { renderTemplate } from "../../../../templates/emails"
 import { getPluginOptions } from "../../../../utils/plugins"
 import { defaultTheme } from "../../../../templates/shared/theme"
-import { TemplateName } from "../../../../templates/emails"
+import { renderTemplate, TemplateName, TemplateData } from "../../../../templates/emails"
 
 export async function POST(
   req: MedusaRequest<{ templateName: string, templateData: any, locale: string }>,
@@ -12,7 +11,7 @@ export async function POST(
   const pluginOptions = getPluginOptions(req.scope, "@codee-sh/medusa-plugin-notification")
 
   const templateName = req.body?.templateName as TemplateName
-  const templateData = req.body?.templateData as any
+  const templateData = req.body?.templateData as TemplateData
   const locale = req.body?.locale || "pl"
 
   if (!templateName || !templateData || !locale) {
@@ -22,7 +21,7 @@ export async function POST(
   const { html, text } = await renderTemplate(
     templateName,
     templateData,
-    { 
+    {
       locale: locale,
       theme: pluginOptions?.theme || defaultTheme,
       customTranslations: pluginOptions?.customTranslations?.[templateName]

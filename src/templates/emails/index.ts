@@ -1,16 +1,36 @@
 import React from "react";
-import { render, pretty, toPlainText } from "@react-email/render";
 import { TemplateOptionsType, TemplateRenderOptionsType } from "./types";
-import { getContactFormHtml, getContactFormText } from "./contact-form/index";
-import { getOrderCreatedHtml, getOrderCreatedText } from "./order-placed/index";
-import { getOrderCompletedHtml, getOrderCompletedText } from "./order-completed/index";
-import { getInventoryLevelHtml, getInventoryLevelText } from "./inventory-level/index";
+import {
+  getBaseTemplateHtml,
+  getBaseTemplateText,
+  getBaseTemplateReactNode,
+} from "./base-template/index";
+
 import { TEMPLATES_NAMES } from "./types";
-import { getTranslations } from "../shared/i18n";
-import { translations as contactFormTranslations } from "./contact-form/translations";
-import { translations as orderPlacedTranslations } from "./order-placed/translations";
-import { translations as orderCompletedTranslations } from "./order-completed/translations";
-import { translations as inventoryLevelTranslations } from "./inventory-level/translations";
+
+import {
+  templateBlocks as ContactFormTemplateBlocks,
+  translations as contactFormTranslations,
+} from "./contact-form";
+import {
+  templateBlocks as InventoryLevelTemplateBlocks,
+  translations as inventoryLevelTranslations,
+} from "./inventory-level";
+import {
+  templateBlocks as OrderPlacedTemplateBlocks,
+  translations as orderPlacedTranslations,
+} from "./order-placed";
+import {
+  templateBlocks as OrderCompletedTemplateBlocks,
+  translations as orderCompletedTranslations,
+} from "./order-completed";
+
+import {
+  createTranslator,
+  mergeTranslations,
+  pickValueFromObject,
+  multiInterpolate,
+} from "../../utils";
 
 /**
  * Template names constants
@@ -20,59 +40,94 @@ export { TEMPLATES_NAMES };
 /**
  * Available templates
  */
-export type TemplateName = (typeof TEMPLATES_NAMES)[keyof typeof TEMPLATES_NAMES];
+export type TemplateName = any
 
 /**
  * Template data type
  */
-export type TemplateData = any
+export type TemplateData = any;
 
 /**
  * Template translations registry mapping template names to their translations
  */
-const templateTranslationsRegistry: Record<TemplateName, Record<string, any>> = {
-  [TEMPLATES_NAMES.CONTACT_FORM]: contactFormTranslations,
-  [TEMPLATES_NAMES.ORDER_PLACED]: orderPlacedTranslations,
-  [TEMPLATES_NAMES.ORDER_COMPLETED]: orderCompletedTranslations,
+const templateTranslationsRegistry: Partial<
+  Record<TemplateName, Record<string, any>>
+> = {
   [TEMPLATES_NAMES.INVENTORY_LEVEL]: inventoryLevelTranslations,
+};
+
+const baseTemplateConfig: Record<TemplateName, TemplateRenderer> = {
+  [TEMPLATES_NAMES.BASE_TEMPLATE]: {
+    getHtml: async (
+      data: any,
+      options?: TemplateOptionsType
+    ): Promise<string> => {
+      return await getBaseTemplateHtml(data, options as any);
+    },
+    getText: async (
+      data: any,
+      options?: TemplateOptionsType
+    ): Promise<string> => {
+      return await getBaseTemplateText(data, options as any);
+    },
+    getReactNode: (
+      data: any,
+      options?: TemplateOptionsType
+    ): React.ReactNode => {
+      return getBaseTemplateReactNode(data, options as any);
+    },
+  }
 };
 
 /**
  * Template registry mapping template names to their renderers
  */
-const templateRegistry: Record<TemplateName, TemplateRenderer> = {
+const templateRegistry: Record<
+  TemplateName,
+  TemplateRenderer & {
+    getReactNode?: (
+      data: any,
+      options?: TemplateOptionsType
+    ) => React.ReactNode;
+  }
+> = {
+  ...baseTemplateConfig,
   [TEMPLATES_NAMES.CONTACT_FORM]: {
-    getHtml: async (data: any, options?: TemplateOptionsType): Promise<string> => {
-      return await getContactFormHtml(data, options as any);
-    },
-    getText: async (data: any, options?: TemplateOptionsType): Promise<string> => {
-      return await getContactFormText(data, options as any);
+    ...baseTemplateConfig[TEMPLATES_NAMES.BASE_TEMPLATE],
+    getConfig: (): any => {
+      return {
+        blocks: ContactFormTemplateBlocks,
+        translations: contactFormTranslations,
+      };
     },
   },
   [TEMPLATES_NAMES.ORDER_PLACED]: {
-    getHtml: async (data: any, options?: TemplateOptionsType): Promise<string> => {
-      return await getOrderCreatedHtml(data, options as any);
-    },
-    getText: async (data: any, options?: TemplateOptionsType): Promise<string> => {
-      return await getOrderCreatedText(data, options as any);
+    ...baseTemplateConfig[TEMPLATES_NAMES.BASE_TEMPLATE],
+    getConfig: (): any => {
+      return {
+        blocks: OrderPlacedTemplateBlocks,
+        translations: orderPlacedTranslations,
+      };
     },
   },
   [TEMPLATES_NAMES.ORDER_COMPLETED]: {
-    getHtml: async (data: any, options?: TemplateOptionsType): Promise<string> => {
-      return await getOrderCompletedHtml(data, options as any);
-    },
-    getText: async (data: any, options?: TemplateOptionsType): Promise<string> => {
-      return await getOrderCompletedText(data, options as any);
+    ...baseTemplateConfig[TEMPLATES_NAMES.BASE_TEMPLATE],
+    getConfig: (): any => {
+      return {
+        blocks: OrderCompletedTemplateBlocks,
+        translations: orderCompletedTranslations,
+      };
     },
   },
   [TEMPLATES_NAMES.INVENTORY_LEVEL]: {
-    getHtml: async (data: any, options?: TemplateOptionsType): Promise<string> => {
-      return await getInventoryLevelHtml(data, options as any);
+    ...baseTemplateConfig[TEMPLATES_NAMES.BASE_TEMPLATE],
+    getConfig: (): any => {
+      return {
+        blocks: InventoryLevelTemplateBlocks,
+        translations: inventoryLevelTranslations,
+      };
     },
-    getText: async (data: any, options?: TemplateOptionsType): Promise<string> => {
-      return await getInventoryLevelText(data, options as any);
-    },
-  },
+  }
 };
 
 /**
@@ -81,30 +136,165 @@ const templateRegistry: Record<TemplateName, TemplateRenderer> = {
 export interface TemplateRenderer {
   getHtml: (data: any, options?: TemplateOptionsType) => Promise<string>;
   getText: (data: any, options?: TemplateOptionsType) => Promise<string>;
+  getReactNode?: (data: any, options?: TemplateOptionsType) => any;
+  getConfig?: () => any;
+}
+
+/**
+ * Recursively interpolate text in blocks
+ * Processes props.text in each block and nested blocks
+ */
+export function interpolateBlocks(
+  blocks: any[],
+  data: any,
+  translator: any,
+  config?: any
+): any[] {
+  return blocks.map((block) => {
+    const processedBlock = { ...block };
+
+    // Process all string properties in props
+    if (processedBlock.props && typeof processedBlock.props === "object") {
+      const processedProps: any = { ...processedBlock.props };
+      
+      // Iterate over all properties in props
+      for (const [key, value] of Object.entries(processedProps)) {
+        // Skip non-string values and special properties (blocks, itemBlocks, separator, arrayPath)
+        if (
+          (typeof value === "string") &&
+          key !== "blocks" &&
+          key !== "itemBlocks" &&
+          key !== "arrayPath"
+        ) {
+          processedProps[key] = multiInterpolate(
+            value,
+            data,
+            translator,
+            config
+          );
+        }
+      }
+      
+      processedBlock.props = processedProps;
+    }
+
+    // Recursively process nested blocks
+    if (
+      processedBlock.props?.blocks &&
+      Array.isArray(processedBlock.props.blocks)
+    ) {
+      processedBlock.props = {
+        ...processedBlock.props,
+        blocks: interpolateBlocks(
+          processedBlock.props.blocks,
+          data,
+          translator
+        ),
+      };
+    }
+
+    if (processedBlock.type === "repeater") {
+      const { arrayPath, itemBlocks } = processedBlock.props || {};
+
+      if (arrayPath && itemBlocks) {
+        const array = pickValueFromObject(arrayPath, data);
+
+        if (Array.isArray(array) && array.length > 0) {
+          const interpolatedItemBlocks = array.map((item: any) =>
+            interpolateBlocks(itemBlocks, item, translator, {
+              arrayPath: arrayPath,
+            })[0]
+          );
+
+          processedBlock.props = {
+            ...processedBlock.props,
+            itemBlocks: interpolatedItemBlocks,
+          };
+        }
+      }
+    }
+
+    return processedBlock;
+  });
 }
 
 /**
  * Get template renderer by template name
- * 
+ *
  * @param templateName - Name of the template
  * @returns Template renderer with getHtml and getText methods
  * @throws Error if template name is not found
  */
 export function getTemplate(templateName: any): TemplateRenderer {
   const template = templateRegistry[templateName];
-  
+
   if (!template) {
     throw new Error(
       `Template "${templateName}" not found. Available templates: ${Object.keys(templateRegistry).join(", ")}`
     );
   }
-  
+
   return template;
 }
 
 /**
+ * Prepare template data (translations, blocks, translator, processedBlocks)
+ * Shared logic for renderTemplate and renderTemplateSync
+ */
+function prepareTemplateData(
+  templateName: TemplateName,
+  data: TemplateData,
+  options?: TemplateRenderOptionsType
+): {
+  template: TemplateRenderer;
+  translator: { t: (key: string, data?: Record<string, any>) => string };
+  processedBlocks: any[];
+  renderOptions: TemplateOptionsType;
+} {
+  const locale = options?.locale || "pl";
+  const template = getTemplate(templateName);
+  const config = template.getConfig?.() || {};
+
+  // Get translations for this template
+  const translations = config?.translations || templateTranslationsRegistry[templateName] || {};
+
+  // If blocks are not provided, use basic blocks from config
+  const providedBlocks = options?.blocks || [];
+  let blocks = providedBlocks.length > 0 ? providedBlocks : config?.blocks || [];
+
+  // Process translations once
+  const customTranslations = options?.customTranslations?.[templateName];
+
+  // Merge translations
+  const mergedTranslations = mergeTranslations(
+    translations,
+    customTranslations
+  );
+
+  // Create translator function
+  const translator = createTranslator(locale, mergedTranslations as any);
+
+  // Interpolate blocks if provided
+  const processedBlocks =
+    blocks.length > 0 ? interpolateBlocks(blocks, data, translator) : blocks;
+
+  // Pass processed blocks in options to render functions
+  const renderOptions: TemplateOptionsType = {
+    ...options,
+    blocks: processedBlocks,
+  };
+
+  return {
+    template,
+    translator,
+    processedBlocks,
+    renderOptions,
+  };
+}
+
+/**
  * Generate HTML and text for a template
- * 
+ *
  * @param templateName - Name of the template (optional if createTemplate is provided)
  * @param data - Template data
  * @param options - Optional theme and locale configuration
@@ -115,87 +305,89 @@ export async function renderTemplate(
   templateName: TemplateName | null,
   data: TemplateData,
   options?: TemplateRenderOptionsType,
-  createTemplate?: (data: TemplateData, options: TemplateOptionsType) => React.ReactElement<any>
-): Promise<{ html: any; text: any; subject: string }> {
-  const locale = options?.locale || "pl";
-  
-  // If createTemplate is provided, use custom template
-  if (createTemplate) {
-    // Create basic i18n if not provided (for custom templates)
-    let i18n = options?.i18n;
-    if (!i18n) {
-      // Create a simple i18n object for custom templates
-      i18n = {
-        t: (key: string, data?: any) => {
-          // Try to get from customTranslations if available
-          if (options?.customTranslations && templateName) {
-            const custom = options.customTranslations[templateName];
-            if (custom && custom[key]) {
-              return typeof custom[key] === 'function' ? custom[key](data) : custom[key];
-            }
-          }
-          // Fallback to key or empty string
-          return key;
-        }
-      };
-    }
+  createTemplate?: (
+    data: TemplateData,
+    options: TemplateOptionsType
+  ) => React.ReactElement<any>
+): Promise<{
+  html: any;
+  text: any;
+  subject: string;
+  reactNode?: React.ReactNode;
+}> {
+  // // If createTemplate is provided, use custom template
+  // if (createTemplate) {
+  //   // Create basic i18n if not provided (for custom templates)
+  //   let i18n = options?.customTranslations?.[templateName];
+  //   if (!i18n) {
+  //     // Create a simple i18n object for custom templates
+  //     i18n = {
+  //       t: (key: string, data?: any) => {
+  //         // Try to get from customTranslations if available
+  //         if (options?.customTranslations && templateName) {
+  //           const custom = options.customTranslations[templateName];
+  //           if (custom && custom[key]) {
+  //             return typeof custom[key] === "function"
+  //               ? custom[key](data)
+  //               : custom[key];
+  //           }
+  //         }
+  //         // Fallback to key or empty string
+  //         return key;
+  //       },
+  //     };
+  //   }
 
-    // Pass processed i18n in options to render functions
-    const renderOptions: TemplateOptionsType = {
-      ...options,
-      i18n,
-    };
+  //   // Pass processed i18n in options to render functions
+  //   const renderOptions: TemplateOptionsType = {
+  //     ...options,
+  //     i18n,
+  //   };
 
-    // Render React component to HTML
-    const reactNode = createTemplate(data, renderOptions);
-    const htmlRendered = await render(reactNode);
-    const html = await pretty(htmlRendered);
-    const text = toPlainText(htmlRendered);
+  //   // Render React component to HTML
+  //   const reactNode = createTemplate(data, renderOptions);
+  //   const htmlRendered = await render(reactNode);
+  //   const html = await pretty(htmlRendered);
+  //   const text = toPlainText(htmlRendered);
 
-    // Get subject from i18n or use default
-    const subject = i18n.t("headerTitle", data) || "Email";
+  //   // Get subject from i18n or use default
+  //   const subject = i18n.t("headerTitle", data) || "Email";
 
-    return {
-      html,
-      text,
-      subject,
-    };
-  }
+  //   return {
+  //     html,
+  //     text,
+  //     subject,
+  //   };
+  // }
 
   // Original behavior: use template from registry
   if (!templateName) {
     throw new Error("Either templateName or createTemplate must be provided");
   }
 
-  const template = getTemplate(templateName);
-  
-  // Get translations for this template
-  const translations = templateTranslationsRegistry[templateName];
-  if (!translations) {
-    throw new Error(`Translations not found for template: ${templateName}`);
-  }
-  
-  // Process translations once in renderTemplate
-  const customTranslations = options?.customTranslations?.[templateName];
-  const i18n = getTranslations(
-    locale,
-    translations,
-    customTranslations ? { [locale]: customTranslations } : undefined,
-    templateName
-  );
-  
-  // Get subject from translations
-  const subject = i18n.t("headerTitle", data);
-
-  // Pass processed i18n in options to render functions
-  const renderOptions: TemplateOptionsType = {
-    ...options,
-    i18n,
-  };
+  const { template, translator, renderOptions } = prepareTemplateData(templateName, data, options);
 
   return {
     html: await template.getHtml(data, renderOptions),
     text: await template.getText(data, renderOptions),
-    subject,
+    subject: multiInterpolate("{{translations.headerTitle}}", data, translator),
+  };
+}
+
+export function renderTemplateSync(
+  templateName: TemplateName | null,
+  data: TemplateData,
+  options?: TemplateRenderOptionsType
+): any {
+  if (!templateName) {
+    throw new Error("Either templateName or createTemplate must be provided");
+  }
+
+  const { template, renderOptions } = prepareTemplateData(templateName, data, options);
+
+  return {
+    reactNode: template.getReactNode
+      ? template.getReactNode(data, renderOptions)
+      : undefined,
   };
 }

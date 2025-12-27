@@ -1,10 +1,7 @@
-import { renderHTMLReact } from "../src/templates/emails/contact-form/template";
-import { ContactFormTemplateDataType } from "../src/templates/emails/contact-form/types";
-import { defaultTheme } from "../src/templates/shared/theme"  
-import { getTranslations } from "../src/templates/shared/i18n";
-import { translations as contactFormTranslations } from "../src/templates/emails/contact-form/translations";
+import { defaultTheme } from "../src/templates/shared/theme";
+import { renderTemplateSync } from "../src/templates/emails";
 
-export const contactFormMockData: ContactFormTemplateDataType = {
+export const contactFormMockData: any = {
   name: "Test Name",
   email: "test@test.com",
   phone: "1234567890",
@@ -12,9 +9,14 @@ export const contactFormMockData: ContactFormTemplateDataType = {
 };
 
 export default function ContactForm() {
-  return renderHTMLReact(contactFormMockData, {
-    locale: "pl",
-    theme: defaultTheme,
-    i18n: getTranslations("pl", contactFormTranslations)
-  });
+  const renderTemplate = renderTemplateSync(
+    "contact-form",
+    contactFormMockData,
+    {
+      locale: "pl",
+      theme: defaultTheme
+    }
+  );
+
+  return renderTemplate.reactNode;
 }
