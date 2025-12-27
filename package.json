@@ -46,7 +46,7 @@
     "changeset": "changeset",
     "version": "changeset version",
     "release": "changeset publish",
-    "release:manual": "npm run build && npm publish --access public"
+    "release:manual": "npm run build && npm publish --access public"    
   },
   "dependencies": {
     "@react-email/components": "^0.5.7",
