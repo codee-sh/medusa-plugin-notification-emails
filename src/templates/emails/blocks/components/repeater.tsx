@@ -34,22 +34,8 @@ export function RepeaterBlock({
   // Retrieve array from data
   const array = props.itemBlocks;
 
-  // If not an array or empty, return null
-  // if (!Array.isArray(array) || array.length === 0) {
-  //   return null;
-  // }
-  
-  return (
-    <>
-      {array.map((item, index) => {
-        return (
-          <span key={id ? `${id}-${index}` : index}>{item.value}</span>
-          // <React.Fragment key={id ? `${id}-${index}` : index}>
-          //   <BlockRenderer blocks={itemBlocks} data={item} />
-          // </React.Fragment>
-        );
-      })}
-    </>
-  );
+  console.log("itemBlocks", array);
+
+  return <BlockRenderer blocks={array} data={data} />
 }
 

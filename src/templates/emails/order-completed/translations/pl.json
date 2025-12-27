@@ -3,6 +3,7 @@
     "headerTitle": "{{data.orderNumber}} - Zamówienie zostało zrealizowane",
     "headerDescription": "Twoje zamówienie zostało zrealizowane i wysłane. Dziękujemy za zakupy!",
     "labels": {
+      "product": "Produkt",
       "salesChannel": "Kanał sprzedaży",
       "salesChannelDescription": "Opis kanału sprzedaży",
       "orderNumber": "Numer zamówienia",

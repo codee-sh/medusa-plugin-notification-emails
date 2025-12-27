@@ -90,10 +90,12 @@ export const templateBlocks = [
             arrayPath: "items",
             itemBlocks: [
               {
-                id: "text-item",
-                type: "text",
+                id: "product-item",
+                type: "product-item",
                 props: {
-                  value: "{{data.title}} - {{data.quantity}}x {{data.price}}",
+                  label: "{{translations.labels.product}}",
+                  thumbnail: "{{data.items.thumbnail}}",
+                  value: "{{data.items.title}} - {{data.items.quantity}}x {{data.items.price}}",
                 },
               },
             ],

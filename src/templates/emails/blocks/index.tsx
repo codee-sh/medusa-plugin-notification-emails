@@ -4,11 +4,12 @@ import { RepeaterBlock } from "./components/repeater";
 import { HeadingBlock } from "./components/heading";
 import { RowBlock } from "./components/row";
 import { SeparatorBlock } from "./components/separator";
+import { ProductItemBlock } from "./components/product-item";
 
 export function BlockRenderer({ blocks, data }: { blocks: any[]; data?: any }) {
   return blocks.map((block, index) => {
     const blockKey = block.id || `block-${index}`;
-    
+
     switch (block.type) {
       case "section":
         return (
@@ -28,6 +29,16 @@ export function BlockRenderer({ blocks, data }: { blocks: any[]; data?: any }) {
             data={data}
           />
         );
+      case "product-item":
+        console.log("product-item", 'ss');
+        return (
+          <ProductItemBlock 
+            key={blockKey} 
+            id={blockKey} 
+            props={block.props}
+            data={data}
+          />
+        );
       case "heading":
         return (
           <HeadingBlock 
@@ -38,6 +49,7 @@ export function BlockRenderer({ blocks, data }: { blocks: any[]; data?: any }) {
           />
         );
       case "text":
+        // console.log("product-item", block.props);
         return (
           <TextBlock 
             key={blockKey} 
@@ -52,7 +64,7 @@ export function BlockRenderer({ blocks, data }: { blocks: any[]; data?: any }) {
             id={blockKey} 
             props={block.props}
           />
-        );  
+        );
       case "repeater":
         if (!data) {
           console.warn("RepeaterBlock requires data prop");

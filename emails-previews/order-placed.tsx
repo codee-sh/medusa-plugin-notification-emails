@@ -14,13 +14,15 @@ export const orderPlacedMockData: any = {
   currency_code: "pln",
   items: [
     {
+      thumbnail: "https://placehold.co/150",
       title: "Test Product 1",
-      quantity: 2,
+      quantity: 10,
       price: "50.00"
     },
     {
+      thumbnail: "https://placehold.co/150",
       title: "Test Product 2",
-      quantity: 1,
+      quantity: 11,
       price: "100.00"
     }
   ],

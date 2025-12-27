@@ -96,16 +96,18 @@ export const templateBlocks = [
           },
         },
         {
-          id: "repeater-1",
+          id: "repeater-product",
           type: "repeater",
           props: {
             arrayPath: "items",
             itemBlocks: [
               {
-                id: "text-item",
-                type: "text",
+                id: "product-item-1",
+                type: "product-item",
                 props: {
-                  value: "{{data.title}} - {{data.quantity}}x {{data.price}}",
+                  label: "{{translations.labels.product}}",
+                  thumbnail: "{{data.items.thumbnail}}",
+                  value: "{{data.items.title}} - {{data.items.quantity}}x {{data.items.price}}",
                 },
               },
             ],

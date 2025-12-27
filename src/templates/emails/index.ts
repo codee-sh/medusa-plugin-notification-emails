@@ -1,5 +1,4 @@
 import React from "react";
-import { render, pretty, toPlainText } from "@react-email/render";
 import { TemplateOptionsType, TemplateRenderOptionsType } from "./types";
 import {
   getBaseTemplateHtml,
@@ -154,28 +153,29 @@ export function interpolateBlocks(
   return blocks.map((block) => {
     const processedBlock = { ...block };
 
-    // Process props.value if exists
-    if (
-      processedBlock.props?.value &&
-      typeof processedBlock.props.value === "string"
-    ) {
-      processedBlock.props = {
-        ...processedBlock.props,
-        label: processedBlock.props.label
-          ? multiInterpolate(
-              processedBlock.props.label,
-              data,
-              translator,
-              config
-            )
-          : undefined,
-        value: multiInterpolate(
-          processedBlock.props.value,
-          data,
-          translator,
-          config
-        ),
-      };
+    // Process all string properties in props
+    if (processedBlock.props && typeof processedBlock.props === "object") {
+      const processedProps: any = { ...processedBlock.props };
+      
+      // Iterate over all properties in props
+      for (const [key, value] of Object.entries(processedProps)) {
+        // Skip non-string values and special properties (blocks, itemBlocks, separator, arrayPath)
+        if (
+          typeof value === "string" &&
+          key !== "blocks" &&
+          key !== "itemBlocks" &&
+          key !== "arrayPath"
+        ) {
+          processedProps[key] = multiInterpolate(
+            value,
+            data,
+            translator,
+            config
+          );
+        }
+      }
+      
+      processedBlock.props = processedProps;
     }
 
     // Recursively process nested blocks
@@ -204,7 +204,7 @@ export function interpolateBlocks(
             interpolateBlocks(itemBlocks, item, translator, {
               arrayPath: arrayPath,
             })
-          );
+          )[0];
 
           processedBlock.props = {
             ...processedBlock.props,
