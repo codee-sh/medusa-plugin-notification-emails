@@ -46,7 +46,7 @@
     "changeset": "changeset",
     "version": "changeset version",
     "release": "changeset publish",
-    "release:manual": "npm run build && npm publish --access public"    
+    "release:manual": "npm run build && npm publish --access public"
   },
   "dependencies": {
     "@react-email/components": "^0.5.7",
@@ -55,6 +55,7 @@
     "react-email": "^4.3.1"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.29.8",
     "@medusajs/admin-sdk": "2.8.8",
     "@medusajs/cli": "2.8.8",
     "@medusajs/framework": "2.8.8",
