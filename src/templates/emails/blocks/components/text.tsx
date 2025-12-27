@@ -10,7 +10,7 @@ export function TextBlock({
 }: { id: string, props: any }) {
   return (
     <Text key={id}>
-      {props.value}
+      {typeof props.value === "string" ? <span dangerouslySetInnerHTML={{ __html: props.value }} /> : props.value}
     </Text>
   );
 }
