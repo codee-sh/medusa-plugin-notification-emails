@@ -40,7 +40,13 @@
     "prepublishOnly": "medusa plugin:build",
     "publish-local": "npx medusa plugin:publish",
     "publish-package": "dotenv npm publish --access public",
-    "email:dev": "email dev --dir emails-previews"
+    "email:dev": "email dev --dir emails-previews",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx}\"",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "release": "changeset publish",
+    "release:manual": "npm run build && npm publish --access public"    
   },
   "dependencies": {
     "@react-email/components": "^0.5.7",
