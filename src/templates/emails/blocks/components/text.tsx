@@ -1,4 +1,5 @@
 import { Text } from "@react-email/components";
+import { clx } from "@medusajs/ui";
 
 /**
  * TextBlock - Text block component
@@ -7,9 +8,16 @@ import { Text } from "@react-email/components";
 export function TextBlock({
   id,
   props,
-}: { id: string, props: any }) {
+  isLastBlock,
+  isFirstBlock,
+}: { id: string, props: any, isLastBlock: boolean, isFirstBlock: boolean }) {
+  const className = clx(
+    isLastBlock ? "mb-0" : "mb-4",
+    isFirstBlock && "mt-0"
+  );
+
   return (
-    <Text key={id}>
+    <Text key={id} className={className}>
       {typeof props.value === "string" ? <span dangerouslySetInnerHTML={{ __html: props.value }} /> : props.value}
     </Text>
   );

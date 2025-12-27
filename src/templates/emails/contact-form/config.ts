@@ -27,6 +27,10 @@ export const templateBlocks = [
     },
   },
   {
+    id: "separator-1",
+    type: "separator",
+  },
+  {
     type: "section",
     id: "section-1",
     props: {

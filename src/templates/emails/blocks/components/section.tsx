@@ -9,9 +9,11 @@ export function SectionBlock({
   id,
   props,
   data,
-}: { id?: string; props: any; data?: any }) {
+  isLastBlock,
+  isFirstBlock,
+}: { id?: string; props: any; data?: any; isLastBlock: boolean; isFirstBlock: boolean }) {
   return (
-    <Section>
+    <Section className="m-0 p-0">
       <BlockRenderer blocks={props.blocks || []} data={data} />
     </Section>
   );

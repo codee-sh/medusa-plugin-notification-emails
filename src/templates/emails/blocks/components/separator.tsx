@@ -7,11 +7,13 @@ import { Hr } from "@react-email/components";
 export function SeparatorBlock({
   id,
   props,
-  data,
+  isLastBlock,
+  isFirstBlock,
 }: {
   id?: string;
   props: any;
-  data?: any;
+  isLastBlock: boolean;
+  isFirstBlock: boolean;
 }) {
   return (
     <Hr className="my-4 border-ui-border" />

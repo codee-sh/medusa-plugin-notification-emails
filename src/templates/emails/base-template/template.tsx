@@ -21,7 +21,7 @@ export function renderHTMLReact(
         }}
       >
         <Body className="mx-auto my-auto px-4 font-arial font-normal text-base bg-ui-bg text-ui-text">         
-          <Container>
+          <Container className="py-4">
             <BlockRenderer blocks={blocks} data={data} />
           </Container>
         </Body>

@@ -8,10 +8,14 @@ export function RowBlock({
   id,
   props,
   data,
+  isLastBlock,
+  isFirstBlock,
 }: {
   id?: string;
   props: any;
   data?: any;
+  isLastBlock: boolean;
+  isFirstBlock: boolean;
 }) {
   return (
     <Row>

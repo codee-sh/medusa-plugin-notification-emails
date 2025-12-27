@@ -34,8 +34,6 @@ export function RepeaterBlock({
   // Retrieve array from data
   const array = props.itemBlocks;
 
-  console.log("itemBlocks", array);
-
   return <BlockRenderer blocks={array} data={data} />
 }
 

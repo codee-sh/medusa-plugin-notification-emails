@@ -9,6 +9,8 @@ import { ProductItemBlock } from "./components/product-item";
 export function BlockRenderer({ blocks, data }: { blocks: any[]; data?: any }) {
   return blocks.map((block, index) => {
     const blockKey = block.id || `block-${index}`;
+    const isLastBlock = index === blocks.length - 1;
+    const isFirstBlock = index === 0;
 
     switch (block.type) {
       case "section":
@@ -18,6 +20,8 @@ export function BlockRenderer({ blocks, data }: { blocks: any[]; data?: any }) {
             id={blockKey} 
             props={block.props}
             data={data}
+            isLastBlock={isLastBlock}
+            isFirstBlock={isFirstBlock}
           />
         );
       case "row":
@@ -27,16 +31,19 @@ export function BlockRenderer({ blocks, data }: { blocks: any[]; data?: any }) {
             id={blockKey} 
             props={block.props}
             data={data}
+            isLastBlock={isLastBlock}
+            isFirstBlock={isFirstBlock}
           />
         );
       case "product-item":
-        console.log("product-item", 'ss');
         return (
           <ProductItemBlock 
             key={blockKey} 
             id={blockKey} 
             props={block.props}
             data={data}
+            isLastBlock={isLastBlock}
+            isFirstBlock={isFirstBlock}
           />
         );
       case "heading":
@@ -46,15 +53,18 @@ export function BlockRenderer({ blocks, data }: { blocks: any[]; data?: any }) {
             id={blockKey} 
             props={block.props}
             data={data}
+            isLastBlock={isLastBlock}
+            isFirstBlock={isFirstBlock}
           />
         );
       case "text":
-        // console.log("product-item", block.props);
         return (
           <TextBlock 
             key={blockKey} 
             id={blockKey} 
             props={block.props}
+            isLastBlock={isLastBlock}
+            isFirstBlock={isFirstBlock}
           />
         );
       case "separator":
@@ -63,6 +73,8 @@ export function BlockRenderer({ blocks, data }: { blocks: any[]; data?: any }) {
             key={blockKey} 
             id={blockKey} 
             props={block.props}
+            isLastBlock={isLastBlock}
+            isFirstBlock={isFirstBlock}
           />
         );
       case "repeater":

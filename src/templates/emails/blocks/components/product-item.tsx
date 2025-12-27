@@ -7,7 +7,9 @@ import { Text, Row, Column } from "@react-email/components";
 export function ProductItemBlock({
   props,
   data,
-}: { id: string, props: any, data?: any }) {
+  isLastBlock,
+  isFirstBlock,
+}: { id: string, props: any, data?: any, isLastBlock: boolean, isFirstBlock: boolean }) {
   return (
     <Row>
       <Column className="w-[50px]"><img src={props.thumbnail} alt={props.label} width={50} height={50} /></Column>
