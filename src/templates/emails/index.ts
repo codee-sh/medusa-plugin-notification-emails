@@ -19,11 +19,15 @@ import {
 import {
   templateBlocks as OrderPlacedTemplateBlocks,
   translations as orderPlacedTranslations,
-} from "./order-placed";
+} from "./order/placed";
 import {
   templateBlocks as OrderCompletedTemplateBlocks,
   translations as orderCompletedTranslations,
-} from "./order-completed";
+} from "./order/completed";
+import {
+  templateBlocks as OrderUpdatedTemplateBlocks,
+  translations as orderUpdatedTranslations,
+} from "./order/updated";
 
 import {
   createTranslator,
@@ -119,6 +123,15 @@ const templateRegistry: Record<
       };
     },
   },
+  [TEMPLATES_NAMES.ORDER_UPDATED]: {
+    ...baseTemplateConfig[TEMPLATES_NAMES.BASE_TEMPLATE],
+    getConfig: (): any => {
+      return {
+        blocks: OrderUpdatedTemplateBlocks,
+        translations: orderUpdatedTranslations,
+      };
+    },
+  },
   [TEMPLATES_NAMES.INVENTORY_LEVEL]: {
     ...baseTemplateConfig[TEMPLATES_NAMES.BASE_TEMPLATE],
     getConfig: (): any => {
@@ -142,7 +155,7 @@ export interface TemplateRenderer {
 
 /**
  * Recursively interpolate text in blocks
- * Processes props.text in each block and nested blocks
+ * Processes props.[property] in each block and nested blocks
  */
 export function interpolateBlocks(
   blocks: any[],

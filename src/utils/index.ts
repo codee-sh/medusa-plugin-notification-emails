@@ -6,3 +6,4 @@ export * from "./pick-value-from-object";
 export * from "./is-defined";
 export * from "./is-object";
 export * from "./i18n/i18n";
+export * from "./transforms";

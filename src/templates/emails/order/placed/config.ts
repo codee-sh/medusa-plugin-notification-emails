@@ -45,7 +45,7 @@ export const templateBlocks = [
           type: "row",
           props: {
             label: "{{translations.labels.salesChannel}}",
-            value: "{{data.sales_channel.name}}",
+            value: "{{data.order.sales_channel.name}}",
           },
         },
         {
@@ -57,7 +57,7 @@ export const templateBlocks = [
           type: "row",
           props: {
             label: "{{translations.labels.orderNumber}}",
-            value: "{{data.orderNumber}}",
+            value: "{{data.order.transformed.order_number}}",
           },
         },
         {
@@ -69,26 +69,14 @@ export const templateBlocks = [
           type: "row",
           props: {
             label: "{{translations.labels.orderDate}}",
-            value: "{{data.orderDate}}",
-          },
-        },
-        {
-          id: "separator-3",
-          type: "separator",
-        },
-        {
-          id: "row-4",
-          type: "row",
-          props: {
-            label: "{{translations.labels.completedDate}}",
-            value: "{{data.completedDate}}",
+            value: "{{data.order.transformed.order_date}}",
           },
         },
       ],
     },
   },
   {
-    id: "separator-4",
+    id: "separator-1",
     type: "separator",
   },
   {
@@ -104,18 +92,18 @@ export const templateBlocks = [
           },
         },
         {
-          id: "repeater-product",
+          id: "repeater-1",
           type: "repeater",
           props: {
-            arrayPath: "items",
+            arrayPath: "order.transformed.items",
             itemBlocks: [
               {
-                id: "product-item-1",
+                id: "product-item",
                 type: "product-item",
                 props: {
                   label: "{{translations.labels.product}}",
-                  thumbnail: "{{data.items.thumbnail}}",
-                  value: "{{data.items.title}} - {{data.items.quantity}}x {{data.items.price}}",
+                  thumbnail: "{{data.order.transformed.items.thumbnail}}",
+                  value: "{{data.order.transformed.items.title}} - {{data.order.transformed.items.quantity}}x {{data.order.transformed.items.price}}",
                 },
               },
             ],
@@ -125,7 +113,7 @@ export const templateBlocks = [
     },
   },
   {
-    id: "separator-4",
+    id: "separator-1",
     type: "separator",
   },
   {
@@ -144,14 +132,14 @@ export const templateBlocks = [
           id: "text-2",
           type: "text",
           props: {
-            value: "{{data.shippingAddress}}",
+            value: "{{data.order.transformed.shipping_address_text}}",
           },
         },
       ],
     },
   },
   {
-    id: "separator-4",
+    id: "separator-1",
     type: "separator",
   },
   {
@@ -160,11 +148,23 @@ export const templateBlocks = [
     props: {
       blocks: [
         {
-          id: "row-5",
+          id: "row-4",
           type: "row",
           props: {
             label: "{{translations.labels.discountTotal}}",
-            value: "{{data.summary.discount_total}}",
+            value: "{{data.order.transformed.summary.discount_total}}",
+          },
+        },
+        {
+          id: "separator-3",
+          type: "separator",
+        },
+        {
+          id: "row-5",
+          type: "row",
+          props: {
+            label: "{{translations.labels.orderTotal}}",
+            value: "{{data.order.transformed.summary.total}}",
           },
         },
         {
@@ -175,8 +175,8 @@ export const templateBlocks = [
           id: "row-6",
           type: "row",
           props: {
-            label: "{{translations.labels.orderTotal}}",
-            value: "{{data.summary.total}}",
+            label: "{{translations.labels.paidTotal}}",
+            value: "{{data.order.transformed.summary.paid_total}}",
           },
         },
         {
@@ -187,20 +187,8 @@ export const templateBlocks = [
           id: "row-7",
           type: "row",
           props: {
-            label: "{{translations.labels.paidTotal}}",
-            value: "{{data.summary.paid_total}}",
-          },
-        },
-        {
-          id: "separator-6",
-          type: "separator",
-        },
-        {
-          id: "row-8",
-          type: "row",
-          props: {
             label: "{{translations.labels.taxTotal}}",
-            value: "{{data.summary.tax_total}}",
+            value: "{{data.order.transformed.summary.tax_total}}",
           },
         },
       ],

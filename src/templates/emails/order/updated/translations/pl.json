@@ -1,7 +1,7 @@
 {
   "general": {
-    "headerTitle": "{{data.orderNumber}} - Zamówienie zostało złożone",
-    "headerDescription": "Twoje zamówienie zostało przyjęte i jest w trakcie realizacji. Wkrótce otrzymasz e-mail z informacją o statusie zamówienia.",
+    "headerTitle": "{{data.order.transformed.order_number}} - Zamówienie zostało zaktualizowane",
+    "headerDescription": "Twoje zamówienie zostało zaktualizowane. Sprawdź szczegóły zamówienia.",
     "labels": {
       "salesChannel": "Kanał sprzedaży",
       "salesChannelDescription": "Opis kanału sprzedaży",
