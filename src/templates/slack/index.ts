@@ -1,8 +1,4 @@
 import React from "react";
-import {
-  getBaseBlocks,
-} from "./base-template/index";
-
 import { TEMPLATES_NAMES } from "./types";
 
 import {

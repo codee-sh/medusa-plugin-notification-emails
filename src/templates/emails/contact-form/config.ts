@@ -10,6 +10,10 @@ export const translations: Record<any, any> = {
   de: de,
 };
 
+/**
+ * Contact form template blocks
+ * 
+ */
 export const templateBlocks = [
   {
     type: "section",

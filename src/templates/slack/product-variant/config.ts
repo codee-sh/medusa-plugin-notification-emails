@@ -8,6 +8,12 @@ export const translations: Record<any, any> = {
   en: en,
 };
 
+/**
+ * Product variant template blocks
+ * 
+ * Blocks built by Slack Block Kit: 
+ * https://api.slack.com/reference/block-kit/blocks
+ */
 export const templateBlocks = [
   {
     type: "header",

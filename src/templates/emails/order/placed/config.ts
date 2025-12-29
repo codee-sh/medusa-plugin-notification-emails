@@ -8,6 +8,10 @@ export const translations: Record<any, any> = {
   en: en,
 };
 
+/**
+ * Order placed template blocks
+ * 
+ */
 export const templateBlocks = [
   {
     type: "section",

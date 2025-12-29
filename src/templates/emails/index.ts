@@ -1,13 +1,24 @@
 import React from "react";
 import { TemplateOptionsType, TemplateRenderOptionsType } from "./types";
+
+import { TEMPLATES_NAMES } from "./types";
+
+import {
+  pickValueFromObject,
+  multiInterpolate,
+} from "../../utils";
+import {
+  TemplateName,
+  TemplateData,
+  BaseTemplateRenderer,
+  prepareTemplateData,
+} from "../shared";
+
 import {
   getBaseTemplateHtml,
   getBaseTemplateText,
   getBaseTemplateReactNode,
 } from "./base-template/index";
-
-import { TEMPLATES_NAMES } from "./types";
-
 import {
   templateBlocks as ContactFormTemplateBlocks,
   translations as contactFormTranslations,
@@ -28,17 +39,6 @@ import {
   templateBlocks as OrderUpdatedTemplateBlocks,
   translations as orderUpdatedTranslations,
 } from "./order/updated";
-
-import {
-  pickValueFromObject,
-  multiInterpolate,
-} from "../../utils";
-import {
-  TemplateName,
-  TemplateData,
-  BaseTemplateRenderer,
-  prepareTemplateData,
-} from "../shared";
 
 /**
  * Template names constants
