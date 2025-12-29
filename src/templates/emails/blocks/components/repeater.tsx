@@ -1,7 +1,4 @@
-import React from "react";
 import { BlockRenderer } from "../index";
-import { pickValueFromObject } from "../../../../utils/pick-value-from-object";
-import { interpolate } from "../../../../utils/i18n";
 
 /**
  * RepeaterBlock - Iterates over an array and renders blocks for each item
