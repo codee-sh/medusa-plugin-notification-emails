@@ -1,5 +1,8 @@
 export const TEMPLATES_NAMES = {
   BASE_TEMPLATE: "base-template",
+  INVENTORY_LEVEL: "inventory-level",
+  PRODUCT: "product",
+  PRODUCT_VARIANT: "product-variant",
 } as const;
 
 export type SlackBlock = {

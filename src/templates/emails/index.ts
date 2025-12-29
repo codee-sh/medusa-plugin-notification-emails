@@ -30,35 +30,20 @@ import {
 } from "./order/updated";
 
 import {
-  createTranslator,
-  mergeTranslations,
   pickValueFromObject,
   multiInterpolate,
 } from "../../utils";
+import {
+  TemplateName,
+  TemplateData,
+  BaseTemplateRenderer,
+  prepareTemplateData,
+} from "../shared";
 
 /**
  * Template names constants
  */
 export { TEMPLATES_NAMES };
-
-/**
- * Available templates
- */
-export type TemplateName = any
-
-/**
- * Template data type
- */
-export type TemplateData = any;
-
-/**
- * Template translations registry mapping template names to their translations
- */
-const templateTranslationsRegistry: Partial<
-  Record<TemplateName, Record<string, any>>
-> = {
-  [TEMPLATES_NAMES.INVENTORY_LEVEL]: inventoryLevelTranslations,
-};
 
 const baseTemplateConfig: Record<TemplateName, TemplateRenderer> = {
   [TEMPLATES_NAMES.BASE_TEMPLATE]: {
@@ -88,12 +73,7 @@ const baseTemplateConfig: Record<TemplateName, TemplateRenderer> = {
  */
 const templateRegistry: Record<
   TemplateName,
-  TemplateRenderer & {
-    getReactNode?: (
-      data: any,
-      options?: TemplateOptionsType
-    ) => React.ReactNode;
-  }
+  TemplateRenderer
 > = {
   ...baseTemplateConfig,
   [TEMPLATES_NAMES.CONTACT_FORM]: {
@@ -144,13 +124,12 @@ const templateRegistry: Record<
 };
 
 /**
- * Template renderer interface
+ * Template renderer interface for email channel
  */
-export interface TemplateRenderer {
+export interface TemplateRenderer extends BaseTemplateRenderer {
   getHtml: (data: any, options?: TemplateOptionsType) => Promise<string>;
   getText: (data: any, options?: TemplateOptionsType) => Promise<string>;
   getReactNode?: (data: any, options?: TemplateOptionsType) => any;
-  getConfig?: () => any;
 }
 
 /**
@@ -232,77 +211,29 @@ export function interpolateBlocks(
 }
 
 /**
- * Get template renderer by template name
- *
- * @param templateName - Name of the template
- * @returns Template renderer with getHtml and getText methods
- * @throws Error if template name is not found
+ * Prepare template data wrapper for email channel
+ * Uses shared prepareTemplateData with email-specific interpolateBlocks
  */
-export function getTemplate(templateName: any): TemplateRenderer {
-  const template = templateRegistry[templateName];
-
-  if (!template) {
-    throw new Error(
-      `Template "${templateName}" not found. Available templates: ${Object.keys(templateRegistry).join(", ")}`
-    );
-  }
-
-  return template;
-}
-
-/**
- * Prepare template data (translations, blocks, translator, processedBlocks)
- * Shared logic for renderTemplate and renderTemplateSync
- */
-function prepareTemplateData(
-  templateName: TemplateName,
-  data: TemplateData,
-  options?: TemplateRenderOptionsType
-): {
+function prepareEmailTemplateData({
+  templateName,
+  data,
+  options = {},
+}: {
+  templateName: TemplateName;
+  data: TemplateData;
+  options?: TemplateRenderOptionsType;
+}): {
   template: TemplateRenderer;
   translator: { t: (key: string, data?: Record<string, any>) => string };
-  processedBlocks: any[];
   renderOptions: TemplateOptionsType;
 } {
-  const locale = options?.locale || "pl";
-  const template = getTemplate(templateName);
-  const config = template.getConfig?.() || {};
-
-  // Get translations for this template
-  const translations = config?.translations || templateTranslationsRegistry[templateName] || {};
-
-  // If blocks are not provided, use basic blocks from config
-  const providedBlocks = options?.blocks || [];
-  let blocks = providedBlocks.length > 0 ? providedBlocks : config?.blocks || [];
-
-  // Process translations once
-  const customTranslations = options?.customTranslations?.[templateName];
-
-  // Merge translations
-  const mergedTranslations = mergeTranslations(
-    translations,
-    customTranslations
-  );
-
-  // Create translator function
-  const translator = createTranslator(locale, mergedTranslations as any);
-
-  // Interpolate blocks if provided
-  const processedBlocks =
-    blocks.length > 0 ? interpolateBlocks(blocks, data, translator) : blocks;
-
-  // Pass processed blocks in options to render functions
-  const renderOptions: TemplateOptionsType = {
-    ...options,
-    blocks: processedBlocks,
-  };
-
-  return {
-    template,
-    translator,
-    processedBlocks,
-    renderOptions,
-  };
+  return prepareTemplateData<TemplateRenderer>({
+    templateName,
+    data,
+    templateRegistry,
+    interpolateFunction: interpolateBlocks,
+    options,
+  });
 }
 
 /**
@@ -378,7 +309,11 @@ export async function renderTemplate(
     throw new Error("Either templateName or createTemplate must be provided");
   }
 
-  const { template, translator, renderOptions } = prepareTemplateData(templateName, data, options);
+  const { template, renderOptions, translator } = prepareEmailTemplateData({
+    templateName,
+    data,
+    options,
+  });
 
   return {
     html: await template.getHtml(data, renderOptions),
@@ -396,7 +331,11 @@ export function renderTemplateSync(
     throw new Error("Either templateName or createTemplate must be provided");
   }
 
-  const { template, renderOptions } = prepareTemplateData(templateName, data, options);
+  const { template, renderOptions } = prepareEmailTemplateData({
+    templateName,
+    data,
+    options,
+  });
 
   return {
     reactNode: template.getReactNode

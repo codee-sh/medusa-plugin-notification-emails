@@ -1,22 +1,33 @@
 import React from "react";
-import { SlackTemplateOptions } from "./types";
 import {
   getBaseBlocks,
 } from "./base-template/index";
 
 import { TEMPLATES_NAMES } from "./types";
 
-// import {
-//   templateBlocks as InventoryLevelTemplateBlocks,
-//   translations as inventoryLevelTranslations,
-// } from "./inventory-level";
+import {
+  templateBlocks as InventoryLevelTemplateBlocks,
+  translations as inventoryLevelTranslations,
+} from "./inventory-level";
+import {
+  templateBlocks as ProductTemplateBlocks,
+  translations as productTranslations,
+} from "./product";
+import {
+  templateBlocks as ProductVariantTemplateBlocks,
+  translations as productVariantTranslations,
+} from "./product-variant";
 
 import {
-  createTranslator,
-  mergeTranslations,
   pickValueFromObject,
   multiInterpolate,
 } from "../../utils";
+import {
+  TemplateName,
+  TemplateData,
+  BaseTemplateRenderer,
+  prepareTemplateData,
+} from "../shared";
 
 /**
  * Template names constants
@@ -24,33 +35,12 @@ import {
 export { TEMPLATES_NAMES };
 
 /**
- * Available templates
+ * Template renderer interface for Slack channel
  */
-export type TemplateName = any
-
-/**
- * Template data type
- */
-export type TemplateData = any;
-
-/**
- * Template translations registry mapping template names to their translations
- */
-const templateTranslationsRegistry: Partial<
-  Record<TemplateName, Record<string, any>>
-> = {
-  // [TEMPLATES_NAMES.INVENTORY_LEVEL]: inventoryLevelTranslations,
-};
+export interface TemplateRenderer extends BaseTemplateRenderer {}
 
 const baseTemplateConfig: Record<TemplateName, TemplateRenderer> = {
-  [TEMPLATES_NAMES.BASE_TEMPLATE]: {
-    getBlocks: async (
-      data: any,
-      options?: any
-    ): Promise<any[]> => {
-      return await getBaseBlocks(data, options as any);
-    },
-  }
+  [TEMPLATES_NAMES.BASE_TEMPLATE]: {}
 };
 
 /**
@@ -58,32 +48,37 @@ const baseTemplateConfig: Record<TemplateName, TemplateRenderer> = {
  */
 const templateRegistry: Record<
   TemplateName,
-  TemplateRenderer & {
-    getReactNode?: (
-      data: any,
-      options?: any
-    ) => React.ReactNode;
-  }
+  TemplateRenderer
 > = {
   ...baseTemplateConfig,
-  // [TEMPLATES_NAMES.INVENTORY_LEVEL]: {
-  //   ...baseTemplateConfig[TEMPLATES_NAMES.BASE_TEMPLATE],
-  //   getConfig: (): any => {
-  //     return {
-  //       blocks: InventoryLevelTemplateBlocks,
-  //       translations: inventoryLevelTranslations,
-  //     };
-  //   },
-  // }
+  [TEMPLATES_NAMES.INVENTORY_LEVEL]: {
+    ...baseTemplateConfig[TEMPLATES_NAMES.BASE_TEMPLATE],
+    getConfig: (): any => {
+      return {
+        blocks: InventoryLevelTemplateBlocks,
+        translations: inventoryLevelTranslations,
+      };
+    },
+  },
+  [TEMPLATES_NAMES.PRODUCT]: {
+    ...baseTemplateConfig[TEMPLATES_NAMES.BASE_TEMPLATE],
+    getConfig: (): any => {
+      return {
+        blocks: ProductTemplateBlocks,
+        translations: productTranslations,
+      };
+    },
+  },
+  [TEMPLATES_NAMES.PRODUCT_VARIANT]: {
+    ...baseTemplateConfig[TEMPLATES_NAMES.BASE_TEMPLATE],
+    getConfig: (): any => {
+      return {
+        blocks: ProductVariantTemplateBlocks,
+        translations: productVariantTranslations,
+      };
+    },
+  }
 };
-
-/**
- * Template renderer interface
- */
-export interface TemplateRenderer {
-  getBlocks: (data: any, options?: any) => Promise<any[]>;
-  getConfig?: () => any;
-}
 
 /**
  * Recursively interpolate text in SlackBlock[] structure
@@ -196,88 +191,29 @@ function recursivelyInterpolateText(
 }
 
 /**
- * Get template renderer by template name
- *
- * @param templateName - Name of the template
- * @returns Template renderer with getHtml and getText methods
- * @throws Error if template name is not found
+ * Prepare template data wrapper for Slack channel
+ * Uses shared prepareTemplateData with Slack-specific interpolateSlackBlocks
  */
-export function getTemplate(templateName: any): TemplateRenderer {
-  const template = templateRegistry[templateName];
-
-  if (!template) {
-    throw new Error(
-      `Template "${templateName}" not found. Available templates: ${Object.keys(templateRegistry).join(", ")}`
-    );
-  }
-
-  return template;
-}
-
-/**
- * Parameters for prepareTemplateData function
- */
-interface PrepareTemplateDataParams {
-  templateName: TemplateName;
-  data: TemplateData;
-  interpolateFunction: (...args: any[]) => any;
-  options?: any;
-}
-
-/**
- * Prepare template data (translations, blocks, translator, processedBlocks)
- * Shared logic for renderTemplate and renderTemplateSync
- */
-function prepareTemplateData({
+function prepareSlackTemplateData({
   templateName,
   data,
-  interpolateFunction,
   options = {},
-}: PrepareTemplateDataParams): {
+}: {
+  templateName: TemplateName;
+  data: TemplateData;
+  options?: any;
+}): {
   template: TemplateRenderer;
   translator: { t: (key: string, data?: Record<string, any>) => string };
-  processedBlocks: any[];
   renderOptions: any;
 } {
-  const locale = options?.locale || "pl";
-  const template = getTemplate(templateName);
-  const config = template.getConfig?.() || {};
-
-  // Get translations for this template
-  const translations = config?.translations || templateTranslationsRegistry[templateName] || {};
-
-  // If blocks are not provided, use basic blocks from config
-  const providedBlocks = options?.blocks || [];
-  let blocks = providedBlocks.length > 0 ? providedBlocks : config?.blocks || [];
-
-  // Process translations once
-  const customTranslations = options?.customTranslations?.[templateName];
-
-  // Merge translations
-  const mergedTranslations = mergeTranslations(
-    translations,
-    customTranslations
-  );
-
-  // Create translator function
-  const translator = createTranslator(locale, mergedTranslations as any);
-
-  // Interpolate blocks if provided
-  const processedBlocks =
-    blocks.length > 0 ? interpolateFunction(blocks, data, translator) : blocks;
-
-  // Pass processed blocks in options to render functions
-  const renderOptions: SlackTemplateOptions = {
-    ...options,
-    blocks: processedBlocks,
-  };
-
-  return {
-    template,
-    translator,
-    processedBlocks,
-    renderOptions,
-  };
+  return prepareTemplateData<TemplateRenderer>({
+    templateName,
+    data,
+    templateRegistry,
+    interpolateFunction: interpolateSlackBlocks,
+    options,
+  });
 }
 
 /**
@@ -305,10 +241,9 @@ export async function renderSlackTemplate(
     throw new Error("Either templateName or createTemplate must be provided");
   }
 
-  const { template, translator, renderOptions } = prepareTemplateData({
+  const { template, translator, renderOptions } = prepareSlackTemplateData({
     templateName,
     data,
-    interpolateFunction: interpolateSlackBlocks,
     options,
   });
 

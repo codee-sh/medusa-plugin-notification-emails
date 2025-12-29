@@ -1,4 +1,3 @@
-import React from "react";
 import { SlackBlockRenderer } from "../blocks";
 
 /**
@@ -14,14 +13,12 @@ export async function renderBlocks(
 ): Promise<any[]> {
   const blocks = options.blocks || [];
   
-  // Render block configuration to SlackBlock[] format
-  // Blocks are already interpolated in props (by interpolateBlocks)
-  // But we also interpolate after rendering (by interpolateSlackBlocks) to handle
-  // any text that might be in the Slack API structure
   const slackBlocks = SlackBlockRenderer({
     blocks: blocks,
     data: data,
   });
+
+  console.log("slackBlocks", slackBlocks);
 
   return slackBlocks;
 }

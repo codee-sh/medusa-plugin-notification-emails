@@ -1,1 +1,1 @@
-export * from "./product-variant"
+export { templateBlocks, translations } from "./config";

@@ -1,14 +1,15 @@
 {
   "general": {
     "header": {
-      "title": "Wariant produktu {{productVariantTitle}} został zaktualizowany"
+      "title": "Wariant produktu {{data.product_variant.title}} został zaktualizowany"
     },
     "labels": {
       "title": "Tytuł"
     },
     "actions": {
       "openInPanel": "Otwórz w panelu"
-    }
+    },
+    "headerTitle": "Wariant produktu {{data.product_variant.id}} został zaktualizowany"
   }
 }
 

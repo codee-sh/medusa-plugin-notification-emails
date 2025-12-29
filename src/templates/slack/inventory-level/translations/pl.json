@@ -1,7 +1,7 @@
 {
   "general": {
     "header": {
-      "title": "Poziom zapasów {{inventoryItemTitle}} został zaktualizowany"
+      "title": "Poziom zapasów {{data.inventory_level.inventory_item.title}} został zaktualizowany"
     },
     "labels": {
       "quantity": "Ilość",

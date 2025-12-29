@@ -1,7 +1,7 @@
 {
   "general": {
     "header": {
-      "title": "Inventory level #{{inventoryItemTitle}} has been updated"
+      "title": "Inventory level #{{data.inventory_level.inventory_item.title}} has been updated"
     },
     "labels": {
       "quantity": "Quantity",
