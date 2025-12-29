@@ -5,19 +5,22 @@ import { contactFormMockData } from "../../../../../emails-previews/contact-form
 import { TEMPLATES_NAMES } from "../../../../templates/emails";
 
 export const ContactFormTemplate = () => {
-  const [templateData, setTemplateData] = useState<any>(null);
-  const [previewData, setPreviewData] = useState<any>(null);
+  const [context, setContext] = useState<any>(null);
+  const [previewContext, setPreviewData] = useState<any>(null);
 
   useEffect(() => {
-    setTemplateData(contactFormMockData);
+    setContext({
+      contact_form: contactFormMockData
+    });
   }, []);
 
   const { data: preview, isLoading: isPreviewLoading } = usePreview({
     templateName: TEMPLATES_NAMES.CONTACT_FORM,
-    templateData: templateData,
+    context: context,
+    contextType: "contact_form",
     locale: "pl",
-    enabled: !!templateData,
-    extraKey: [templateData],
+    enabled: !!context,
+    extraKey: [context],
   });
 
   useEffect(() => {
@@ -31,10 +34,10 @@ export const ContactFormTemplate = () => {
       {isPreviewLoading && (
         <Alert variant="info">Loading preview...</Alert>
       )}
-      {previewData && (
+      {previewContext && (
         <div className="px-6 py-4">
           <iframe
-            srcDoc={previewData?.html || ""}
+            srcDoc={previewContext?.html || ""}
             style={{ width: "100%", border: "none", minHeight: "600px" }}
             sandbox="allow-same-origin"
           />
