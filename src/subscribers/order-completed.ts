@@ -10,15 +10,15 @@ import { getPluginOptions } from "../utils/plugins"
 import { getOrderByIdWorkflow } from "../workflows/order/get-order-by-id"
   
 export default async function orderPlacedEmailsHandler({
-  event: { data: { id } },
+  event: { data: { id, trigger_type } },
   container,
-}: SubscriberArgs<{ id: string }>) {
+}: SubscriberArgs<{ id: string, trigger_type: string }>) {
   const pluginOptions = getPluginOptions(container, "@codee-sh/medusa-plugin-notification-emails")
 
   const notificationModuleService = container.resolve(
     Modules.NOTIFICATION
   )
-  const triggerType = 'system'
+  const triggerType = trigger_type || 'system'
 
   if (!id) {
     throw new MedusaError(MedusaError.Types.INVALID_ARGUMENT, "Order ID is required")
@@ -37,7 +37,7 @@ export default async function orderPlacedEmailsHandler({
   // Transform raw order data to email template format
   const templateData = transformContext("order", order, "pl")
   
-  const templateName = TEMPLATES_NAMES.ORDER_PLACED
+  const templateName = TEMPLATES_NAMES.ORDER_COMPLETED
 
   const { html, text, subject } = await renderTemplate(
     templateName,
