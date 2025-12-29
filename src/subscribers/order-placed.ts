@@ -5,7 +5,7 @@ import {
 import { Modules, ContainerRegistrationKeys, MedusaError } from "@medusajs/framework/utils"
 import { renderTemplate } from "@codee-sh/medusa-plugin-notification-emails/templates/emails"
 import { TEMPLATES_NAMES } from "@codee-sh/medusa-plugin-notification-emails/templates/emails/types"
-import { transformContextForEmail } from "@codee-sh/medusa-plugin-notification-emails/utils"
+import { transformContext } from "@codee-sh/medusa-plugin-notification-emails/utils"
 import { getPluginOptions } from "@codee-sh/medusa-plugin-notification-emails/utils/plugins"
   
 export default async function orderPlacedEmailsHandler({
@@ -54,7 +54,7 @@ export default async function orderPlacedEmailsHandler({
   }
 
   // Transform raw order data to email template format
-  const templateData = transformContextForEmail("order", order, "pl")
+  const templateData = transformContext("order", order, "pl")
   
   const templateName = TEMPLATES_NAMES.ORDER_PLACED
 
