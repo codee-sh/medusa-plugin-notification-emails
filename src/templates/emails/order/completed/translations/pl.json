@@ -1,6 +1,6 @@
 {
   "general": {
-    "headerTitle": "{{data.orderNumber}} - Zamówienie zostało zrealizowane",
+    "headerTitle": "{{data.order.transformed.order_number}} - Zamówienie zostało zrealizowane",
     "headerDescription": "Twoje zamówienie zostało zrealizowane i wysłane. Dziękujemy za zakupy!",
     "labels": {
       "product": "Produkt",

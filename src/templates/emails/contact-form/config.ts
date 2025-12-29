@@ -40,7 +40,7 @@ export const templateBlocks = [
           type: "row",
           props: {
             label: "{{translations.labels.email}}",
-            value: "{{data.email}}",
+            value: "{{data.contact_form.email}}",
           },
         },
         {
@@ -52,7 +52,7 @@ export const templateBlocks = [
           type: "row",
           props: {
             label: "{{translations.labels.phone}}",
-            value: "{{data.phone}}",
+            value: "{{data.contact_form.phone}}",
           },
         },
         {
@@ -64,25 +64,9 @@ export const templateBlocks = [
           type: "row",
           props: {
             label: "{{translations.labels.message}}",
-            value: "{{data.message}}",
+            value: "{{data.contact_form.message}}",
           },
-        },
-        // {
-        //   id: "repeater-1",
-        //   type: "repeater",
-        //   props: {
-        //     arrayPath: "items",
-        //     itemBlocks: [
-        //       {
-        //         id: "text-3",
-        //         type: "text",
-        //         props: {
-        //           value: "{{data.items.label}} - {{data.items.value}} {{translations.email}}",
-        //         },
-        //       },
-        //     ]
-        //   },
-        // },
+        }
       ],
     },
   },

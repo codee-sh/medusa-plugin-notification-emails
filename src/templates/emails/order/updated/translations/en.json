@@ -1,14 +1,12 @@
 {
   "general": {
-    "headerTitle": "{{data.orderNumber}} - Order completed",
-    "headerDescription": "Your order has been completed and shipped. Thank you for your purchase!",
+    "headerTitle": "{{data.order.transformed.order_number}} - Order placed",
+    "headerDescription": "Your order has been received and is being processed. You will receive an email with information about the status of your order shortly.",
     "labels": {
-      "product": "Product",
       "salesChannel": "Sales Channel",
       "salesChannelDescription": "Sales Channel Description",
       "orderNumber": "Order Number",
       "orderDate": "Order Date",
-      "completedDate": "Completion Date",
       "products": "Products",
       "shippingAddress": "Shipping Address",
       "orderTotal": "Order Total",

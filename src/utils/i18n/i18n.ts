@@ -47,30 +47,6 @@ export function getVariableValue(
 }
 
 /**
- * Interpolate variables in text using {{variable}} syntax
- * Supports nested object paths (e.g., inventory_level.id)
- *
- * @param text - Text with {{variable}} placeholders
- * @param data - Data object for interpolation
- * @returns Interpolated text
- */
-export function interpolate(
-  text: string,
-  data: Record<string, any> = {}
-): string {
-  if (!text || typeof text !== "string") {
-    return text
-  }
-
-  const { replaced, original } = getVariableValue(text)
-
-  const value = pickValueFromObject(replaced as any, data as any)
-  return value !== undefined && value !== null
-    ? String(value)
-    : original
-}
-
-/**
  * Group interpolate - handles variables with prefixes (data. or translations.)
  * 
  * Variables with prefix `data.` are resolved using interpolate function
@@ -122,6 +98,7 @@ export function multiInterpolate(
     let replacement: string | undefined
 
     // Check if variable starts with dynamic data prefix
+    // console.log('variable', dataPrefixString);
     if (variable.startsWith(`${dataPrefixString}.`)) {
       // Escape dots in prefix for regex
       const escapedPrefix = dataPrefixString.replace(/\./g, '\\.')

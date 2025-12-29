@@ -45,7 +45,7 @@ export const templateBlocks = [
           type: "row",
           props: {
             label: "{{translations.labels.salesChannel}}",
-            value: "{{data.sales_channel.name}}",
+            value: "{{data.order.sales_channel.name}}",
           },
         },
         {
@@ -57,7 +57,7 @@ export const templateBlocks = [
           type: "row",
           props: {
             label: "{{translations.labels.orderNumber}}",
-            value: "{{data.orderNumber}}",
+            value: "{{data.order.transformed.order_number}}",
           },
         },
         {
@@ -69,7 +69,7 @@ export const templateBlocks = [
           type: "row",
           props: {
             label: "{{translations.labels.orderDate}}",
-            value: "{{data.orderDate}}",
+            value: "{{data.order.transformed.order_date}}",
           },
         },
       ],
@@ -95,15 +95,15 @@ export const templateBlocks = [
           id: "repeater-1",
           type: "repeater",
           props: {
-            arrayPath: "items",
+            arrayPath: "order.transformed.items",
             itemBlocks: [
               {
                 id: "product-item",
                 type: "product-item",
                 props: {
                   label: "{{translations.labels.product}}",
-                  thumbnail: "{{data.items.thumbnail}}",
-                  value: "{{data.items.title}} - {{data.items.quantity}}x {{data.items.price}}",
+                  thumbnail: "{{data.order.transformed.items.thumbnail}}",
+                  value: "{{data.order.transformed.items.title}} - {{data.order.transformed.items.quantity}}x {{data.order.transformed.items.price}}",
                 },
               },
             ],
@@ -132,7 +132,7 @@ export const templateBlocks = [
           id: "text-2",
           type: "text",
           props: {
-            value: "{{data.shippingAddress}}",
+            value: "{{data.order.transformed.shipping_address_text}}",
           },
         },
       ],
@@ -152,7 +152,7 @@ export const templateBlocks = [
           type: "row",
           props: {
             label: "{{translations.labels.discountTotal}}",
-            value: "{{data.summary.discount_total}}",
+            value: "{{data.order.transformed.summary.discount_total}}",
           },
         },
         {
@@ -164,7 +164,7 @@ export const templateBlocks = [
           type: "row",
           props: {
             label: "{{translations.labels.orderTotal}}",
-            value: "{{data.summary.total}}",
+            value: "{{data.order.transformed.summary.total}}",
           },
         },
         {
@@ -176,7 +176,7 @@ export const templateBlocks = [
           type: "row",
           props: {
             label: "{{translations.labels.paidTotal}}",
-            value: "{{data.summary.paid_total}}",
+            value: "{{data.order.transformed.summary.paid_total}}",
           },
         },
         {
@@ -188,7 +188,7 @@ export const templateBlocks = [
           type: "row",
           props: {
             label: "{{translations.labels.taxTotal}}",
-            value: "{{data.summary.tax_total}}",
+            value: "{{data.order.transformed.summary.tax_total}}",
           },
         },
       ],

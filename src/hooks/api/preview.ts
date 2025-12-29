@@ -11,7 +11,8 @@ import { sdk } from "../../admin/lib/sdk"
 
 export type UsePreviewParams = {
   templateName?: string
-  templateData?: any
+  context?: any
+  contextType?: any
   locale?: string
   extraKey?: unknown[]
   enabled?: boolean
@@ -36,7 +37,8 @@ export const usePreview = (
 ) => {
   const {
     templateName,
-    templateData,
+    context,
+    contextType,
     locale,
     extraKey = [],
     enabled = false,
@@ -61,13 +63,14 @@ export const usePreview = (
         method: "POST",
         body: {
           templateName: templateName,
-          templateData: templateData,
+          context: context,
+          contextType: contextType,
           locale: locale,
         },
       })
     },
     staleTime: 0,
-    enabled: enabled && !!templateName && !!templateData && !!locale,
+    enabled: enabled && !!templateName && !!context && !!locale,
     ...(options as any),
   })
 

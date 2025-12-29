@@ -2,11 +2,12 @@ import {
   SubscriberArgs,
   type SubscriberConfig,
 } from "@medusajs/medusa"
-import { Modules, ContainerRegistrationKeys, MedusaError } from "@medusajs/framework/utils"
-import { renderTemplate } from "@codee-sh/medusa-plugin-notification-emails/templates/emails"
-import { TEMPLATES_NAMES } from "@codee-sh/medusa-plugin-notification-emails/templates/emails/types"
-import { formatDate, getFormattedAddress, getLocaleAmount, getTotalCaptured } from "@codee-sh/medusa-plugin-notification-emails/utils"
-import { getPluginOptions } from "@codee-sh/medusa-plugin-notification-emails/utils/plugins"
+import { Modules, MedusaError } from "@medusajs/framework/utils"
+import { renderTemplate } from "../templates/emails"
+import { TEMPLATES_NAMES } from "../templates/emails/types"
+import { transformContext } from "../utils/transforms"
+import { getPluginOptions } from "../utils/plugins"
+import { getOrderByIdWorkflow } from "../workflows/order/get-order-by-id"
   
 export default async function orderPlacedEmailsHandler({
   event: { data: { id, trigger_type } },
@@ -17,35 +18,15 @@ export default async function orderPlacedEmailsHandler({
   const notificationModuleService = container.resolve(
     Modules.NOTIFICATION
   )
-  const query = container.resolve(ContainerRegistrationKeys.QUERY)
   const triggerType = trigger_type || 'system'
 
   if (!id) {
     throw new MedusaError(MedusaError.Types.INVALID_ARGUMENT, "Order ID is required")
   }
 
-  const { data: [order] } = await query.graph({
-    entity: "order",
-    fields: [
-      "id",
-      "email",
-      "created_at",
-      "payment_collections.*",
-      "items.*",
-      "items.variant.*",
-      "items.variant.product.*",
-      "currency_code",
-      "display_id",
-      "sales_channel.name",
-      "sales_channel.description",
-      "shipping_address.*",
-      "billing_address.*",
-      "summary.*",
-      "tax_total",
-      "discount_total",
-    ],
-    filters: {
-      id: id,
+  const { result: order } = await getOrderByIdWorkflow(container).run({
+    input: {
+      order_id: id,
     },
   })
 
@@ -53,35 +34,8 @@ export default async function orderPlacedEmailsHandler({
     return
   }
 
-  const shippingAddressText = getFormattedAddress({ address: order.shipping_address }).join("<br/>");
-  const billingAddressText = getFormattedAddress({ address: order.billing_address }).join("<br/>");
-  const templateData = {
-    sales_channel: {
-      name: order?.sales_channel?.name,
-      description: order?.sales_channel?.description,
-    },
-    orderNumber: `#${order.display_id}`,
-    customerName: order.email,
-    customerEmail: order.email,
-    orderDate: formatDate({ date: order.created_at, includeTime: true, localeCode: "pl" }),
-    totalAmount: order.items.reduce((acc, item) => acc + (item.variant?.prices?.[0]?.amount || 0) * item.quantity, 0),
-    currency: order.currency_code,
-    items: order.items.map((item) => ({
-      thumbnail: item.thumbnail,
-      title: item.title,
-      quantity: item.quantity,
-      price: getLocaleAmount(item.unit_price, order.currency_code),
-    })),
-    shippingAddress: shippingAddressText,
-    billingAddress: billingAddressText,
-    summary: {
-      total: getLocaleAmount(order.summary.original_order_total, order.currency_code),
-      paid_total: getLocaleAmount(getTotalCaptured(order.payment_collections || []), order.currency_code),
-      tax_total: getLocaleAmount(order.tax_total, order.currency_code),
-      discount_total: getLocaleAmount(order.discount_total, order.currency_code),
-      currency_code: order.currency_code,
-    }
-  };
+  // Transform raw order data to email template format
+  const templateData = transformContext("order", order, "pl")
   
   const templateName = TEMPLATES_NAMES.ORDER_PLACED
 
@@ -95,7 +49,7 @@ export default async function orderPlacedEmailsHandler({
   )
 
   const result = await notificationModuleService.createNotifications({
-    to: order.email,
+    to: order.order.customer.email,
     channel: "email",
     template: templateName,
     trigger_type: triggerType,
