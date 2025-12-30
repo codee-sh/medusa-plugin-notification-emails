@@ -14,6 +14,7 @@ export default async function orderPlacedEmailsHandler({
   container,
 }: SubscriberArgs<{ id: string, trigger_type: string }>) {
   const pluginOptions = getPluginOptions(container, "@codee-sh/medusa-plugin-notification-emails")
+  const backendUrl = pluginOptions?.backend_url
 
   const notificationModuleService = container.resolve(
     Modules.NOTIFICATION
@@ -36,12 +37,19 @@ export default async function orderPlacedEmailsHandler({
 
   // Transform raw order data to email template format
   const context = transformContext("order", order, "pl")
+
+  const contextData = {
+    ...context,
+    global: {
+      backend_url: backendUrl,
+    },
+  }
   
   const templateName = TEMPLATES_NAMES.ORDER_COMPLETED
 
   const { html, text, subject } = await emailService.render({
     templateName,
-    data: context,
+    data: contextData,
     options: { 
       locale: "pl",
       translations: pluginOptions?.customTranslations?.[templateName]
@@ -55,7 +63,7 @@ export default async function orderPlacedEmailsHandler({
     trigger_type: triggerType,
     resource_id: id,
     resource_type: "order",
-    data: context,
+    data: contextData,
     content: {
       subject: subject,
       html,

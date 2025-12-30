@@ -274,15 +274,9 @@ export class SlackTemplateService extends AbstractTemplateService<any> {
       throw new Error("Template name is required")
     }
 
-    // Add backendUrl to data for interpolation
-    const dataWithOptions = {
-      ...params.data,
-      backendUrl: params.options?.backendUrl || "",
-    }
-
     const { template, translator, blocks } = this.prepareData({
       templateName: params.templateName,
-      data: dataWithOptions,
+      data: params.data,
       options: params.options,
     })
 

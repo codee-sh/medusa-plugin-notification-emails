@@ -39,7 +39,7 @@ export const templateBlocks = [
           type: "plain_text",
           text: "Open in Panel",
         },
-        url: `{{data.backend_url}}/app/inventory/{{data.inventory_level.inventory_item.id}}`,
+        url: `{{data.global.backend_url}}/app/inventory/{{data.inventory_level.inventory_item.id}}`,
         style: "primary",
       },
     ],
