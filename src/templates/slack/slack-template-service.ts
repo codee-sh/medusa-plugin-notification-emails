@@ -5,6 +5,7 @@ import {
 import {
   pickValueFromObject,
   multiInterpolate,
+  omit,
 } from "../../utils"
 import {
   templateBlocks as InventoryLevelTemplateBlocks,
@@ -186,7 +187,7 @@ export class SlackTemplateService extends AbstractTemplateService<any> {
             })
 
             block = {
-              ...block,
+              ...omit(block, "fieldsPath", "fieldTemplate"),
               fields: interpolatedFieldBlocks,
             }
           }
