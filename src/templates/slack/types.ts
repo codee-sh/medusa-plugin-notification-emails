@@ -5,6 +5,11 @@ export const TEMPLATES_NAMES = {
   INVENTORY_LEVEL: "inventory-level",
   PRODUCT: "product",
   PRODUCT_VARIANT: "product-variant",
+  ORDER_PLACED: "order-placed",
+  ORDER_COMPLETED: "order-completed",
+  ORDER_UPDATED: "order-updated",
+  ORDER_CANCELED: "order-canceled",
+  ORDER_ARCHIVED: "order-archived",
 } as const;
 
 export type SlackBlock = {

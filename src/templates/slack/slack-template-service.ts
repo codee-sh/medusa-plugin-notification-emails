@@ -18,6 +18,26 @@ import {
   templateBlocks as ProductVariantTemplateBlocks,
   translations as productVariantTranslations,
 } from "./product-variant"
+import {
+  templateBlocks as OrderPlacedTemplateBlocks,
+  translations as orderPlacedTranslations,
+} from "./order/placed"
+import {
+  templateBlocks as OrderCompletedTemplateBlocks,
+  translations as orderCompletedTranslations,
+} from "./order/completed"
+import {
+  templateBlocks as OrderUpdatedTemplateBlocks,
+  translations as orderUpdatedTranslations,
+} from "./order/updated"
+import {
+  templateBlocks as OrderCanceledTemplateBlocks,
+  translations as orderCanceledTranslations,
+} from "./order/canceled"
+import {
+  templateBlocks as OrderArchivedTemplateBlocks,
+  translations as orderArchivedTranslations,
+} from "./order/archived"
 import { TEMPLATES_NAMES } from "./types"
 
 /**
@@ -80,6 +100,61 @@ export class SlackTemplateService extends AbstractTemplateService<any> {
         return {
           blocks: ProductVariantTemplateBlocks,
           translations: productVariantTranslations,
+        }
+      },
+    })
+
+    // Order placed template
+    this.registerTemplate(TEMPLATES_NAMES.ORDER_PLACED, {
+      ...this.baseTemplateConfig,
+      getConfig: (): any => {
+        return {
+          blocks: OrderPlacedTemplateBlocks,
+          translations: orderPlacedTranslations,
+        }
+      },
+    })
+
+    // Order completed template
+    this.registerTemplate(TEMPLATES_NAMES.ORDER_COMPLETED, {
+      ...this.baseTemplateConfig,
+      getConfig: (): any => {
+        return {
+          blocks: OrderCompletedTemplateBlocks,
+          translations: orderCompletedTranslations,
+        }
+      },
+    })
+
+    // Order updated template
+    this.registerTemplate(TEMPLATES_NAMES.ORDER_UPDATED, {
+      ...this.baseTemplateConfig,
+      getConfig: (): any => {
+        return {
+          blocks: OrderUpdatedTemplateBlocks,
+          translations: orderUpdatedTranslations,
+        }
+      },
+    })
+
+    // Order canceled template
+    this.registerTemplate(TEMPLATES_NAMES.ORDER_CANCELED, {
+      ...this.baseTemplateConfig,
+      getConfig: (): any => {
+        return {
+          blocks: OrderCanceledTemplateBlocks,
+          translations: orderCanceledTranslations,
+        }
+      },
+    })
+
+    // Order archived template
+    this.registerTemplate(TEMPLATES_NAMES.ORDER_ARCHIVED, {
+      ...this.baseTemplateConfig,
+      getConfig: (): any => {
+        return {
+          blocks: OrderArchivedTemplateBlocks,
+          translations: orderArchivedTranslations,
         }
       },
     })
@@ -198,9 +273,15 @@ export class SlackTemplateService extends AbstractTemplateService<any> {
       throw new Error("Template name is required")
     }
 
+    // Add backendUrl to data for interpolation
+    const dataWithOptions = {
+      ...params.data,
+      backendUrl: params.options?.backendUrl || "",
+    }
+
     const { template, translator, blocks } = this.prepareData({
       templateName: params.templateName,
-      data: params.data,
+      data: dataWithOptions,
       options: params.options,
     })
 
