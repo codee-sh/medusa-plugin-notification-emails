@@ -1,0 +1,12 @@
+{
+  "general": {
+    "header": {
+      "title": "📝 Order #{{data.order.display_id}} has been updated"
+    },
+    "actions": {
+      "openInPanel": "Open in panel"
+    },
+    "headerTitle": "Order #{{data.order.display_id}} has been updated"
+  }
+}
+

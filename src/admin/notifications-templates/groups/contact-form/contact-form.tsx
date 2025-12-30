@@ -9,9 +9,7 @@ export const ContactFormTemplate = () => {
   const [previewContext, setPreviewData] = useState<any>(null);
 
   useEffect(() => {
-    setContext({
-      contact_form: contactFormMockData
-    });
+    setContext(contactFormMockData);
   }, []);
 
   const { data: preview, isLoading: isPreviewLoading } = usePreview({

@@ -1,0 +1,12 @@
+{
+  "general": {
+    "header": {
+      "title": "🎉 Nowe zamówienie #{{data.order.display_id}}"
+    },
+    "actions": {
+      "openInPanel": "Otwórz w panelu"
+    },
+    "headerTitle": "Nowe zamówienie #{{data.order.display_id}}"
+  }
+}
+

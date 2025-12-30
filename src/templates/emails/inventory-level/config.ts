@@ -8,6 +8,10 @@ export const translations: Record<any, any> = {
   en: en,
 };
 
+/**
+ * Inventory level template blocks
+ * 
+ */
 export const templateBlocks = [
   {
     type: "section",

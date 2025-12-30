@@ -1,0 +1,19 @@
+{
+  "general": {
+    "header": {
+      "title": "Poziom zapasów {{data.inventory_level.inventory_item.title}} został zaktualizowany"
+    },
+    "labels": {
+      "quantity": "Ilość",
+      "reservedQuantity": "Ilość zarezerwowana",
+      "incomingQuantity": "Ilość przychodząca",
+      "availableQuantity": "Ilość dostępna",
+      "location": "Lokalizacja",
+      "noData": "Brak danych"
+    },
+    "actions": {
+      "openInPanel": "Otwórz w panelu"
+    }
+  }
+}
+

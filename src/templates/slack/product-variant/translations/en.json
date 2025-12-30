@@ -1,0 +1,14 @@
+{
+  "general": {
+    "header": {
+      "title": "Product variant {{data.product_variant.title}} has been updated"
+    },
+    "labels": {
+      "title": "Title"
+    },
+    "actions": {
+      "openInPanel": "Open in panel"
+    },
+    "headerTitle": "Product variant {{data.product_variant.id}} has been updated"
+  }
+}

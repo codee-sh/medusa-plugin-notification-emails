@@ -1,0 +1,14 @@
+{
+  "general": {
+    "header": {
+      "title": "Product {{data.product.title}} has been updated"
+    },
+    "labels": {
+      "title": "Title"
+    },
+    "actions": {
+      "openInPanel": "Open in panel"
+    },
+    "headerTitle": "Product {{data.product.id}} has been updated"
+  }
+}
