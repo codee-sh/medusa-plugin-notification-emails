@@ -1,0 +1,19 @@
+{
+  "general": {
+    "header": {
+      "title": "Inventory level #{{data.inventory_level.inventory_item.title}} has been updated"
+    },
+    "labels": {
+      "quantity": "Quantity",
+      "reservedQuantity": "Reserved Quantity",
+      "incomingQuantity": "Incoming Quantity",
+      "availableQuantity": "Available Quantity",
+      "location": "Location",
+      "noData": "No data"
+    },
+    "actions": {
+      "openInPanel": "Open in panel"
+    }
+  }
+}
+

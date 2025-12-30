@@ -49,12 +49,14 @@ export function getVariableValue(
 /**
  * Group interpolate - handles variables with prefixes (data. or translations.)
  * 
- * Variables with prefix `data.` are resolved using interpolate function
- * Variables with prefix `translations.` are resolved using translator.single
+ * Variables with prefix `data.` are resolved using pickValueFromObject function
+ * Variables with prefix `translations.` are resolved using translator.t function
  * 
- * @param text - Text with {{data.variable}} and {{translations.key}} placeholders
+ * @param text - Text with {{data.variable}} or {{translations.key}} placeholders
  * @param data - Data object for interpolation
- * @param translator - Translator instance with single method
+ * @param translator - Translator instance with t method
+ * @param config - Configuration object
+ * @param config - arrayPath - Array path for data object
  * @returns Interpolated text with all variables resolved
  * 
  * @example
@@ -98,15 +100,11 @@ export function multiInterpolate(
     let replacement: string | undefined
 
     // Check if variable starts with dynamic data prefix
-    // console.log('variable', dataPrefixString);
     if (variable.startsWith(`${dataPrefixString}.`)) {
-      // Escape dots in prefix for regex
       const escapedPrefix = dataPrefixString.replace(/\./g, '\\.')
       const dataPath = variable.replace(new RegExp(`^${escapedPrefix}\\.`), "")
       const value = pickValueFromObject(dataPath, data)
 
-      // Convert value to string, preserving false as "false" and true as "true"
-      // String(false) = "false", String(true) = "true", String(0) = "0", etc.
       if (value === undefined || value === null) {
         replacement = undefined
       } else {
@@ -115,7 +113,6 @@ export function multiInterpolate(
     }
     // Check if variable starts with translations. prefix
     else if (variable.startsWith("translations.")) {
-      // Remove "translations." prefix and use translator.single
       const translationKey = variable.replace(/^translations\./, "")
       replacement = translator.t(translationKey, data)
       replacement = multiInterpolate(replacement, data, translator)

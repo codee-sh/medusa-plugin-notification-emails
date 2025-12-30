@@ -1,7 +1,7 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import { MedusaError } from "@medusajs/framework/utils"
 import { defaultTheme } from "../../../../templates/shared/theme"
-import { renderTemplate, TemplateName, TemplateData } from "../../../../templates/emails"
+import { emailService, TEMPLATES_NAMES } from "../../../../templates/emails"
 import { transformContext } from "../../../../utils/transforms"
 import { getPluginOptions } from "../../../../utils/plugins"
 
@@ -11,8 +11,8 @@ export async function POST(
 ) {
   const pluginOptions = getPluginOptions(req.scope, "@codee-sh/medusa-plugin-notification")
 
-  const templateName = req.body?.templateName as TemplateName
-  const context = req.body?.context as TemplateData
+  const templateName = req.body?.templateName
+  const context = req.body?.context
   const contextType = req.body?.contextType
 
   const locale = req.body?.locale || "pl"
@@ -22,16 +22,16 @@ export async function POST(
   }
 
   const transformedTemplateData = transformContext(contextType, context, locale)
-
-  const { html, text } = await renderTemplate(
+  
+  const { html, text } = await emailService.render({
     templateName,
-    transformedTemplateData,
-    {
+    data: transformedTemplateData,
+    options: {
       locale: locale,
       theme: pluginOptions?.theme || defaultTheme,
-      customTranslations: pluginOptions?.customTranslations?.[templateName]
+      translations: pluginOptions?.customTranslations?.[templateName]
     }
-  )
+  })
 
   res.status(200).json({
     html,

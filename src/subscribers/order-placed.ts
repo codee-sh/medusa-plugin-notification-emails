@@ -3,7 +3,7 @@ import {
   type SubscriberConfig,
 } from "@medusajs/medusa"
 import { Modules, MedusaError } from "@medusajs/framework/utils"
-import { renderTemplate } from "../templates/emails"
+import { emailService } from "../templates/emails"
 import { TEMPLATES_NAMES } from "../templates/emails/types"
 import { transformContext } from "../utils/transforms"
 import { getPluginOptions } from "../utils/plugins"
@@ -39,14 +39,14 @@ export default async function orderPlacedEmailsHandler({
   
   const templateName = TEMPLATES_NAMES.ORDER_PLACED
 
-  const { html, text, subject } = await renderTemplate(
+    const { html, text, subject } = await emailService.render({
     templateName,
-    templateData,
-    { 
+    data: templateData,
+    options: { 
       locale: "pl",
       customTranslations: pluginOptions?.customTranslations?.[templateName]
     }
-  )
+  })
 
   const result = await notificationModuleService.createNotifications({
     to: order.order.customer.email,

@@ -1,11 +1,11 @@
 # Translations Documentation
 
-The plugin includes a comprehensive internationalization (i18n) system built on [i18next](https://www.i18next.com/) with support for multiple locales and custom translation overrides. Translations use string interpolation with `{{variable}}` syntax for dynamic content.
+The plugin includes a lightweight internationalization (i18n) system with support for multiple locales and custom translation overrides. The system uses simple utility functions (`createTranslator`, `t`, `multiInterpolate`, `mergeTranslations`) without external dependencies. Translations use string interpolation with `{{variable}}` syntax for dynamic content.
 
 ## Supported Locales
 
-- **Polish (`pl`)**: Default locale
-- **English (`en`)**: Secondary locale
+- **English (`en`)**: Default locale
+- **Polish (`pl`)**: Secondary locale
 
 ## Translation Structure
 
@@ -27,13 +27,13 @@ Translation files are JSON objects with a `general` wrapper that gets automatica
 ```json
 {
   "general": {
-    "headerTitle": "#{{orderNumber}} - Zamówienie zostało złożone",
-    "headerDescription": "Twoje zamówienie zostało przyjęte...",
+    "headerTitle": "#{{orderNumber}} - Order placed",
+    "headerDescription": "Your order has been received...",
     "labels": {
-      "orderNumber": "Numer zamówienia",
-      "orderDate": "Data zamówienia"
+      "orderNumber": "Order number",
+      "orderDate": "Order date"
     },
-    "footer": "Jeśli masz pytania..."
+    "footer": "If you have any questions..."
   }
 }
 ```
@@ -45,65 +45,138 @@ The `general` wrapper is automatically flattened, so you can access translations
 Translations are automatically applied when rendering templates:
 
 ```typescript
-import { renderTemplate, TEMPLATES_NAMES } from "@codee-sh/medusa-plugin-notification-emails/templates/emails"
-
-// Uses Polish translations (default)
-const { html, text, subject } = await renderTemplate(
-  TEMPLATES_NAMES.ORDER_PLACED,
-  data,
-  { locale: "pl" }
-)
+import { emailService, TEMPLATES_NAMES } from "@codee-sh/medusa-plugin-notification-emails/templates/emails"
 
 // Uses English translations
-const { html, text, subject } = await renderTemplate(
-  TEMPLATES_NAMES.ORDER_PLACED,
-  data,
-  { locale: "en" }
-)
+const { html, text, subject } = await emailService.render({
+  templateName: TEMPLATES_NAMES.ORDER_PLACED,
+  data: templateData,
+  options: { locale: "en" }
+})
+
+// Uses English translations
+const { html, text, subject } = await emailService.render({
+  templateName: TEMPLATES_NAMES.ORDER_PLACED,
+  data: templateData,
+  options: { locale: "en" }
+})
 ```
 
-**Note**: `renderTemplate` is an async function that uses React Email to render templates with the specified translations.
+**Note**: The template service automatically merges template translations with custom translations (if provided) and applies the selected locale.
 
-## String Interpolation
+## Variable Interpolation System
 
-Translations use i18next's interpolation syntax with `{{variable}}` placeholders. Variables are automatically replaced with values from the template data object passed to `i18n.t()`.
+The plugin uses a powerful two-prefix interpolation system that processes variables in blocks and translations:
 
-### Basic Interpolation
+### Data Variables (`{{data.*}}`)
 
-```json
-{
-  "general": {
-    "headerTitle": "#{{orderNumber}} - Zamówienie zostało złożone"
-  }
-}
-```
-
-When rendering, the `{{orderNumber}}` placeholder is replaced with the value from `data.orderNumber`:
+Access data from the template data object using the `data.` prefix:
 
 ```typescript
-// In template: i18n.t('headerTitle', data)
-// Where data = { orderNumber: "12345" }
-// Result: "#12345 - Zamówienie zostało złożone"
+// In template blocks:
+{
+  type: "text",
+  props: {
+    value: "Order {{data.order.id}}"
+  }
+}
+
+// With data:
+{
+  order: { id: "123" }
+}
+
+// Result: "Order 123"
 ```
 
-### Nested Data Access
+### Translation Variables (`{{translations.*}}`)
 
-You can access nested properties using dot notation in the translation key, but interpolation variables come from the data object:
+Access translations using the `translations.` prefix:
 
-```json
+```typescript
+// In template blocks:
+{
+  type: "heading",
+  props: {
+    value: "{{translations.headerTitle}}"
+  }
+}
+
+// Translation file (en.json):
 {
   "general": {
-    "labels": {
-      "orderTotal": "Wartość zamówienia: {{summary.total}} {{summary.currency_code}}"
+    "headerTitle": "Order #{{data.order.id}}"
+  }
+}
+
+// Result (with locale: "en"): "Order #123"
+```
+
+### Nested Access
+
+Both prefixes support nested property access using dot notation:
+
+```typescript
+// Data:
+{
+  order: {
+    transformed: {
+      summary: {
+        total: "100.00"
+      }
     }
   }
 }
+
+// In blocks:
+{
+  type: "row",
+  props: {
+    label: "{{translations.labels.orderTotal}}",
+    value: "{{data.order.transformed.summary.total}}"
+  }
+}
+```
+
+### Recursive Interpolation
+
+The system processes variables recursively:
+
+1. **First pass**: `{{translations.*}}` variables are resolved using the translator
+2. **Second pass**: `{{data.*}}` variables are resolved from the data object
+3. **Nested interpolation**: Translation values can contain `{{data.*}}` variables which are also interpolated
+
+**Example**:
+
+```json
+{
+  "general": {
+    "headerTitle": "Order #{{data.order.id}} - {{data.order.status}}"
+  }
+}
 ```
 
 ```typescript
-// Usage: i18n.t('labels.orderTotal', data)
-// Where data = { summary: { total: "100.00", currency_code: "PLN" } }
-// Result: "Wartość zamówienia: 100.00 PLN"
+// Block:
+{
+  type: "heading",
+  props: {
+    value: "{{translations.headerTitle}}"
+  }
+}
+
+// Data:
+{
+  order: {
+    id: "123",
+    status: "completed"
+  }
+}
+
+// Process:
+// 1. Resolve translation: "Order #{{data.order.id}} - {{data.order.status}}"
+// 2. Interpolate data variables: "Order #123 - completed"
+// Result: "Order #123 - completed"
 ```
 
 ## Custom Translations
@@ -122,11 +195,11 @@ module.exports = defineConfig({
       options: {
         customTranslations: {
           "order-placed": {
-            pl: {
-              headerTitle: "#{{orderNumber}} - Twoje zamówienie",
+            en: {
+              headerTitle: "#{{orderNumber}} - Your order",
               labels: {
-                orderNumber: "Numer zamówienia",
-                orderDate: "Data zamówienia"
+                orderNumber: "Order number",
+                orderDate: "Order date"
               }
             }
           }
@@ -142,24 +215,22 @@ module.exports = defineConfig({
 Override translations when rendering a specific template:
 
 ```typescript
-const { html, text, subject } = await renderTemplate(
-  TEMPLATES_NAMES.ORDER_PLACED,
-  data,
-  {
-    locale: "pl",
-    customTranslations: {
-      "order-placed": {
-        pl: {
-          headerTitle: "#{{orderNumber}} - Custom Title",
-          labels: {
-            orderNumber: "Custom Order Number Label"
-          }
-        }
+const { html, text, subject } = await emailService.render({
+  templateName: TEMPLATES_NAMES.ORDER_PLACED,
+  data: templateData,
+  options: {
+    locale: "en",
+    translations: {
+      headerTitle: "#{{data.order.id}} - Custom Title",
+      labels: {
+        orderNumber: "Custom Order Number Label"
       }
     }
   }
-)
+})
 ```
+
+**Note**: The `translations` option accepts a flat object (without locale wrapper) that will be merged with the template's translations for the selected locale.
 
 ### How Custom Translations Work
 
@@ -168,49 +239,75 @@ const { html, text, subject } = await renderTemplate(
 - Nested objects (like `labels`) are merged, not replaced
 - Interpolation variables (`{{variable}}`) work the same way in custom translations
 
-## Accessing Translations in Code
+## Translation System Architecture
 
-Translations are accessed through the `i18n` object provided to template render functions. The `i18n` object has a `t()` method that uses i18next:
+The plugin uses a simple, lightweight translation system built with utility functions:
 
-```typescript
-// In template component
-export function renderHTMLReact(data: TemplateDataType, options: TemplateOptionsType) {
-  const i18n = options.i18n;
-  
-  // Use i18n.t() with translation key and data for interpolation
-  return (
-    <Text>{i18n.t('headerTitle', data)}</Text>
-  );
-}
-```
+- **`createTranslator(locale, translations)`** - Creates a translator function for a specific locale
+- **`t(locale, translations, key)`** - Simple translation function that retrieves a translation by key
+- **`multiInterpolate(text, data, translator, config)`** - Interpolates `{{data.*}}` and `{{translations.*}}` variables in text
+- **`mergeTranslations(baseTranslations, customTranslations)`** - Merges custom translations with base translations
 
-The `t()` method signature:
-- **First parameter**: Translation key (string, supports dot notation for nested keys)
-- **Second parameter**: Data object for interpolation (optional)
+The translator object has a `t(key, data?)` method that:
+1. Retrieves the translation for the given key
+2. Supports nested keys using dot notation (e.g., `labels.orderNumber`)
+3. Automatically flattens the `general` wrapper from JSON files
+4. Falls back to the key itself if translation is not found
 
 **Example**:
 ```typescript
+import { createTranslator } from "@codee-sh/medusa-plugin-notification-emails/utils"
+
+const translator = createTranslator("en", {
+  en: {
+    general: {
+      headerTitle: "Order #{{data.order.id}}",
+      labels: {
+        orderNumber: "Order number"
+      }
+    }
+  }
+})
+
 // Simple key
-i18n.t('headerTitle', data)
+translator.t('headerTitle', { order: { id: "123" } })
+// Returns: "Order #123"
 
 // Nested key
-i18n.t('labels.orderNumber', data)
+translator.t('labels.orderNumber')
+// Returns: "Order number"
+```
 
-// With interpolation - data provides values for {{variable}} placeholders
-i18n.t('headerTitle', { orderNumber: "12345" })
-// Translation: "#{{orderNumber}} - Zamówienie zostało złożone"
-// Result: "#12345 - Zamówienie zostało złożone"
+## Accessing Translations Programmatically
+
+If you need to access translations programmatically (e.g., in custom code), you can use the translator from the template service:
+
+```typescript
+import { emailService } from "@codee-sh/medusa-plugin-notification-emails/templates/emails"
+
+// Get template and prepare data
+const { translator } = emailService.prepareData({
+  templateName: TEMPLATES_NAMES.ORDER_PLACED,
+  data: templateData,
+  options: { locale: "en" }
+})
+
+// Use translator
+const title = translator.t('headerTitle', templateData)
 ```
 
 ## Best Practices
 
-1. **Use interpolation for dynamic content**: Use `{{variable}}` syntax instead of string concatenation
-2. **Override at plugin level**: For global changes, use plugin configuration in `medusa-config.ts`
-3. **Override per-template**: For one-off changes, override when calling `renderTemplate()`
+1. **Use prefix syntax**: Prefer `{{data.*}}` and `{{translations.*}}` prefixes for clarity
+2. **Use interpolation for dynamic content**: Use variable syntax instead of string concatenation
+3. **Override per-template**: For one-off changes, override when calling `render()` or `renderSync()`
 4. **Preserve structure**: When overriding nested objects, maintain the same JSON structure
 5. **Test both locales**: Ensure custom translations work for all supported locales
-6. **Use meaningful variable names**: Use clear variable names in `{{variable}}` placeholders that match your data structure
+6. **Use meaningful variable names**: Use clear variable names that match your data structure
 7. **Keep translations in JSON**: Store translations as JSON files, not TypeScript files with functions
+8. **Use translations for user-facing text**: Always use `{{translations.*}}` for text that users see
+9. **Use data for dynamic values**: Use `{{data.*}}` for values that come from your data objects
+10. **Test interpolation**: Verify that all variables are correctly interpolated in both locales
 
 ## Adding New Locales
 
@@ -242,6 +339,10 @@ To add support for a new locale:
 
 4. The locale will be automatically available when you use it:
    ```typescript
-   await renderTemplate(TEMPLATES_NAMES.ORDER_PLACED, data, { locale: "de" })
+   await emailService.render({
+     templateName: TEMPLATES_NAMES.ORDER_PLACED,
+     data: templateData,
+     options: { locale: "de" }
+   })
    ```
 

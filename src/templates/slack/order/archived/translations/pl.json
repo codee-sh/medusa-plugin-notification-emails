@@ -1,0 +1,12 @@
+{
+  "general": {
+    "header": {
+      "title": "📦 Zamówienie #{{data.order.display_id}} zostało zarchiwizowane"
+    },
+    "actions": {
+      "openInPanel": "Otwórz w panelu"
+    },
+    "headerTitle": "Zamówienie #{{data.order.display_id}} zostało zarchiwizowane"
+  }
+}
+
