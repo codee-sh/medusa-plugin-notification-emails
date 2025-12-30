@@ -23,15 +23,15 @@ export async function POST(
 
   const transformedTemplateData = transformContext(contextType, context, locale)
 
-  const { html, text } = await renderTemplate(
+  const { html, text } = await renderTemplate({
     templateName,
-    transformedTemplateData,
-    {
+    data: transformedTemplateData,
+    options: {
       locale: locale,
       theme: pluginOptions?.theme || defaultTheme,
       customTranslations: pluginOptions?.customTranslations?.[templateName]
     }
-  )
+  })
 
   res.status(200).json({
     html,

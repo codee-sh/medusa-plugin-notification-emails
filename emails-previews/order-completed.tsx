@@ -70,14 +70,14 @@ export const orderCompletedMockData: any = {
 };
 
 export default function OrderCompleted() {
-  const renderTemplate = renderTemplateSync(
-    "order-completed",
-    orderCompletedMockData,
-    {
+  const renderTemplate = renderTemplateSync({
+    templateName: "order-completed",
+    data: orderCompletedMockData,
+    options: {
       locale: "pl",
       theme: defaultTheme,
     }
-  );
+  });
 
   return renderTemplate.reactNode;
 }

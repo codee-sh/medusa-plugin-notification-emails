@@ -70,14 +70,14 @@ export const orderPlacedMockData: any = {
 };
 
 export default function OrderPlaced() {
-  const renderTemplate = renderTemplateSync(
-    "order-placed",
-    orderPlacedMockData,
-    {
+  const renderTemplate = renderTemplateSync({
+    templateName: "order-placed",
+    data: orderPlacedMockData,
+    options: {
       locale: "pl",
       theme: defaultTheme,
     }
-  );
+  });
 
   return renderTemplate.reactNode;
 }

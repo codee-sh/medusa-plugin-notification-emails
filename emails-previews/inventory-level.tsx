@@ -12,14 +12,14 @@ export const inventoryLevelMockData: any = {
 };
 
 export default function InventoryLevel() {
-  const renderTemplate = renderTemplateSync(
-    "inventory-level",
-    inventoryLevelMockData,
-    {
+  const renderTemplate = renderTemplateSync({
+    templateName: "inventory-level",
+    data: inventoryLevelMockData,
+    options: {
       locale: "pl",
       theme: defaultTheme,
     }
-  );
+  });
 
   return renderTemplate.reactNode;
 }

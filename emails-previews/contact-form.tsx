@@ -11,14 +11,14 @@ export const contactFormMockData: any = {
 };
 
 export default function ContactForm() {
-  const renderTemplate = renderTemplateSync(
-    "contact-form",
-    contactFormMockData,
-    {
+  const renderTemplate = renderTemplateSync({
+    templateName: "contact-form",
+    data: contactFormMockData,
+    options: {
       locale: "pl",
       theme: defaultTheme
     }
-  );
+  });
 
   return renderTemplate.reactNode;
 }

@@ -39,14 +39,14 @@ export default async function orderPlacedEmailsHandler({
   
   const templateName = TEMPLATES_NAMES.ORDER_PLACED
 
-  const { html, text, subject } = await renderTemplate(
+  const { html, text, subject } = await renderTemplate({
     templateName,
-    templateData,
-    { 
+    data: templateData,
+    options: { 
       locale: "pl",
       customTranslations: pluginOptions?.customTranslations?.[templateName]
     }
-  )
+  })
 
   const result = await notificationModuleService.createNotifications({
     to: order.order.customer.email,

@@ -1,5 +1,4 @@
-import React from "react";
-import { TEMPLATES_NAMES } from "./types";
+import { TEMPLATES_NAMES, RenderSlackTemplateParams } from "./types";
 
 import {
   templateBlocks as InventoryLevelTemplateBlocks,
@@ -213,23 +212,17 @@ function prepareSlackTemplateData({
 }
 
 /**
- * Generate HTML and text for a template
+ * Generate Slack blocks for a template
  *
- * @param templateName - Name of the template (optional if createTemplate is provided)
- * @param data - Template data
- * @param options - Optional theme and locale configuration
- * @param createTemplate - Optional custom template function that takes data and options, returns React.ReactElement
- * @returns Object with html, text, and subject properties
+ * @param params - Parameters object
+ * @returns Object with blocks array
  */
-export async function renderSlackTemplate(
-  templateName: TemplateName | null,
-  data: TemplateData,
-  options?: any,
-  createTemplate?: (
-    data: TemplateData,
-    options: any
-  ) => React.ReactElement<any>
-): Promise<{
+export async function renderSlackTemplate({
+  templateName,
+  data,
+  options = {},
+  createTemplate,
+}: RenderSlackTemplateParams): Promise<{
   blocks: any[];
 }> {
   // Original behavior: use template from registry

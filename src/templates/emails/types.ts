@@ -1,3 +1,5 @@
+import { TemplateName, TemplateData } from "../shared";
+
 export const TEMPLATES_NAMES = {
   BASE_TEMPLATE: "base-template",
   INVENTORY_LEVEL: "inventory-level",
@@ -20,3 +22,20 @@ export interface TemplateOptionsType {
   locale?: any;  
   customTranslations?: Record<string, Record<string, any>>;
 }
+
+export interface RenderTemplateParams {
+  templateName: TemplateName | null;
+  data: TemplateData;
+  options?: TemplateRenderOptionsType;
+  createTemplate?: (
+    data: TemplateData,
+    options: TemplateOptionsType
+  ) => React.ReactElement<any>;
+}
+
+export interface RenderTemplateSyncParams {
+  templateName: TemplateName | null;
+  data: TemplateData;
+  options?: TemplateRenderOptionsType;
+}
+

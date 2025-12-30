@@ -1,3 +1,5 @@
+import { TemplateName, TemplateData } from "../shared";
+
 export const TEMPLATES_NAMES = {
   BASE_TEMPLATE: "base-template",
   INVENTORY_LEVEL: "inventory-level",
@@ -28,3 +30,13 @@ export type SlackTemplateRenderer = (
 ) =>
   | Promise<{ text: string; blocks: SlackBlock[] }>
   | { text: string; blocks: SlackBlock[] }
+
+export interface RenderSlackTemplateParams {
+  templateName: TemplateName | null;
+  data: TemplateData;
+  options?: any;
+  createTemplate?: (
+    data: TemplateData,
+    options: any
+  ) => React.ReactElement<any>;
+}

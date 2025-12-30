@@ -1,7 +1,5 @@
 import React from "react";
-import { TemplateOptionsType, TemplateRenderOptionsType } from "./types";
-
-import { TEMPLATES_NAMES } from "./types";
+import { TemplateOptionsType, TemplateRenderOptionsType, TEMPLATES_NAMES, RenderTemplateParams, RenderTemplateSyncParams } from "./types";
 
 import {
   pickValueFromObject,
@@ -239,21 +237,15 @@ function prepareEmailTemplateData({
 /**
  * Generate HTML and text for a template
  *
- * @param templateName - Name of the template (optional if createTemplate is provided)
- * @param data - Template data
- * @param options - Optional theme and locale configuration
- * @param createTemplate - Optional custom template function that takes data and options, returns React.ReactElement
+ * @param params - Parameters object
  * @returns Object with html, text, and subject properties
  */
-export async function renderTemplate(
-  templateName: TemplateName | null,
-  data: TemplateData,
-  options?: TemplateRenderOptionsType,
-  createTemplate?: (
-    data: TemplateData,
-    options: TemplateOptionsType
-  ) => React.ReactElement<any>
-): Promise<{
+export async function renderTemplate({
+  templateName,
+  data,
+  options = {},
+  createTemplate,
+}: RenderTemplateParams): Promise<{
   html: any;
   text: any;
   subject: string;
@@ -322,11 +314,17 @@ export async function renderTemplate(
   };
 }
 
-export function renderTemplateSync(
-  templateName: TemplateName | null,
-  data: TemplateData,
-  options?: TemplateRenderOptionsType
-): any {
+/**
+ * Generate React node for a template (synchronous version for previews)
+ *
+ * @param params - Parameters object
+ * @returns Object with reactNode property
+ */
+export function renderTemplateSync({
+  templateName,
+  data,
+  options = {},
+}: RenderTemplateSyncParams): any {
   if (!templateName) {
     throw new Error("Either templateName or createTemplate must be provided");
   }
