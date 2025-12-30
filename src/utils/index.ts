@@ -8,6 +8,7 @@ export * from "./is-object";
 export * from "./attribute-helpers";
 export * from "./i18n/i18n";
 export * from "./transforms";
+export * from "./omit";
 export * from "./data/modules";
 export * from "./data/currencies";
 export * from "./data/countries";
