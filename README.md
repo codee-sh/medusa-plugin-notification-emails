@@ -1,11 +1,15 @@
 # Medusa plugin notification emails
 
-A comprehensive notification plugin for Medusa v2 that provides a flexible email template system with internationalization support, custom translations, and seamless integration with Medusa's notification module.
+A comprehensive notification plugin for Medusa v2 that provides a flexible, block-based template system for multiple channels (Email and Slack) with internationalization support, custom translations, and seamless integration with Medusa's notification module.
 
 ## Features
 
-- **Email Templates**: Pre-built, customizable email templates built with [React Email](https://react.email) for common use cases
-- **React Email Integration**: Templates are built using React Email components, providing modern, responsive email design
+- **Multi-Channel Templates**: Pre-built templates for Email and Slack channels
+- **Block-Based System**: Templates are built using a flexible block system that can be stored in a database for future builder functionality
+- **Email Templates**: Customizable email templates built with [React Email](https://react.email) for common use cases
+- **Slack Templates**: Slack Block Kit compatible templates for Slack notifications
+- **Template Service Architecture**: Unified `AbstractTemplateService` with channel-specific implementations (`EmailTemplateService`, `SlackTemplateService`)
+- **Automatic Interpolation**: Smart variable interpolation system that processes `{{data.*}}` and `{{translations.*}}` placeholders recursively
 - **Internationalization**: Built-in support for multiple locales (Polish, English)
 - **Customizable**: Override translations and customize templates without modifying core files
 - **Integration**: Integrates with Medusa's notification module
@@ -48,27 +52,51 @@ Set up a notification provider - see [Configuration Documentation](./docs/config
 
 The plugin includes built-in subscribers that automatically send email notifications for various events. You can also use templates directly in your code:
 
-```typescript
-import { renderTemplate, TEMPLATES_NAMES } from "@codee-sh/medusa-plugin-notification-emails/templates/emails"
+#### Email Templates
 
-const { html, text, subject } = await renderTemplate(
-  TEMPLATES_NAMES.ORDER_PLACED,
-  templateData,
-  { locale: "pl" }
-)
+```typescript
+import { emailService, TEMPLATES_NAMES } from "@codee-sh/medusa-plugin-notification-emails/templates/emails"
+
+const { html, text, subject } = await emailService.render({
+  templateName: TEMPLATES_NAMES.ORDER_PLACED,
+  data: templateData,
+  options: { locale: "pl" }
+})
 ```
 
-**Note**: `renderTemplate` is an async function that returns both HTML and plain text versions of the email, generated using React Email.
+#### Slack Templates
+
+```typescript
+import { slackService, TEMPLATES_NAMES } from "@codee-sh/medusa-plugin-notification-emails/templates/slack"
+
+const { blocks } = await slackService.render({
+  templateName: TEMPLATES_NAMES.INVENTORY_LEVEL,
+  data: templateData,
+  options: { locale: "en" }
+})
+```
+
+**Note**: Templates use a block-based system where each template is defined as an array of blocks. The system automatically interpolates variables like `{{data.order.id}}` and `{{translations.headerTitle}}` throughout the blocks.
 
 See [Templates Documentation](./docs/templates.md) for detailed usage examples.
 
 ## Available Templates
 
-- **[Order Placed](./docs/templates/order-placed.md)** (`order-placed`) - Order confirmation email template
-- **[Order Completed](./docs/templates/order-completed.md)** (`order-completed`) - Order completion notification template
-- **[Contact Form](./docs/templates/contact-form.md)** (`contact-form`) - Contact form submission email template
+### Email Templates
 
-See [Templates Documentation](./docs/templates.md) for general template information.
+- **[Order Placed](./docs/templates/order-placed.md)** (`order-placed`) - Order confirmation email template
+- **Order Completed** (`order-completed`) - Order completion notification template
+- **[Contact Form](./docs/templates/contact-form.md)** (`contact-form`) - Contact form submission email template
+- **Order Updated** (`order-updated`) - Order update notification template
+- **Inventory Level** (`inventory-level`) - Inventory level notification template
+
+### Slack Templates
+
+- **Inventory Level** (`inventory-level`) - Inventory level notification for Slack
+- **Product** (`product`) - Product notification for Slack
+- **Product Variant** (`product-variant`) - Product variant notification for Slack
+
+See [Templates Documentation](./docs/templates.md) for general template information and [Blocks Documentation](./docs/blocks.md) for details on the block system.
 
 ## Built-in Subscribers
 
@@ -92,17 +120,19 @@ Access the template preview in Medusa Admin at `/app/notifications/render`. See 
 ## Documentation
 
 - [Templates](./docs/templates.md) - Using templates and creating custom subscribers
+- [Blocks System](./docs/blocks.md) - Understanding the block-based template system
 - [Translations](./docs/translations.md) - Internationalization and custom translations
 - [Configuration](./docs/configuration.md) - Plugin configuration options
 - [Admin Panel](./docs/admin.md) - Admin interface usage
-- [Creating Custom Templates](./docs/contributing/creating-templates.md) - Guide for contributing new templates
+- [Creating Custom Templates](./docs/contributing/creating-templates.md) - Guide for creating new templates
 
 ## Exports
 
 The plugin exports the following:
 
-- `@codee-sh/medusa-plugin-notification-emails/templates/emails` - Template rendering functions
-- `@codee-sh/medusa-plugin-notification-emails/templates/emails/types` - Template types and constants
+- `@codee-sh/medusa-plugin-notification-emails/templates/emails` - Email template service and types
+- `@codee-sh/medusa-plugin-notification-emails/templates/slack` - Slack template service and types
+- `@codee-sh/medusa-plugin-notification-emails/templates/shared` - Shared template utilities
 - `@codee-sh/medusa-plugin-notification-emails/utils` - Utility functions
 
 ## License

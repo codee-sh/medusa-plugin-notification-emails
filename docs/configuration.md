@@ -150,7 +150,7 @@ module.exports = defineConfig({
 
 **Note**: Custom translations use JSON structure with string interpolation. Variables are replaced using `{{variable}}` syntax, where `variable` matches properties in the template data object.
 
-See [Translations Documentation](./translations.md) for more examples and details about i18next interpolation.
+See [Translations Documentation](./translations.md) for more examples and details about the translation system and variable interpolation.
 
 ## Troubleshooting
 
