@@ -1,5 +1,11 @@
 # @codee-sh/medusa-plugin-notification-emails
 
+## 0.2.1
+
+### Patch Changes
+
+- d63fe38: refactor: update Slack template service to omit unnecessary fields
+
 ## 0.2.0
 
 ### Minor Changes
@@ -13,6 +19,7 @@
 - **Recursive Interpolation for Slack**: Implemented recursive interpolation mechanism that traverses nested Slack Block Kit structures and interpolates all `text` and `url` properties, regardless of nesting depth.
 
 - **Documentation Updates**: Comprehensive documentation updates including:
+
   - New `blocks.md` documenting the block-based template system with separate sections for Email and Slack blocks
   - Updated `templates.md` with new service-based architecture
   - Updated `translations.md` documenting the custom i18n system
@@ -20,6 +27,7 @@
   - Added `CONTRIBUTING.md` with development guidelines and changeset workflow
 
 - **Code Cleanup**: Removed deprecated and unused code:
+
   - Removed old `renderTemplate` and `renderTemplateSync` wrapper functions
   - Removed unused base-template for Slack
   - Removed `payment-captured` subscriber
