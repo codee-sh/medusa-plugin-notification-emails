@@ -1,5 +1,12 @@
 # @codee-sh/medusa-plugin-notification-emails
 
+## 0.2.0
+
+### Minor Changes
+
+- 0c0b239: Create Abstract Template Service, EmailTemplateService and SlackTemplateService and remove old functions like renderTemplate
+- 0c0b239: Add Slack templates with Kit Builder like emails
+
 ## 0.1.1
 
 ### Patch Changes

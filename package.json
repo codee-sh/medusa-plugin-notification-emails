@@ -1,6 +1,6 @@
 {
   "name": "@codee-sh/medusa-plugin-notification-emails",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Medusa plugin for notifications emails.",
   "author": "Codee Team (https://codee.dev)",
   "license": "MIT",
