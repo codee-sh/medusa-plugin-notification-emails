@@ -1,5 +1,5 @@
 import { defaultTheme } from "../src/templates/shared/theme";
-import { renderTemplateSync } from "../src/templates/emails";
+import { emailService } from "../src/templates/emails";
 
 export const inventoryLevelMockData: any = {
   inventory_level: {
@@ -12,7 +12,7 @@ export const inventoryLevelMockData: any = {
 };
 
 export default function InventoryLevel() {
-  const renderTemplate = renderTemplateSync({
+  const renderTemplate = emailService.renderSync({
     templateName: "inventory-level",
     data: inventoryLevelMockData,
     options: {

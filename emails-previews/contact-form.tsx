@@ -1,5 +1,5 @@
 import { defaultTheme } from "../src/templates/shared/theme";
-import { renderTemplateSync } from "../src/templates/emails";
+import { emailService } from "../src/templates/emails";
 
 export const contactFormMockData: any = {
   contact_form: {
@@ -11,7 +11,7 @@ export const contactFormMockData: any = {
 };
 
 export default function ContactForm() {
-  const renderTemplate = renderTemplateSync({
+  const renderTemplate = emailService.renderSync({
     templateName: "contact-form",
     data: contactFormMockData,
     options: {

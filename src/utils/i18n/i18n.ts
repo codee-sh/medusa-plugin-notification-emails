@@ -49,12 +49,14 @@ export function getVariableValue(
 /**
  * Group interpolate - handles variables with prefixes (data. or translations.)
  * 
- * Variables with prefix `data.` are resolved using interpolate function
- * Variables with prefix `translations.` are resolved using translator.single
+ * Variables with prefix `data.` are resolved using pickValueFromObject function
+ * Variables with prefix `translations.` are resolved using translator.t function
  * 
- * @param text - Text with {{data.variable}} and {{translations.key}} placeholders
+ * @param text - Text with {{data.variable}} or {{translations.key}} placeholders
  * @param data - Data object for interpolation
- * @param translator - Translator instance with single method
+ * @param translator - Translator instance with t method
+ * @param config - Configuration object
+ * @param config - arrayPath - Array path for data object
  * @returns Interpolated text with all variables resolved
  * 
  * @example

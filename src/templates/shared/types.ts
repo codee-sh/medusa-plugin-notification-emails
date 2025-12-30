@@ -16,7 +16,7 @@ export type TemplateData = any
  * Base template renderer interface
  * Each channel should extend this with channel-specific methods
  */
-export interface BaseTemplateRenderer {
+export interface TemplateRenderer {
   getConfig?: () => any
   [key: string]: any
 }

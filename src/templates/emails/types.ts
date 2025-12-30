@@ -27,10 +27,6 @@ export interface RenderTemplateParams {
   templateName: TemplateName | null;
   data: TemplateData;
   options?: TemplateRenderOptionsType;
-  createTemplate?: (
-    data: TemplateData,
-    options: TemplateOptionsType
-  ) => React.ReactElement<any>;
 }
 
 export interface RenderTemplateSyncParams {

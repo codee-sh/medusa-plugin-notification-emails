@@ -1,5 +1,5 @@
 import { defaultTheme } from "../src/templates/shared/theme";
-import { renderTemplateSync } from "../src/templates/emails";
+import { emailService } from "../src/templates/emails";
 
 export const orderCompletedMockData: any = {
   order: {
@@ -70,7 +70,7 @@ export const orderCompletedMockData: any = {
 };
 
 export default function OrderCompleted() {
-  const renderTemplate = renderTemplateSync({
+  const renderTemplate = emailService.renderSync({
     templateName: "order-completed",
     data: orderCompletedMockData,
     options: {
