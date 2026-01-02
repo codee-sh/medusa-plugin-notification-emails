@@ -1,12 +1,20 @@
-import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
-import { Modules, MedusaError } from "@medusajs/framework/utils"
+import {
+  MedusaRequest,
+  MedusaResponse,
+} from "@medusajs/framework/http"
+import {
+  Modules,
+  MedusaError,
+} from "@medusajs/framework/utils"
 
 export async function POST(
-  req: MedusaRequest<{ name: string, data?: any }>,
+  req: MedusaRequest<{ name: string; data?: any }>,
   res: MedusaResponse
 ) {
-  const eventModuleService = req.scope.resolve(Modules.EVENT_BUS)
-  
+  const eventModuleService = req.scope.resolve(
+    Modules.EVENT_BUS
+  )
+
   const name = req.body?.name
   const data = req.body?.data
 
@@ -22,4 +30,3 @@ export async function POST(
     data,
   })
 }
-

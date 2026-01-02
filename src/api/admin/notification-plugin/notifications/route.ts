@@ -1,11 +1,19 @@
-import { MedusaStoreRequest, MedusaResponse } from "@medusajs/framework/http"
-import { ContainerRegistrationKeys, MedusaError } from "@medusajs/framework/utils"
+import {
+  MedusaStoreRequest,
+  MedusaResponse,
+} from "@medusajs/framework/http"
+import {
+  ContainerRegistrationKeys,
+  MedusaError,
+} from "@medusajs/framework/utils"
 
 export async function GET(
   req: MedusaStoreRequest,
   res: MedusaResponse
 ) {
-  const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
+  const query = req.scope.resolve(
+    ContainerRegistrationKeys.QUERY
+  )
   const { resource_id, resource_type } = req.query
   const filters: any = {}
 
@@ -20,11 +28,14 @@ export async function GET(
       $eq: resource_type,
     }
   }
-  
-  const { data: notifications, metadata: { count, take, skip } = {} } = await query.graph({
+
+  const {
+    data: notifications,
+    metadata: { count, take, skip } = {},
+  } = await query.graph({
     entity: "notification",
     filters: filters,
-    ...req.queryConfig
+    ...req.queryConfig,
   })
 
   res.json({
@@ -34,4 +45,3 @@ export async function GET(
     offset: skip || 0,
   })
 }
-

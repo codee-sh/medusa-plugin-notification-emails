@@ -7,15 +7,15 @@ export type ContextType = any
 
 /**
  * Transform raw context data to email template format
- * 
+ *
  * This function transforms raw data from API/subscribers/workflows into
  * a format suitable for email templates (formatted dates, amounts, addresses, etc.)
- * 
+ *
  * @param contextType - Type of context data (e.g., "order", "inventory_level")
  * @param rawData - Raw data from API/subscribers/workflows
  * @param localeCode - Locale code for formatting (default: "pl")
  * @returns Transformed data ready for template rendering
- * 
+ *
  * @example
  * ```typescript
  * const transformedData = transformContext("order", rawOrderData, "pl")
@@ -34,20 +34,22 @@ export function transformContext(
   switch (contextType) {
     case "order":
       return {
-        [contextType]: transformOrderData(rawData[contextType], localeCode)
+        [contextType]: transformOrderData(
+          rawData[contextType],
+          localeCode
+        ),
       }
-    
+
     case "inventory_level":
       // Inventory level data doesn't need transformation (uses raw data directly)
       return rawData
-    
+
     case "payment":
       // Payment data transformation can be added here if needed
       return rawData
-    
+
     default:
       // Unknown context type - return raw data as-is
       return rawData
   }
 }
-

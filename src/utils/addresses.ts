@@ -1,6 +1,9 @@
 import { HttpTypes } from "@medusajs/types"
 
-import { countries, getCountryByIso2 } from "./data/countries"
+import {
+  countries,
+  getCountryByIso2,
+} from "./data/countries"
 
 export const isSameAddress = (
   a?: HttpTypes.AdminOrderAddress | null,
@@ -44,7 +47,9 @@ export const getFormattedAddress = ({
     country_code,
   } = address
 
-  const name = [first_name, last_name].filter(Boolean).join(" ")
+  const name = [first_name, last_name]
+    .filter(Boolean)
+    .join(" ")
 
   const formattedAddress: string[] = []
 
@@ -87,11 +92,15 @@ export const getFormattedAddress = ({
   return formattedAddress
 }
 
-export const getFormattedCountry = (countryCode: string | null | undefined) => {
+export const getFormattedCountry = (
+  countryCode: string | null | undefined
+) => {
   if (!countryCode) {
     return ""
   }
 
-  const country = countries.find((c) => c.iso_2 === countryCode)
+  const country = countries.find(
+    (c) => c.iso_2 === countryCode
+  )
   return country ? country.display_name : countryCode
 }

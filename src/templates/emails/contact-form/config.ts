@@ -1,18 +1,18 @@
-import pl from "./translations/pl.json";
-import en from "./translations/en.json";
-import de from "./translations/de.json";
+import pl from "./translations/pl.json"
+import en from "./translations/en.json"
+import de from "./translations/de.json"
 
-export { pl, en, de };
+export { pl, en, de }
 
 export const translations: Record<any, any> = {
   pl: pl,
   en: en,
   de: de,
-};
+}
 
 /**
  * Contact form template blocks
- * 
+ *
  */
 export const templateBlocks = [
   {
@@ -70,8 +70,8 @@ export const templateBlocks = [
             label: "{{translations.labels.message}}",
             value: "{{data.contact_form.message}}",
           },
-        }
+        },
       ],
     },
   },
-];
+]

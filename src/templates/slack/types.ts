@@ -1,4 +1,4 @@
-import { TemplateName, TemplateData } from "../shared";
+import { TemplateName, TemplateData } from "../shared"
 
 export const TEMPLATES_NAMES = {
   BASE_TEMPLATE: "base-template",
@@ -10,7 +10,7 @@ export const TEMPLATES_NAMES = {
   ORDER_UPDATED: "order-updated",
   ORDER_CANCELED: "order-canceled",
   ORDER_ARCHIVED: "order-archived",
-} as const;
+} as const
 
 export type SlackBlock = {
   type: string
@@ -37,11 +37,11 @@ export type SlackTemplateRenderer = (
   | { text: string; blocks: SlackBlock[] }
 
 export interface RenderSlackTemplateParams {
-  templateName: TemplateName | null;
-  data: TemplateData;
-  options?: any;
+  templateName: TemplateName | null
+  data: TemplateData
+  options?: any
   createTemplate?: (
     data: TemplateData,
     options: any
-  ) => React.ReactElement<any>;
+  ) => React.ReactElement<any>
 }

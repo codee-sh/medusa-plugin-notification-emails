@@ -1,1 +1,1 @@
-import { TemplateOptionsType } from "../types";
+import { TemplateOptionsType } from "../types"

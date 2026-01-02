@@ -10,14 +10,27 @@ const actionOptions = [
   { value: "payment.captured", label: "Payment Captured" },
 ]
 
-export const Actions = ({ onSend, isPending, isError, eventsData }: { onSend: (any: any) => any, isPending: boolean, isError: boolean, eventsData: any }) => {
+export const Actions = ({
+  onSend,
+  isPending,
+  isError,
+  eventsData,
+}: {
+  onSend: (any: any) => any
+  isPending: boolean
+  isError: boolean
+  eventsData: any
+}) => {
   const handleSend = (eventName: string) => {
     onSend({ name: eventName, trigger_type: "admin" })
   }
 
   return (
     <div className="px-6 py-0">
-      <SelectAction onSend={handleSend} isPending={isPending} />
+      <SelectAction
+        onSend={handleSend}
+        isPending={isPending}
+      />
 
       {eventsData && (
         <Text className="mt-2 text-green-600">
@@ -33,21 +46,33 @@ export const Actions = ({ onSend, isPending, isError, eventsData }: { onSend: (a
   )
 }
 
-export const SelectAction = ({ onSend, isPending }: OrderPaymentActionsProps) => {
-  const [selectedEvent, setSelectedEvent] = useState<string>("payment.captured")
+export const SelectAction = ({
+  onSend,
+  isPending,
+}: OrderPaymentActionsProps) => {
+  const [selectedEvent, setSelectedEvent] =
+    useState<string>("payment.captured")
 
   return (
     <div className="grid grid-cols-2 gap-2">
       <div className="flex flex-row items-center gap-2">
-        <Label className="flex-shrink-0">Select event:</Label>
+        <Label className="flex-shrink-0">
+          Select event:
+        </Label>
         <div className="flex-1">
-          <Select value={selectedEvent} onValueChange={setSelectedEvent}>
+          <Select
+            value={selectedEvent}
+            onValueChange={setSelectedEvent}
+          >
             <Select.Trigger>
               <Select.Value placeholder="Select event name" />
             </Select.Trigger>
             <Select.Content>
               {actionOptions.map((option) => (
-                <Select.Item key={option.value} value={option.value}>
+                <Select.Item
+                  key={option.value}
+                  value={option.value}
+                >
                   {option.label}
                 </Select.Item>
               ))}
@@ -60,12 +85,9 @@ export const SelectAction = ({ onSend, isPending }: OrderPaymentActionsProps) =>
           onClick={() => onSend(selectedEvent)}
           disabled={isPending || !selectedEvent}
         >
-          {isPending
-            ? "Sending..."
-            : `Send Notification`}
+          {isPending ? "Sending..." : `Send Notification`}
         </Button>
       </div>
     </div>
   )
 }
-

@@ -1,7 +1,7 @@
 import {
   TemplateName,
   TemplateData,
-  TemplateRenderer
+  TemplateRenderer,
 } from "./types"
 import {
   createTranslator,
@@ -20,14 +20,15 @@ export interface RenderParams {
 /**
  * Abstract template service class
  * Provides common functionality for template registration and rendering
- * 
+ *
  * @template T - Template renderer type (extends TemplateRenderer)
  */
 export abstract class AbstractTemplateService<T> {
   /**
    * Template registry - stores all registered templates
    */
-  protected templateRegistry: Map<TemplateName, T> = new Map()
+  protected templateRegistry: Map<TemplateName, T> =
+    new Map()
 
   /**
    * Base template configuration
@@ -48,7 +49,7 @@ export abstract class AbstractTemplateService<T> {
 
   /**
    * Register a template
-   * 
+   *
    * @param name - Template name
    * @param renderer - Template renderer configuration
    */
@@ -58,7 +59,7 @@ export abstract class AbstractTemplateService<T> {
 
   /**
    * Get template by name
-   * 
+   *
    * @param name - Template name
    * @returns Template renderer
    * @throws Error if template not found
@@ -79,7 +80,7 @@ export abstract class AbstractTemplateService<T> {
 
   /**
    * Check if template exists
-   * 
+   *
    * @param name - Template name
    * @returns True if template exists
    */
@@ -89,7 +90,7 @@ export abstract class AbstractTemplateService<T> {
 
   /**
    * List all registered template names
-   * 
+   *
    * @returns Array of template names
    */
   listTemplates(): TemplateName[] {
@@ -98,7 +99,7 @@ export abstract class AbstractTemplateService<T> {
 
   /**
    * Get base template configuration
-   * 
+   *
    * @returns Base template config
    */
   getBaseTemplate(): T {
@@ -107,11 +108,11 @@ export abstract class AbstractTemplateService<T> {
 
   /**
    * Prepare template data.
-   * 
+   *
    * This method prepares the data for the template renderer.
-   * Merge translations from template config and options (if provided), 
+   * Merge translations from template config and options (if provided),
    * then interpolate blocks using the interpolate function.
-   * 
+   *
    * @param params - Parameters object
    * @returns Prepared template data
    */
@@ -121,24 +122,30 @@ export abstract class AbstractTemplateService<T> {
     options?: any
   }): {
     template: T
-    translator: { t: (key: string, data?: Record<string, any>) => string }
+    translator: {
+      t: (key: string, data?: Record<string, any>) => string
+    }
     blocks: any[]
   } {
     // Get locale from options or default to "en"
     const locale = params.options?.locale || "en"
-    
+
     // Get registered template
     const template = this.getTemplate(params.templateName)
-    const config = (template as TemplateRenderer).getConfig?.() || {}
+    const config =
+      (template as TemplateRenderer).getConfig?.() || {}
 
     const configTranslations = config?.translations || {}
     const configBlocks = config?.blocks || []
 
     const optionsBlocks = params.options?.blocks || []
     const optionsTranslations = params.options?.translations
-    
+
     // If blocks are not provided in options, use basic blocks from config
-    const blocks = optionsBlocks.length > 0 ? optionsBlocks : configBlocks
+    const blocks =
+      optionsBlocks.length > 0
+        ? optionsBlocks
+        : configBlocks
 
     // Merge translations
     const mergedTranslations = mergeTranslations(
@@ -147,12 +154,19 @@ export abstract class AbstractTemplateService<T> {
     )
 
     // Create translator function
-    const translator = createTranslator(locale, mergedTranslations)
+    const translator = createTranslator(
+      locale,
+      mergedTranslations
+    )
 
     // Interpolate blocks using the interpolate function
     const interpolatedBlocks =
       blocks.length > 0
-        ? this.interpolateFunction(blocks, params.data, translator)
+        ? this.interpolateFunction(
+            blocks,
+            params.data,
+            translator
+          )
         : blocks
 
     return {
@@ -173,10 +187,9 @@ export abstract class AbstractTemplateService<T> {
    * Render template
    * Main method for rendering templates
    * Must be implemented by subclasses
-   * 
+   *
    * @param params - Render parameters
    * @returns Rendered template result (type depends on channel)
    */
   abstract render(params: RenderParams): Promise<any>
 }
-

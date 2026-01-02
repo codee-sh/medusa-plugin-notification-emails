@@ -1,10 +1,25 @@
 import { useEvents } from "../../../hooks/api/events"
 import { Actions as OrderPaymentActions } from "./components/order-payment-actions"
 
-export const NotificationOrderPayment = ({ data }: { data: any }) => {
-  const { mutate: sendEvent, isPending, isError, data: eventsData } = useEvents()
+export const NotificationOrderPayment = ({
+  data,
+}: {
+  data: any
+}) => {
+  const {
+    mutate: sendEvent,
+    isPending,
+    isError,
+    data: eventsData,
+  } = useEvents()
 
-  const handleSendPaymentNotification = ({ name, trigger_type }: { name: string, trigger_type: string }) => {
+  const handleSendPaymentNotification = ({
+    name,
+    trigger_type,
+  }: {
+    name: string
+    trigger_type: string
+  }) => {
     sendEvent({
       name: name,
       data: {
@@ -15,6 +30,11 @@ export const NotificationOrderPayment = ({ data }: { data: any }) => {
   }
 
   return (
-    <OrderPaymentActions onSend={handleSendPaymentNotification} isPending={isPending} isError={isError} eventsData={eventsData} />
+    <OrderPaymentActions
+      onSend={handleSendPaymentNotification}
+      isPending={isPending}
+      isError={isError}
+      eventsData={eventsData}
+    />
   )
 }

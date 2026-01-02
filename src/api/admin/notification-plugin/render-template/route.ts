@@ -1,15 +1,29 @@
-import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
+import {
+  MedusaRequest,
+  MedusaResponse,
+} from "@medusajs/framework/http"
 import { MedusaError } from "@medusajs/framework/utils"
 import { defaultTheme } from "../../../../templates/shared/theme"
-import { emailService, TEMPLATES_NAMES } from "../../../../templates/emails"
+import {
+  emailService,
+  TEMPLATES_NAMES,
+} from "../../../../templates/emails"
 import { transformContext } from "../../../../utils/transforms"
 import { getPluginOptions } from "../../../../utils/plugins"
 
 export async function POST(
-  req: MedusaRequest<{ templateName: string, context: any, contextType: any, locale: string }>,
+  req: MedusaRequest<{
+    templateName: string
+    context: any
+    contextType: any
+    locale: string
+  }>,
   res: MedusaResponse
 ) {
-  const pluginOptions = getPluginOptions(req.scope, "@codee-sh/medusa-plugin-notification")
+  const pluginOptions = getPluginOptions(
+    req.scope,
+    "@codee-sh/medusa-plugin-notification"
+  )
 
   const templateName = req.body?.templateName
   const context = req.body?.context
@@ -18,19 +32,27 @@ export async function POST(
   const locale = req.body?.locale || "pl"
 
   if (!templateName || !context || !locale) {
-    throw new MedusaError(MedusaError.Types.INVALID_ARGUMENT, "Template name, template data and locale are required")
+    throw new MedusaError(
+      MedusaError.Types.INVALID_ARGUMENT,
+      "Template name, template data and locale are required"
+    )
   }
 
-  const transformedTemplateData = transformContext(contextType, context, locale)
-  
+  const transformedTemplateData = transformContext(
+    contextType,
+    context,
+    locale
+  )
+
   const { html, text } = await emailService.render({
     templateName,
     data: transformedTemplateData,
     options: {
       locale: locale,
       theme: pluginOptions?.theme || defaultTheme,
-      translations: pluginOptions?.customTranslations?.[templateName]
-    }
+      translations:
+        pluginOptions?.customTranslations?.[templateName],
+    },
   })
 
   res.status(200).json({
@@ -38,4 +60,3 @@ export async function POST(
     text,
   })
 }
-

@@ -1,5 +1,5 @@
 import { InformationCircleSolid } from "@medusajs/icons"
-import { 
+import {
   Container,
   Heading,
   DataTable,
@@ -28,39 +28,54 @@ type NotificationDTO = {
 }
 
 export const NotificationsFullList = () => {
-  const [pagination, setPagination] = useState<DataTablePaginationState>({
-    pageSize: 8,
-    pageIndex: 0,
-  })
+  const [pagination, setPagination] =
+    useState<DataTablePaginationState>({
+      pageSize: 8,
+      pageIndex: 0,
+    })
 
   const limit = 8
   const offset = useMemo(() => {
     return pagination.pageIndex * limit
   }, [pagination])
 
-
-  const { data: notificationsData, isLoading: isNotificationsLoading } = useListNotifications({
+  const {
+    data: notificationsData,
+    isLoading: isNotificationsLoading,
+  } = useListNotifications({
     extraKey: [],
     limit: limit,
     offset: offset,
     order: "-created_at",
   })
 
-  const columnHelper = createDataTableColumnHelper<NotificationDTO>()
+  const columnHelper =
+    createDataTableColumnHelper<NotificationDTO>()
 
   const columns = [
     columnHelper.accessor("to", {
       header: "To",
       cell: ({ row }) => {
         const tooltip = `Device (DB) ID: \n ${row?.original?.id}`
-        return <>
-          <div className="flex items-center gap-2">
-            <span>{row?.original?.to}</span>
-            <Tooltip content={<div dangerouslySetInnerHTML={{ __html: tooltip }} />} maxWidth={400}>
-              <InformationCircleSolid />
-            </Tooltip>
-          </div>
-        </>
+        return (
+          <>
+            <div className="flex items-center gap-2">
+              <span>{row?.original?.to}</span>
+              <Tooltip
+                content={
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: tooltip,
+                    }}
+                  />
+                }
+                maxWidth={400}
+              >
+                <InformationCircleSolid />
+              </Tooltip>
+            </div>
+          </>
+        )
       },
     }),
     columnHelper.accessor("channel", {
@@ -72,27 +87,37 @@ export const NotificationsFullList = () => {
     columnHelper.accessor("created_at", {
       header: "Created At",
       cell: ({ row }) => {
-        return <span>{row?.original?.created_at ? new Date(row.original.created_at).toLocaleString() : '-'}</span>
+        return (
+          <span>
+            {row?.original?.created_at
+              ? new Date(
+                  row.original.created_at
+                ).toLocaleString()
+              : "-"}
+          </span>
+        )
       },
     }),
     columnHelper.accessor("status", {
       header: "Status",
       cell: ({ row }) => {
-        return <span>{row?.original?.status || '-'}</span>
+        return <span>{row?.original?.status || "-"}</span>
       },
     }),
     columnHelper.accessor("template", {
       header: "Template",
       cell: ({ row }) => {
-        return <span>{row?.original?.template || '-'}</span>
+        return <span>{row?.original?.template || "-"}</span>
       },
     }),
     columnHelper.accessor("trigger_type", {
       header: "Trigger Type",
       cell: ({ row }) => {
-        return <span>{row?.original?.trigger_type || '-'}</span>
+        return (
+          <span>{row?.original?.trigger_type || "-"}</span>
+        )
       },
-    })
+    }),
   ]
 
   const table = useDataTable({
@@ -103,20 +128,18 @@ export const NotificationsFullList = () => {
       state: pagination,
       onPaginationChange: setPagination,
     },
-    rowCount: notificationsData?.count ?? 0
+    rowCount: notificationsData?.count ?? 0,
   })
 
   return (
     <Container className="p-0">
       <DataTable instance={table}>
-        <DataTable.Toolbar 
-          className="flex items-start justify-between gap-2 md:flex-row md:items-center"
-        >
+        <DataTable.Toolbar className="flex items-start justify-between gap-2 md:flex-row md:items-center">
           <Heading level="h1">Notifications</Heading>
         </DataTable.Toolbar>
         <DataTable.Table />
         <DataTable.Pagination />
-      </DataTable>      
+      </DataTable>
     </Container>
   )
 }

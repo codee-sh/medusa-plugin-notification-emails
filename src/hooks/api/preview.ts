@@ -59,18 +59,22 @@ export const usePreview = (
   >({
     queryKey,
     queryFn: async ({ queryKey }) => {
-      return await sdk.client.fetch("/admin/notification-plugin/render-template", {
-        method: "POST",
-        body: {
-          templateName: templateName,
-          context: context,
-          contextType: contextType,
-          locale: locale,
-        },
-      })
+      return await sdk.client.fetch(
+        "/admin/notification-plugin/render-template",
+        {
+          method: "POST",
+          body: {
+            templateName: templateName,
+            context: context,
+            contextType: contextType,
+            locale: locale,
+          },
+        }
+      )
     },
     staleTime: 0,
-    enabled: enabled && !!templateName && !!context && !!locale,
+    enabled:
+      enabled && !!templateName && !!context && !!locale,
     ...(options as any),
   })
 

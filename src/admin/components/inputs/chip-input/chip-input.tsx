@@ -23,7 +23,10 @@ type ChipInputProps = {
   className?: string
 }
 
-export const ChipInput = forwardRef<HTMLInputElement, ChipInputProps>(
+export const ChipInput = forwardRef<
+  HTMLInputElement,
+  ChipInputProps
+>(
   (
     {
       value,
@@ -41,19 +44,26 @@ export const ChipInput = forwardRef<HTMLInputElement, ChipInputProps>(
   ) => {
     const innerRef = useRef<HTMLInputElement>(null)
 
-    const isControlledRef = useRef(typeof value !== "undefined")
+    const isControlledRef = useRef(
+      typeof value !== "undefined"
+    )
     const isControlled = isControlledRef.current
 
-    const [uncontrolledValue, setUncontrolledValue] = useState<string[]>([])
+    const [uncontrolledValue, setUncontrolledValue] =
+      useState<string[]>([])
 
-    useImperativeHandle<HTMLInputElement | null, HTMLInputElement | null>(
-      ref,
-      () => innerRef.current
-    )
+    useImperativeHandle<
+      HTMLInputElement | null,
+      HTMLInputElement | null
+    >(ref, () => innerRef.current)
 
-    const [duplicateIndex, setDuplicateIndex] = useState<number | null>(null)
+    const [duplicateIndex, setDuplicateIndex] = useState<
+      number | null
+    >(null)
 
-    const chips = isControlled ? (value as string[]) : uncontrolledValue
+    const chips = isControlled
+      ? (value as string[])
+      : uncontrolledValue
 
     const handleAddChip = (chip: string) => {
       const cleanValue = chip.trim()
@@ -83,11 +93,15 @@ export const ChipInput = forwardRef<HTMLInputElement, ChipInputProps>(
       onChange?.(chips.filter((v) => v !== chip))
 
       if (!isControlled) {
-        setUncontrolledValue(chips.filter((v) => v !== chip))
+        setUncontrolledValue(
+          chips.filter((v) => v !== chip)
+        )
       }
     }
 
-    const handleBlur = (e: FocusEvent<HTMLInputElement>) => {
+    const handleBlur = (
+      e: FocusEvent<HTMLInputElement>
+    ) => {
       onBlur?.()
 
       if (e.target.value) {
@@ -96,7 +110,9 @@ export const ChipInput = forwardRef<HTMLInputElement, ChipInputProps>(
       }
     }
 
-    const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    const handleKeyDown = (
+      e: KeyboardEvent<HTMLInputElement>
+    ) => {
       if (e.key === "Enter" || e.key === ",") {
         e.preventDefault()
 
@@ -109,7 +125,10 @@ export const ChipInput = forwardRef<HTMLInputElement, ChipInputProps>(
         innerRef.current?.focus()
       }
 
-      if (e.key === "Backspace" && innerRef.current?.value === "") {
+      if (
+        e.key === "Backspace" &&
+        innerRef.current?.value === ""
+      ) {
         handleRemoveChip(chips[chips.length - 1])
       }
     }
@@ -129,7 +148,8 @@ export const ChipInput = forwardRef<HTMLInputElement, ChipInputProps>(
           {
             "bg-ui-bg-field-component hover:bg-ui-bg-field-component-hover":
               variant === "contrast",
-            "bg-ui-bg-field hover:bg-ui-bg-field-hover": variant === "base",
+            "bg-ui-bg-field hover:bg-ui-bg-field-hover":
+              variant === "base",
           },
           className
         )}
@@ -143,12 +163,17 @@ export const ChipInput = forwardRef<HTMLInputElement, ChipInputProps>(
                 size="2xsmall"
                 className={clx("gap-x-0.5 pl-1.5 pr-1.5", {
                   "transition-fg pr-1": showRemove,
-                  "shadow-borders-focus": index === duplicateIndex,
+                  "shadow-borders-focus":
+                    index === duplicateIndex,
                 })}
                 asChild
               >
                 <motion.div
-                  animate={index === duplicateIndex ? shake : undefined}
+                  animate={
+                    index === duplicateIndex
+                      ? shake
+                      : undefined
+                  }
                 >
                   {v}
                   {showRemove && (
@@ -180,7 +205,9 @@ export const ChipInput = forwardRef<HTMLInputElement, ChipInputProps>(
           disabled={disabled}
           name={name}
           ref={innerRef}
-          placeholder={chips.length === 0 ? placeholder : undefined}
+          placeholder={
+            chips.length === 0 ? placeholder : undefined
+          }
           autoComplete="off"
         />
       </div>

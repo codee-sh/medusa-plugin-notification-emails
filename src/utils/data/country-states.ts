@@ -31,7 +31,9 @@ export function getCountryProvinceObjectByIso2(
  * Find the name of a province by its ISO 3166-2 alpha-1 sub-division code
  * @param iso2 - The ISO 3166-2 alpha-1 sub-division code
  */
-export function getProvinceByIso2(iso2: string | null | undefined) {
+export function getProvinceByIso2(
+  iso2: string | null | undefined
+) {
   if (!iso2) {
     return null
   }
@@ -57,12 +59,16 @@ export function isProvinceInCountry(
 
   const code = provinceCode.toUpperCase()
 
-  const country = countryProvinceMap[countryCode.toUpperCase()]
+  const country =
+    countryProvinceMap[countryCode.toUpperCase()]
 
   return country?.options[code] !== undefined
 }
 
-const countryProvinceMap: Record<string, CountryProvinceObject> = {
+const countryProvinceMap: Record<
+  string,
+  CountryProvinceObject
+> = {
   AR: {
     type: "province",
     options: {

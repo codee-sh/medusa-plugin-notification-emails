@@ -20,4 +20,3 @@ export interface TemplateRenderer {
   getConfig?: () => any
   [key: string]: any
 }
-
