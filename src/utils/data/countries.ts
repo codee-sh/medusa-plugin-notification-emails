@@ -1,7 +1,8 @@
 import type { HttpTypes } from "@medusajs/types"
 
-export interface StaticCountry
-  extends Required<Omit<HttpTypes.AdminRegionCountry, "id">> {}
+export interface StaticCountry extends Required<
+  Omit<HttpTypes.AdminRegionCountry, "id">
+> {}
 
 export function getCountryByIso2(
   iso2: string | null
@@ -10,7 +11,9 @@ export function getCountryByIso2(
     return
   }
 
-  return countries.find((c) => c.iso_2.toLowerCase() === iso2.toLowerCase())
+  return countries.find(
+    (c) => c.iso_2.toLowerCase() === iso2.toLowerCase()
+  )
 }
 
 export const countries: StaticCountry[] = [
@@ -1461,7 +1464,8 @@ export const countries: StaticCountry[] = [
     iso_3: "sgs",
     num_code: "239",
     name: "SOUTH GEORGIA AND THE SOUTH SANDWICH ISLANDS",
-    display_name: "South Georgia and the South Sandwich Islands",
+    display_name:
+      "South Georgia and the South Sandwich Islands",
   },
   {
     iso_2: "ss",

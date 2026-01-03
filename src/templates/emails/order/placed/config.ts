@@ -1,16 +1,16 @@
-import pl from "./translations/pl.json";
-import en from "./translations/en.json";
+import pl from "./translations/pl.json"
+import en from "./translations/en.json"
 
-export { pl, en };
+export { pl, en }
 
 export const translations: Record<any, any> = {
   pl: pl,
   en: en,
-};
+}
 
 /**
  * Order placed template blocks
- * 
+ *
  */
 export const templateBlocks = [
   {
@@ -61,7 +61,8 @@ export const templateBlocks = [
           type: "row",
           props: {
             label: "{{translations.labels.orderNumber}}",
-            value: "{{data.order.transformed.order_number}}",
+            value:
+              "{{data.order.transformed.order_number}}",
           },
         },
         {
@@ -106,8 +107,10 @@ export const templateBlocks = [
                 type: "product-item",
                 props: {
                   label: "{{translations.labels.product}}",
-                  thumbnail: "{{data.order.transformed.items.thumbnail}}",
-                  value: "{{data.order.transformed.items.title}} - {{data.order.transformed.items.quantity}}x {{data.order.transformed.items.price}}",
+                  thumbnail:
+                    "{{data.order.transformed.items.thumbnail}}",
+                  value:
+                    "{{data.order.transformed.items.title}} - {{data.order.transformed.items.quantity}}x {{data.order.transformed.items.price}}",
                 },
               },
             ],
@@ -129,14 +132,16 @@ export const templateBlocks = [
           id: "heading-3",
           type: "heading",
           props: {
-            value: "{{translations.labels.shippingAddress}}",
+            value:
+              "{{translations.labels.shippingAddress}}",
           },
         },
         {
           id: "text-2",
           type: "text",
           props: {
-            value: "{{data.order.transformed.shipping_address_text}}",
+            value:
+              "{{data.order.transformed.shipping_address_text}}",
           },
         },
       ],
@@ -156,7 +161,8 @@ export const templateBlocks = [
           type: "row",
           props: {
             label: "{{translations.labels.discountTotal}}",
-            value: "{{data.order.transformed.summary.discount_total}}",
+            value:
+              "{{data.order.transformed.summary.discount_total}}",
           },
         },
         {
@@ -168,7 +174,8 @@ export const templateBlocks = [
           type: "row",
           props: {
             label: "{{translations.labels.orderTotal}}",
-            value: "{{data.order.transformed.summary.total}}",
+            value:
+              "{{data.order.transformed.summary.total}}",
           },
         },
         {
@@ -180,7 +187,8 @@ export const templateBlocks = [
           type: "row",
           props: {
             label: "{{translations.labels.paidTotal}}",
-            value: "{{data.order.transformed.summary.paid_total}}",
+            value:
+              "{{data.order.transformed.summary.paid_total}}",
           },
         },
         {
@@ -192,7 +200,8 @@ export const templateBlocks = [
           type: "row",
           props: {
             label: "{{translations.labels.taxTotal}}",
-            value: "{{data.order.transformed.summary.tax_total}}",
+            value:
+              "{{data.order.transformed.summary.tax_total}}",
           },
         },
       ],
@@ -217,5 +226,4 @@ export const templateBlocks = [
       ],
     },
   },
-];
-
+]

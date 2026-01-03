@@ -3,7 +3,13 @@ import { useTranslation } from "react-i18next"
 import { NotificationOrder } from "./notification-order"
 import { NotificationOrderPayment } from "./notification-order-payment"
 
-export const NotificationsDetail = ({ type, data }: { type: string, data: any }) => {
+export const NotificationsDetail = ({
+  type,
+  data,
+}: {
+  type: string
+  data: any
+}) => {
   return (
     <Container className="p-0">
       <Header />

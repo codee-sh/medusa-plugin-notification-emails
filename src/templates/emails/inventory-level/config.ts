@@ -1,16 +1,16 @@
-import pl from "./translations/pl.json";
-import en from "./translations/en.json";
+import pl from "./translations/pl.json"
+import en from "./translations/en.json"
 
-export { pl, en };
+export { pl, en }
 
 export const translations: Record<any, any> = {
   pl: pl,
   en: en,
-};
+}
 
 /**
  * Inventory level template blocks
- * 
+ *
  */
 export const templateBlocks = [
   {
@@ -48,7 +48,8 @@ export const templateBlocks = [
           id: "row-1",
           type: "row",
           props: {
-            label: "{{translations.labels.inventoryLevelId}}",
+            label:
+              "{{translations.labels.inventoryLevelId}}",
             value: "{{data.inventory_level.id}}",
           },
         },
@@ -60,7 +61,8 @@ export const templateBlocks = [
           id: "row-2",
           type: "row",
           props: {
-            label: "{{translations.labels.inventoryLevelLocation}}",
+            label:
+              "{{translations.labels.inventoryLevelLocation}}",
             value: "{{data.inventory_level.location_id}}",
           },
         },
@@ -72,8 +74,10 @@ export const templateBlocks = [
           id: "row-3",
           type: "row",
           props: {
-            label: "{{translations.labels.inventoryLevelStockedQuantity}}",
-            value: "{{data.inventory_level.stocked_quantity}}",
+            label:
+              "{{translations.labels.inventoryLevelStockedQuantity}}",
+            value:
+              "{{data.inventory_level.stocked_quantity}}",
           },
         },
         {
@@ -84,8 +88,10 @@ export const templateBlocks = [
           id: "row-4",
           type: "row",
           props: {
-            label: "{{translations.labels.inventoryLevelReservedQuantity}}",
-            value: "{{data.inventory_level.reserved_quantity}}",
+            label:
+              "{{translations.labels.inventoryLevelReservedQuantity}}",
+            value:
+              "{{data.inventory_level.reserved_quantity}}",
           },
         },
         {
@@ -96,8 +102,10 @@ export const templateBlocks = [
           id: "row-5",
           type: "row",
           props: {
-            label: "{{translations.labels.inventoryLevelAvailableQuantity}}",
-            value: "{{data.inventory_level.available_quantity}}",
+            label:
+              "{{translations.labels.inventoryLevelAvailableQuantity}}",
+            value:
+              "{{data.inventory_level.available_quantity}}",
           },
         },
       ],
@@ -122,5 +130,4 @@ export const templateBlocks = [
       ],
     },
   },
-];
-
+]

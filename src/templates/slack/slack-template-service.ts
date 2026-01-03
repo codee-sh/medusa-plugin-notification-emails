@@ -48,7 +48,7 @@ import { TEMPLATES_NAMES } from "./types"
 export class SlackTemplateService extends AbstractTemplateService<any> {
   constructor() {
     super()
-    
+
     this.baseTemplateConfig = {
       getBlocks: async (): Promise<any[]> => {
         // Base template for Slack returns an empty array
@@ -56,7 +56,8 @@ export class SlackTemplateService extends AbstractTemplateService<any> {
       },
     }
 
-    this.interpolateFunction = this.interpolateSlackBlocks.bind(this)
+    this.interpolateFunction =
+      this.interpolateSlackBlocks.bind(this)
 
     // Register base template
     this.registerTemplate(
@@ -173,18 +174,31 @@ export class SlackTemplateService extends AbstractTemplateService<any> {
   ): any[] {
     return blocks.map((block) => {
       // Create fields array if fieldTemplate and fieldsPath is provided and array is not empty
-      if (block.type === "section" && block?.fieldTemplate) {
+      if (
+        block.type === "section" &&
+        block?.fieldTemplate
+      ) {
         const { fieldsPath, fieldTemplate } = block || {}
 
         if (fieldsPath && fieldTemplate) {
-          const array = pickValueFromObject(fieldsPath, data)
+          const array = pickValueFromObject(
+            fieldsPath,
+            data
+          )
 
           if (Array.isArray(array) && array.length > 0) {
-            const interpolatedFieldBlocks = array.map((item: any) => {
-              return this.recursivelyInterpolateText(fieldTemplate, item, translator, {
-                arrayPath: fieldsPath,
-              })
-            })
+            const interpolatedFieldBlocks = array.map(
+              (item: any) => {
+                return this.recursivelyInterpolateText(
+                  fieldTemplate,
+                  item,
+                  translator,
+                  {
+                    arrayPath: fieldsPath,
+                  }
+                )
+              }
+            )
 
             block = {
               ...omit(block, "fieldsPath", "fieldTemplate"),
@@ -194,7 +208,12 @@ export class SlackTemplateService extends AbstractTemplateService<any> {
         }
       }
 
-      return this.recursivelyInterpolateText(block, data, translator, config)
+      return this.recursivelyInterpolateText(
+        block,
+        data,
+        translator,
+        config
+      )
     })
   }
 
@@ -209,13 +228,23 @@ export class SlackTemplateService extends AbstractTemplateService<any> {
   ): any {
     // If it's a string, interpolate it
     if (typeof node === "string") {
-      return multiInterpolate(node, data, translator, config)
+      return multiInterpolate(
+        node,
+        data,
+        translator,
+        config
+      )
     }
 
     // If it's an array, process each element recursively
     if (Array.isArray(node)) {
       return node.map((item) => {
-        return this.recursivelyInterpolateText(item, data, translator, config)
+        return this.recursivelyInterpolateText(
+          item,
+          data,
+          translator,
+          config
+        )
       })
     }
 
@@ -225,11 +254,23 @@ export class SlackTemplateService extends AbstractTemplateService<any> {
 
       for (const [key, value] of Object.entries(node)) {
         // If key is "text" and value is a string, interpolate it
-        if ((key === "text" || key === "url") && typeof value === "string") {
-          processed[key] = multiInterpolate(value, data, translator, config)
+        if (
+          (key === "text" || key === "url") &&
+          typeof value === "string"
+        ) {
+          processed[key] = multiInterpolate(
+            value,
+            data,
+            translator,
+            config
+          )
         }
         // If key is "text" and value is an object (e.g., { type: "plain_text", text: "..." })
-        else if (key === "text" && value && typeof value === "object") {
+        else if (
+          key === "text" &&
+          value &&
+          typeof value === "object"
+        ) {
           // Recursively process the text object (will interpolate text.text)
           processed[key] = this.recursivelyInterpolateText(
             value,
@@ -239,9 +280,17 @@ export class SlackTemplateService extends AbstractTemplateService<any> {
           )
         }
         // If key is "elements" and value is an array
-        else if (key === "elements" && Array.isArray(value)) {
+        else if (
+          key === "elements" &&
+          Array.isArray(value)
+        ) {
           processed[key] = value.map((item: any) => {
-            return this.recursivelyInterpolateText(item, data, translator, config)
+            return this.recursivelyInterpolateText(
+              item,
+              data,
+              translator,
+              config
+            )
           })
         }
         // For all other properties, recursively process them
@@ -263,7 +312,7 @@ export class SlackTemplateService extends AbstractTemplateService<any> {
 
   /**
    * Render Slack template
-   * 
+   *
    * @param params - Render parameters
    * @returns Rendered Slack blocks
    */
@@ -280,11 +329,12 @@ export class SlackTemplateService extends AbstractTemplateService<any> {
       backendUrl: params.options?.backendUrl || "",
     }
 
-    const { template, translator, blocks } = this.prepareData({
-      templateName: params.templateName,
-      data: dataWithOptions,
-      options: params.options,
-    })
+    const { template, translator, blocks } =
+      this.prepareData({
+        templateName: params.templateName,
+        data: dataWithOptions,
+        options: params.options,
+      })
 
     const options = {
       ...params.options,
@@ -297,4 +347,3 @@ export class SlackTemplateService extends AbstractTemplateService<any> {
     }
   }
 }
-

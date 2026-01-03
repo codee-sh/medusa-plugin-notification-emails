@@ -9,19 +9,33 @@ export const PRODUCT_TAG_ATTRIBUTES = [
     value: "product_tag.value",
     label: "Value",
     description: "Value/name of the product tag",
-    examples: ["summer", "sale", "new", "bestseller", "limited-edition"],
+    examples: [
+      "summer",
+      "sale",
+      "new",
+      "bestseller",
+      "limited-edition",
+    ],
   },
   {
     value: "product_tag.created_at",
     label: "Created At",
-    description: "Date and time when the tag was created (ISO 8601 format)",
-    examples: ["2024-01-15T10:30:00Z", "2024-12-25T00:00:00Z"],
+    description:
+      "Date and time when the tag was created (ISO 8601 format)",
+    examples: [
+      "2024-01-15T10:30:00Z",
+      "2024-12-25T00:00:00Z",
+    ],
   },
   {
     value: "product_tag.updated_at",
     label: "Updated At",
-    description: "Date and time when the tag was last updated (ISO 8601 format)",
-    examples: ["2024-01-15T10:30:00Z", "2024-12-25T00:00:00Z"],
+    description:
+      "Date and time when the tag was last updated (ISO 8601 format)",
+    examples: [
+      "2024-01-15T10:30:00Z",
+      "2024-12-25T00:00:00Z",
+    ],
   },
 ]
 
@@ -31,7 +45,7 @@ export const PRODUCT_TAG_ATTRIBUTES = [
 export const PRODUCT_TAG_QUERY_FIELDS = [
   // Basic fields from PRODUCT_TAG_ATTRIBUTES
   ...PRODUCT_TAG_ATTRIBUTES.map((attr) => attr.value),
-  
+
   // Technical relations required for complete data retrieval (if any)
   // These fields are not available in UI rules, but are needed for correct data retrieval
 ]

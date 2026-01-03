@@ -1,15 +1,17 @@
-import { useState } from "react";
-import { Select, Text } from "@medusajs/ui";
-import { useOrders } from "../../../../hooks/api/orders";
-import { OrderPlacedTemplate } from "./order-placed";
+import { useState } from "react"
+import { Select, Text } from "@medusajs/ui"
+import { useOrders } from "../../../../hooks/api/orders"
+import { OrderPlacedTemplate } from "./order-placed"
 
 export const OrderTemplateGroup = () => {
-  const [selectedOrder, setSelectedOrder] = useState<string>("");
+  const [selectedOrder, setSelectedOrder] =
+    useState<string>("")
 
-  const { data: orders, isLoading: isOrdersLoading } = useOrders({
-    fields: "id,display_id",
-    enabled: true,
-  });
+  const { data: orders, isLoading: isOrdersLoading } =
+    useOrders({
+      fields: "id,display_id",
+      enabled: true,
+    })
 
   return (
     <>
@@ -32,8 +34,9 @@ export const OrderTemplateGroup = () => {
           </Select.Content>
         </Select>
       </div>
-      {selectedOrder && <OrderPlacedTemplate orderId={selectedOrder} />}
+      {selectedOrder && (
+        <OrderPlacedTemplate orderId={selectedOrder} />
+      )}
     </>
-  );
-};
-
+  )
+}

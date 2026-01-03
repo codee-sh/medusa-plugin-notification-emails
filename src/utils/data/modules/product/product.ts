@@ -16,20 +16,28 @@ export const PRODUCT_ATTRIBUTES = [
   {
     value: "product.handle",
     label: "Handle",
-    description: "URL-friendly identifier for the product (used in product URLs)",
+    description:
+      "URL-friendly identifier for the product (used in product URLs)",
     examples: ["t-shirt", "blue-jeans", "running-sneakers"],
   },
   {
     value: "product.subtitle",
     label: "Subtitle",
-    description: "Subtitle or short description of the product",
-    examples: ["Comfortable cotton t-shirt", "Premium denim jeans"],
+    description:
+      "Subtitle or short description of the product",
+    examples: [
+      "Comfortable cotton t-shirt",
+      "Premium denim jeans",
+    ],
   },
   {
     value: "product.description",
     label: "Description",
     description: "Full description of the product",
-    examples: ["This is a high-quality product...", "Made from premium materials..."],
+    examples: [
+      "This is a high-quality product...",
+      "Made from premium materials...",
+    ],
   },
   {
     value: "product.is_giftcard",
@@ -76,13 +84,15 @@ export const PRODUCT_ATTRIBUTES = [
   {
     value: "product.hs_code",
     label: "HS Code",
-    description: "Harmonized System (HS) code for customs classification",
+    description:
+      "Harmonized System (HS) code for customs classification",
     examples: ["6109.10.00", "6403.99.00"],
   },
   {
     value: "product.origin_country",
     label: "Origin Country",
-    description: "ISO 3166-1 alpha-2 country code where the product originates",
+    description:
+      "ISO 3166-1 alpha-2 country code where the product originates",
     examples: ["PL", "US", "CN", "DE"],
   },
   {
@@ -124,25 +134,35 @@ export const PRODUCT_ATTRIBUTES = [
   {
     value: "product.created_at",
     label: "Created At",
-    description: "Date and time when the product was created (ISO 8601 format)",
-    examples: ["2024-01-15T10:30:00Z", "2024-12-25T00:00:00Z"],
+    description:
+      "Date and time when the product was created (ISO 8601 format)",
+    examples: [
+      "2024-01-15T10:30:00Z",
+      "2024-12-25T00:00:00Z",
+    ],
   },
   {
     value: "product.updated_at",
     label: "Updated At",
-    description: "Date and time when the product was last updated (ISO 8601 format)",
-    examples: ["2024-01-15T10:30:00Z", "2024-12-25T00:00:00Z"],
+    description:
+      "Date and time when the product was last updated (ISO 8601 format)",
+    examples: [
+      "2024-01-15T10:30:00Z",
+      "2024-12-25T00:00:00Z",
+    ],
   },
   {
     value: "product.deleted_at",
     label: "Deleted At",
-    description: "Date and time when the product was deleted (ISO 8601 format), null if not deleted",
+    description:
+      "Date and time when the product was deleted (ISO 8601 format), null if not deleted",
     examples: ["2024-01-15T10:30:00Z", null],
   },
   {
     value: "product.tags.id",
     label: "Tag ID",
-    description: "Unique identifier of the product tag. This is an array - operator 'eq' checks if ANY value matches",
+    description:
+      "Unique identifier of the product tag. This is an array - operator 'eq' checks if ANY value matches",
     examples: ["tag_01ABC123"],
     type: "array",
     isRelation: true,
@@ -151,7 +171,8 @@ export const PRODUCT_ATTRIBUTES = [
   {
     value: "product.tags.value",
     label: "Tag Value",
-    description: "Value/name of the product tag. This is an array - operator 'eq' checks if ANY value matches",
+    description:
+      "Value/name of the product tag. This is an array - operator 'eq' checks if ANY value matches",
     examples: ["summer", "sale", "new", "bestseller"],
     type: "array",
     isRelation: true,
@@ -160,7 +181,8 @@ export const PRODUCT_ATTRIBUTES = [
   {
     value: "product.categories.id",
     label: "Category ID",
-    description: "Unique identifier of the product category. This is an array - operator 'eq' checks if ANY value matches",
+    description:
+      "Unique identifier of the product category. This is an array - operator 'eq' checks if ANY value matches",
     examples: ["cat_01ABC123"],
     type: "array",
     isRelation: true,
@@ -169,7 +191,8 @@ export const PRODUCT_ATTRIBUTES = [
   {
     value: "product.categories.name",
     label: "Category Name",
-    description: "Name of the product category. This is an array - operator 'eq' checks if ANY value matches",
+    description:
+      "Name of the product category. This is an array - operator 'eq' checks if ANY value matches",
     examples: ["Clothing", "Electronics", "Home & Garden"],
     type: "array",
     isRelation: true,
@@ -178,7 +201,8 @@ export const PRODUCT_ATTRIBUTES = [
   {
     value: "product.categories.handle",
     label: "Category Handle",
-    description: "URL-friendly identifier of the category. This is an array - operator 'eq' checks if ANY value matches",
+    description:
+      "URL-friendly identifier of the category. This is an array - operator 'eq' checks if ANY value matches",
     examples: ["clothing", "electronics", "home-garden"],
     type: "array",
     isRelation: true,
@@ -187,7 +211,8 @@ export const PRODUCT_ATTRIBUTES = [
   {
     value: "product.variants.id",
     label: "Variant ID",
-    description: "Unique identifier of the product variant. This is an array - operator 'eq' checks if ANY value matches",
+    description:
+      "Unique identifier of the product variant. This is an array - operator 'eq' checks if ANY value matches",
     examples: ["variant_01ABC123"],
     type: "array",
     isRelation: true,
@@ -196,7 +221,8 @@ export const PRODUCT_ATTRIBUTES = [
   {
     value: "product.variants.sku",
     label: "Variant SKU",
-    description: "SKU of the product variant. This is an array - operator 'eq' checks if ANY value matches",
+    description:
+      "SKU of the product variant. This is an array - operator 'eq' checks if ANY value matches",
     examples: ["TSHIRT-SM-BLUE", "JEANS-32-BLACK"],
     type: "array",
     isRelation: true,
@@ -205,7 +231,8 @@ export const PRODUCT_ATTRIBUTES = [
   {
     value: "product.variants.title",
     label: "Variant Title",
-    description: "Title/name of the product variant. This is an array - operator 'eq' checks if ANY value matches",
+    description:
+      "Title/name of the product variant. This is an array - operator 'eq' checks if ANY value matches",
     examples: ["Small / Blue", "32 / Black", "Large / Red"],
     type: "array",
     isRelation: true,
@@ -232,7 +259,8 @@ export const PRODUCT_ATTRIBUTES = [
   {
     value: "product.collection.id",
     label: "Collection ID",
-    description: "Unique identifier of the product collection",
+    description:
+      "Unique identifier of the product collection",
     examples: ["pcol_01ABC123"],
     type: "object",
     isRelation: true,
@@ -242,7 +270,11 @@ export const PRODUCT_ATTRIBUTES = [
     value: "product.collection.title",
     label: "Collection Title",
     description: "Title/name of the product collection",
-    examples: ["Summer Collection", "Winter Sale", "New Arrivals"],
+    examples: [
+      "Summer Collection",
+      "Winter Sale",
+      "New Arrivals",
+    ],
     type: "object",
     isRelation: true,
     relationType: "collection",
@@ -250,8 +282,13 @@ export const PRODUCT_ATTRIBUTES = [
   {
     value: "product.collection.handle",
     label: "Collection Handle",
-    description: "URL-friendly identifier of the collection",
-    examples: ["summer-collection", "winter-sale", "new-arrivals"],
+    description:
+      "URL-friendly identifier of the collection",
+    examples: [
+      "summer-collection",
+      "winter-sale",
+      "new-arrivals",
+    ],
     type: "object",
     isRelation: true,
     relationType: "collection",
@@ -264,7 +301,7 @@ export const PRODUCT_ATTRIBUTES = [
 export const PRODUCT_QUERY_FIELDS = [
   // Basic fields from PRODUCT_ATTRIBUTES
   ...PRODUCT_ATTRIBUTES.map((attr) => attr.value),
-  
+
   // Technical relations required for complete data retrieval
   // These fields are not available in UI rules, but are needed for correct data retrieval
   "product.tags.*",

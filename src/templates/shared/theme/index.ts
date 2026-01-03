@@ -1,1 +1,1 @@
-export { defaultTheme } from "./presets/default";
+export { defaultTheme } from "./presets/default"

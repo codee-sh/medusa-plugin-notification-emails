@@ -51,23 +51,33 @@ export class EmailTemplateService extends AbstractTemplateService<any> {
         data: any,
         options?: TemplateOptionsType
       ): Promise<string> => {
-        return await getBaseTemplateHtml(data, options as any)
+        return await getBaseTemplateHtml(
+          data,
+          options as any
+        )
       },
       getText: async (
         data: any,
         options?: TemplateOptionsType
       ): Promise<string> => {
-        return await getBaseTemplateText(data, options as any)
+        return await getBaseTemplateText(
+          data,
+          options as any
+        )
       },
       getReactNode: (
         data: any,
         options?: TemplateOptionsType
       ): React.ReactNode => {
-        return getBaseTemplateReactNode(data, options as any)
+        return getBaseTemplateReactNode(
+          data,
+          options as any
+        )
       },
     }
-    
-    this.interpolateFunction = this.interpolateBlocks.bind(this)
+
+    this.interpolateFunction =
+      this.interpolateBlocks.bind(this)
 
     // Register base template
     this.registerTemplate(
@@ -142,24 +152,24 @@ export class EmailTemplateService extends AbstractTemplateService<any> {
   /**
    * Recursively interpolate text in blocks using the multiInterpolate function
    * Processes props.[property] in each block and nested blocks
-   * 
+   *
    * @param blocks - Blocks to interpolate
    * @param data - Data object for interpolation
    * @param translator - Translator instance with t method (created using createTranslator function)
    * @param config - Configuration object
    * @returns Interpolated blocks
-   * 
+   *
    * @example
-   * 
+   *
    * const blocks = [ { type: "text", props: { value: "Order {{data.order.id}} - {{translations.headerTitle}}" } } ]
    * const data = { order: { id: "123" } }
    * const translator = translator instance (created using createTranslator function)
    * const config = {}
-   * 
+   *
    * const interpolatedBlocks = interpolateBlocks(blocks, data, translator, config)
-   * 
+   *
    * Return: [ { type: "text", props: { value: "Order 123 - Order Confirmation" } } ]
-   * 
+   *
    */
   private interpolateBlocks(
     blocks: any[],
@@ -171,11 +181,18 @@ export class EmailTemplateService extends AbstractTemplateService<any> {
       const processedBlock = { ...block }
 
       // Process all string properties in props
-      if (processedBlock.props && typeof processedBlock.props === "object") {
-        const processedProps: any = { ...processedBlock.props }
+      if (
+        processedBlock.props &&
+        typeof processedBlock.props === "object"
+      ) {
+        const processedProps: any = {
+          ...processedBlock.props,
+        }
 
         // Iterate over all properties in props
-        for (const [key, value] of Object.entries(processedProps)) {
+        for (const [key, value] of Object.entries(
+          processedProps
+        )) {
           // Skip non-string values and special properties (blocks, itemBlocks, separator, arrayPath)
           if (
             typeof value === "string" &&
@@ -211,16 +228,23 @@ export class EmailTemplateService extends AbstractTemplateService<any> {
       }
 
       if (processedBlock.type === "repeater") {
-        const { arrayPath, itemBlocks } = processedBlock.props || {}
+        const { arrayPath, itemBlocks } =
+          processedBlock.props || {}
 
         if (arrayPath && itemBlocks) {
           const array = pickValueFromObject(arrayPath, data)
 
           if (Array.isArray(array) && array.length > 0) {
-            const interpolatedItemBlocks = array.map((item: any) =>
-              this.interpolateBlocks(itemBlocks, item, translator, {
-                arrayPath: arrayPath,
-              })[0]
+            const interpolatedItemBlocks = array.map(
+              (item: any) =>
+                this.interpolateBlocks(
+                  itemBlocks,
+                  item,
+                  translator,
+                  {
+                    arrayPath: arrayPath,
+                  }
+                )[0]
             )
 
             processedBlock.props = {
@@ -237,13 +261,15 @@ export class EmailTemplateService extends AbstractTemplateService<any> {
 
   /**
    * Render email template
-   * 
+   *
    * @param params - Render parameters
    * @returns Rendered email with html, text, and subject
    */
-  async render(params: RenderParams & {
-    options?: TemplateRenderOptionsType
-  }): Promise<{
+  async render(
+    params: RenderParams & {
+      options?: TemplateRenderOptionsType
+    }
+  ): Promise<{
     html: string
     text: string
     subject: string
@@ -252,11 +278,12 @@ export class EmailTemplateService extends AbstractTemplateService<any> {
       throw new Error("Template name is required")
     }
 
-    const { template, blocks, translator } = this.prepareData({
-      templateName: params.templateName,
-      data: params.data,
-      options: params.options,
-    })
+    const { template, blocks, translator } =
+      this.prepareData({
+        templateName: params.templateName,
+        data: params.data,
+        options: params.options,
+      })
 
     const options = {
       ...params.options,
@@ -276,13 +303,15 @@ export class EmailTemplateService extends AbstractTemplateService<any> {
 
   /**
    * Render email template synchronously (for previews)
-   * 
+   *
    * @param params - Render parameters
    * @returns React node
    */
-  renderSync(params: RenderParams & {
-    options?: TemplateRenderOptionsType
-  }): {
+  renderSync(
+    params: RenderParams & {
+      options?: TemplateRenderOptionsType
+    }
+  ): {
     reactNode: React.ReactNode
   } {
     if (!params.templateName) {
@@ -307,4 +336,3 @@ export class EmailTemplateService extends AbstractTemplateService<any> {
     }
   }
 }
-

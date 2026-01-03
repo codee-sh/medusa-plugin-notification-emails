@@ -6,14 +6,21 @@ interface WidgetData {
   id: string
 }
 
-const OrderNotificationActivityWidget = ({ data }: { data: WidgetData }) => {
-  const entityType = 'order'
+const OrderNotificationActivityWidget = ({
+  data,
+}: {
+  data: WidgetData
+}) => {
+  const entityType = "order"
   const entityId = data.id
 
   return (
     <div className="flex w-full flex-col gap-y-3">
       <NotificationsDetail type="order" data={data} />
-      <NotificationsList entityId={entityId} entityType={entityType} />
+      <NotificationsList
+        entityId={entityId}
+        entityType={entityType}
+      />
     </div>
   )
 }

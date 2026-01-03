@@ -11,7 +11,9 @@ export const getTotalCaptured = (
     return acc
   }, 0)
 
-export const getTotalPending = (paymentCollections: AdminPaymentCollection[]) =>
+export const getTotalPending = (
+  paymentCollections: AdminPaymentCollection[]
+) =>
   paymentCollections
     .filter((pc) => pc.status !== "canceled")
     .reduce((acc, paymentCollection) => {

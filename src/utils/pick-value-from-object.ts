@@ -22,7 +22,9 @@ export function pickValueFromObject(
 
     if (Array.isArray(result)) {
       const subPath = segments.slice(i + 1).join(".")
-      return result.map((item) => pickValueFromObject(subPath, item)).flat()
+      return result
+        .map((item) => pickValueFromObject(subPath, item))
+        .flat()
     }
 
     if (!isObject(result)) {

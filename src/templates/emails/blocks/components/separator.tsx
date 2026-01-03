@@ -1,4 +1,4 @@
-import { Hr } from "@react-email/components";
+import { Hr } from "@react-email/components"
 
 /**
  * SeparatorBlock - Separator block component
@@ -10,12 +10,10 @@ export function SeparatorBlock({
   isLastBlock,
   isFirstBlock,
 }: {
-  id?: string;
-  props: any;
-  isLastBlock: boolean;
-  isFirstBlock: boolean;
+  id?: string
+  props: any
+  isLastBlock: boolean
+  isFirstBlock: boolean
 }) {
-  return (
-    <Hr className="my-4 border-ui-border" />
-  );
+  return <Hr className="my-4 border-ui-border" />
 }
