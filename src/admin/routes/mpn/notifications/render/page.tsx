@@ -7,10 +7,10 @@ import {
   Select,
   Text,
 } from "@medusajs/ui"
-import { SingleColumnPage } from "../../../components/layout/pages"
-import { OrderTemplateGroup } from "../../../notifications-templates/groups/order"
-import { ContactFormTemplateGroup } from "../../../notifications-templates/groups/contact-form"
-import { TEMPLATES_NAMES } from "../../../../templates/emails/types"
+import { SingleColumnPage } from "../../../../components/layout/pages"
+import { OrderTemplateGroup } from "../../../../notifications-templates/groups/order"
+import { ContactFormTemplateGroup } from "../../../../notifications-templates/groups/contact-form"
+import { TEMPLATES_NAMES } from "../../../../../templates/emails/types"
 
 const PreviewTemplatePage = () => {
   const templateName = ""

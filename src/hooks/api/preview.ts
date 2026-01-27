@@ -60,7 +60,7 @@ export const usePreview = (
     queryKey,
     queryFn: async ({ queryKey }) => {
       return await sdk.client.fetch(
-        "/admin/notification-plugin/render-template",
+        "/admin/mpn/render-template",
         {
           method: "POST",
           body: {

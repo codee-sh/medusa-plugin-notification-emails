@@ -18,10 +18,42 @@ export const AdminNotificationListParams =
     resource_type: z.string().optional(),
   })
 
+export const AdminTemplateListParams =
+  createFindParams().extend({
+    id: z.string().optional(),
+  })
+
 export default defineMiddlewares({
   routes: [
     {
-      matcher: "/admin/notification-plugin/notifications",
+      matcher: "/admin/mpn/templates",
+      methods: ["GET"],
+      middlewares: [
+        authenticate("user", ["session", "bearer"], {
+          allowUnauthenticated: false,
+        }),
+        validateAndTransformQuery(
+          AdminTemplateListParams,
+          {
+            defaults: [
+              "id",
+              "name",
+              "label",
+              "description",
+              "created_at",
+              "updated_at",
+              "channel",
+              "locale",
+              "is_active",
+              "blocks",
+            ],
+            isList: true,
+          }
+        ),
+      ],
+    },
+    {
+      matcher: "/admin/mpn/notifications",
       methods: ["GET"],
       middlewares: [
         authenticate("user", ["session", "bearer"], {

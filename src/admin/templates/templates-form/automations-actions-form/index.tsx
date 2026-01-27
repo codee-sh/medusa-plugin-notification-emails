@@ -1,0 +1,264 @@
+import { Label, Select, Button } from "@medusajs/ui"
+import {
+  Controller,
+  useFieldArray,
+  useWatch,
+} from "react-hook-form"
+import { Trash, Plus } from "@medusajs/icons"
+import LoadActionComponent from "../../../utils/dynamic-component"
+
+export function AutomationsActionsForm({
+  form,
+  isOpen,
+  availableActionsData,
+}: {
+  form: any
+  isOpen?: boolean
+  availableActionsData?: any
+}) {
+  // Reset action configs when eventName changes to ensure templates are updated
+  // useEffect(() => {
+  //   const actions = form.getValues("actions.items") || []
+  //   if (actions.length > 0 && eventName) {
+  //     actions.forEach((_: any, index: number) => {
+  //       const currentConfig = form.getValues(`actions.items.${index}.config`) || {}
+  //       // Only reset templateName if it exists and event changed
+  //       if (currentConfig.templateName) {
+  //         // form.setValue(`actions.items.${index}.config.templateName`, undefined, {
+  //         //   shouldValidate: false,
+  //         //   shouldDirty: true,
+  //         // })
+  //       }
+  //     })
+  //   }
+  // }, [eventName, form])
+
+  const {
+    fields = [],
+    append,
+    remove,
+  } = useFieldArray({
+    control: form.control,
+    name: "actions.items",
+  })
+
+  // Watch actual values from form (not just metadata from fields)
+  const watchedActions = useWatch({
+    control: form.control,
+    name: "actions.items",
+  })
+
+  const handleAddAction = () => {
+    append({
+      action_type: "",
+      config: {},
+    })
+  }
+
+  const handleRemoveRule = (index: number) => {
+    remove(index)
+  }
+
+  const actionTypeValueChange = (
+    index: number,
+    value: string,
+    isExistingAction: boolean
+  ) => {
+    // Don't allow changing action type for existing actions
+    if (isExistingAction) {
+      return
+    }
+
+    form.setValue(
+      `actions.items.${index}.action_type`,
+      value,
+      {
+        shouldValidate: false,
+        shouldDirty: true,
+      }
+    )
+
+    // Clear validation errors first to prevent showing errors from previous action type
+    form.clearErrors(`actions.items.${index}`)
+
+    const actionData: any =
+      availableActionsData?.actions?.find(
+        (a) => a.value === value
+      )
+    const fields = actionData?.fields
+
+    // Reset config when action type changes to prevent sending
+    // fields from previous action type in payload
+    form.setValue(
+      `actions.items.${index}.config`,
+      fields?.reduce((acc: any, field: any) => {
+        acc[field.name || field.key] = ""
+        return acc
+      }, {}),
+      {
+        shouldValidate: false,
+        shouldDirty: true,
+      }
+    )
+  }
+
+  return (
+    <div className="w-full">
+      <div className="p-6 max-w-2xl mx-auto">
+        <div className="flex flex-col gap-4">
+          {fields.length === 0 && (
+            <div className="text-sm text-gray-500 text-center py-4">
+              No actions added yet. Click "Add Item" to
+              create a new action.
+            </div>
+          )}
+          {fields.map((field, index) => {
+            return (
+              <Controller
+                key={field?.id ?? `action-${index}`}
+                name={`actions.items.${index}.action_type`}
+                control={form.control}
+                render={({
+                  field: actionTypeField,
+                  fieldState,
+                }) => {
+                  const actionType = actionTypeField.value
+                  const actionData: any =
+                    availableActionsData?.actions?.find(
+                      (a) => a.value === actionType
+                    )
+                  const configComponentKey =
+                    actionData?.configComponentKey
+                  const fields = actionData?.fields
+                  const isEnabled = actionType
+                    ? actionData?.enabled
+                    : true
+
+                  // Check if this is an existing action (has id from database)
+                  // watchedActions contains actual form values, including id from DB
+                  const currentAction =
+                    watchedActions?.[index]
+                  const isExistingAction =
+                    !!currentAction?.id
+
+                  return (
+                    <div
+                      className={`flex flex-col gap-4 p-4 border rounded-lg ${
+                        isEnabled
+                          ? "opacity-100"
+                          : "opacity-50"
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1 flex flex-col gap-2">
+                          <Label>Action Type</Label>
+                          <Select
+                            key={`action-type-${index}-${
+                              availableActionsData?.actions
+                                ?.length || 0
+                            }`}
+                            value={
+                              actionTypeField.value ?? ""
+                            }
+                            onValueChange={(value) => {
+                              actionTypeValueChange(
+                                index,
+                                value,
+                                isExistingAction
+                              )
+                            }}
+                            disabled={isExistingAction}
+                          >
+                            <Select.Trigger>
+                              <Select.Value placeholder="Select the action type" />
+                            </Select.Trigger>
+                            <Select.Content>
+                              {availableActionsData?.actions?.map(
+                                (action, actionIndex) => (
+                                  <Select.Item
+                                    key={
+                                      action.value ||
+                                      `action-${index}-${actionIndex}`
+                                    }
+                                    value={
+                                      action.value || ""
+                                    }
+                                  >
+                                    {action.label}{" "}
+                                    {action.enabled
+                                      ? ""
+                                      : "(Disabled)"}
+                                  </Select.Item>
+                                )
+                              )}
+                            </Select.Content>
+                          </Select>
+                          {fieldState.error && (
+                            <span className="text-red-500 text-sm">
+                              {fieldState.error.message}
+                            </span>
+                          )}
+                        </div>
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          size="small"
+                          onClick={() =>
+                            handleRemoveRule(index)
+                          }
+                          className="mt-2"
+                        >
+                          <Trash />
+                        </Button>
+                      </div>
+
+                      {/* Dynamic configuration component */}
+                      {actionType && configComponentKey && (
+                        <div className="mt-4 pt-4 border-t">
+                          <LoadActionComponent
+                            configComponentKey={
+                              configComponentKey
+                            }
+                            actionType={actionType}
+                            form={form}
+                            name={
+                              `actions.items.${index}.config` as any
+                            }
+                            errors={
+                              form.formState.errors?.actions
+                                ?.items?.[index]?.config as
+                                | Record<string, string>
+                                | undefined
+                            }
+                            fields={fields}
+                          />
+                        </div>
+                      )}
+
+                      {!isEnabled && (
+                        <p className="text-sm text-red-500">
+                          The action is disabled by the
+                          configuration
+                        </p>
+                      )}
+                    </div>
+                  )
+                }}
+              />
+            )
+          })}
+
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={handleAddAction}
+            className="w-full"
+          >
+            <Plus />
+            Add Item
+          </Button>
+        </div>
+      </div>
+    </div>
+  )
+}

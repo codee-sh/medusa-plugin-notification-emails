@@ -52,9 +52,15 @@
     "release:manual": "npm run build && npm publish --access public"
   },
   "dependencies": {
+    "@lexical/extension": "^0.39.0",
+    "@lexical/history": "^0.39.0",
+    "@lexical/html": "^0.39.0",
+    "@lexical/react": "^0.39.0",
+    "@lexical/rich-text": "^0.39.0",
     "@react-email/components": "^0.5.7",
     "@react-email/preview-server": "^4.3.1",
     "@react-email/render": "^1.4.0",
+    "lexical": "^0.39.0",
     "react-email": "^4.3.1"
   },
   "devDependencies": {
