@@ -11,7 +11,7 @@ import {
   Divider,
 } from "@medusajs/ui"
 import { useQueryClient } from "@tanstack/react-query"
-import { useListTemplates } from "../../../hooks/api/templates"
+import { useListTemplates } from "../../../../hooks/api/templates"
 import { useState, useMemo } from "react"
 import {
   TemplatesEditForm,

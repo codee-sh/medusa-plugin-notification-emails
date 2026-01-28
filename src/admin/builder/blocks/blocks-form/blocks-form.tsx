@@ -1,6 +1,5 @@
 import {
-  Button,
-  Heading,
+  Button
 } from "@medusajs/ui"
 import { Trash } from "@medusajs/icons"
 import { toast } from "@medusajs/ui"
@@ -22,18 +21,19 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable"
 
-import { BlockList } from "../block-list"
-import { BlockItem } from "../block-item"
-import { ManagerFields } from "../../../../components/manager-fields"
-import { createBlockFormSchema } from "../../../templates-form/utils/block-form-schema"
-import { baseBlocksSchema } from "../../../templates-form/types/schema"
-import { BlockDropdownMenu } from "../block-dropdown"
-import { useEditTemplateBlocks } from "../../../../../hooks/api/templates/blocks"
+import { BlockList } from "../components/block-list"
+import { BlockItem } from "../components/block-item"
+import { BlockItemBox } from "../components/block-item-box"
+import { BlocksGroup } from "../blocks-group/blocks-group"
+import { createBlockFormSchema } from "../../templates/templates-form/utils/block-form-schema"
+import { baseBlocksSchema } from "../../templates/templates-form/types/schema"
+import { BlockDropdownMenu } from "../components/block-dropdown"
+import { useEditTemplateBlocks } from "../../../../hooks/api/templates/blocks"
 import { useQueryClient } from "@tanstack/react-query"
 
 type BlockFormValues = z.infer<typeof baseBlocksSchema>
 
-export const BlockForm = (props: any) => {
+export const BlocksForm = (props: any) => {
   const { template_id, template, blocks, items } = props
 
   const blockFormSchema = useMemo(() => {
@@ -42,10 +42,9 @@ export const BlockForm = (props: any) => {
     )
   }, [blocks])
 
-
   const form = useForm<BlockFormValues>({
     resolver: zodResolver(blockFormSchema),
-    defaultValues: { items: items },
+    defaultValues: { items: items.map(i => ({ ...i, children: i.children ?? [] })) },
     mode: "onChange",
   })
 
@@ -77,8 +76,8 @@ export const BlockForm = (props: any) => {
     if (!over) return
     if (active.id === over.id) return
 
-    const oldIndex = fields.findIndex((f) => f.id === active.id)
-    const newIndex = fields.findIndex((f) => f.id === over.id)
+    const oldIndex = fields.findIndex((f) => f.rhf_id === active.id)
+    const newIndex = fields.findIndex((f) => f.rhf_id === over.id)
 
     if (oldIndex === -1 || newIndex === -1) return
 
@@ -103,11 +102,13 @@ export const BlockForm = (props: any) => {
       blocks: payload,
     }
 
-    await editTemplateBlocks(items)
+    console.log("items", items)
 
-    queryClient.invalidateQueries({
-      queryKey: ["template-blocks", template_id],
-    })
+    // await editTemplateBlocks(items)
+
+    // queryClient.invalidateQueries({
+    //   queryKey: ["template-blocks", template_id],
+    // })
 
     toast.success(
       "Blocks updated successfully",
@@ -131,36 +132,27 @@ export const BlockForm = (props: any) => {
         >
           <BlockList>
             {fields.map((field, index) => {
-              const availableBlock = blocks.find((b) => b.type === field.type)
-              const fields = availableBlock?.fields || []
-
               return (
-                <BlockItem key={field.id} id={field.id} item={field}>
-                  <div className="flex items-start justify-between w-full gap-4">
-                    <div className="flex-1">
-                      <Heading level="h2" className="mb-2">Block title: {availableBlock.label} <span className="text-ui-fg-subtle text-xs">(position: {index})</span></Heading>
-
-                      <ManagerFields
-                        name={`items.${index}.metadata`}
-                        form={form}
-                        fields={fields}
-                        errors={
-                          form.formState.errors?.items?.[index]?.metadata as
-                            | Record<string, string>
-                            | undefined
-                        }
-                      />
-                    </div>
-
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      size="small"
-                      onClick={() => remove(index)}
-                    >
-                      <Trash />
-                    </Button>
-                  </div>
+                <BlockItem key={field.rhf_id} id={field.rhf_id} item={field} index={index} form={form} remove={remove}>
+                  {field.type === "group" && (
+                    <BlocksGroup
+                      path={`items.${index}`}
+                      blocks={blocks}
+                      form={form}
+                      sensors={sensors}
+                      handleDragEnd={handleDragEnd}
+                    />
+                  ) }
+                  {field.type !== "group" && (
+                    <BlockItemBox
+                      path={`items.${index}`}
+                      index={index}
+                      field={field}
+                      blocks={blocks}
+                      form={form}
+                      remove={remove}
+                    />
+                  )}
                 </BlockItem>
               )
             })}

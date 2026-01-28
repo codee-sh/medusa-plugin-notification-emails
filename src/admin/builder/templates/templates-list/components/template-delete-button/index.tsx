@@ -1,6 +1,6 @@
 import { Button, usePrompt, toast } from "@medusajs/ui"
 import { useQueryClient } from "@tanstack/react-query"
-import { useDeleteTemplate } from "../../../../../hooks/api/templates"
+import { useDeleteTemplate } from "../../../../../../hooks/api/templates"
 import { Trash } from "@medusajs/icons"
 
 export const TemplateDeleteButton = ({

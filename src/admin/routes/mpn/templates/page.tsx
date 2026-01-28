@@ -1,6 +1,6 @@
 import { defineRouteConfig } from "@medusajs/admin-sdk"
 import { SingleColumnPage } from "../../../components/layout/pages"
-import { TemplatesList } from "../../../templates/templates-list"
+import { TemplatesList } from "../../../builder/templates/templates-list"
 
 const ListPage = () => {
   return (
@@ -16,7 +16,7 @@ const ListPage = () => {
 }
 
 export const config = defineRouteConfig({
-  label: "Templates",
+  label: "emplates",
 })
 
 export default ListPage

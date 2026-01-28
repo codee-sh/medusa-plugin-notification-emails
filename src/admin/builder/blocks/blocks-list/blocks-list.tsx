@@ -4,9 +4,9 @@ import {
 } from "@medusajs/ui"
 import { useMemo, useState, useEffect } from "react"
 
-import { useAvailableTemplates } from "../../../hooks/api/available-templates"
-import { BlockForm } from "./components/block-form/block-form"
-import { useListTemplateBlocks } from "../../../hooks/api/templates/blocks"
+import { useAvailableTemplates } from "../../../../hooks/api/available-templates"
+import { BlocksForm } from "../blocks-form/blocks-form"
+import { useListTemplateBlocks } from "../../../../hooks/api/templates/blocks"
 
 export const BlocksList = ({ id, type = "email" }: { id: string, type?: string }) => {
   const { data: availableTemplates } = useAvailableTemplates({
@@ -24,13 +24,21 @@ export const BlocksList = ({ id, type = "email" }: { id: string, type?: string }
       setTemplate(availableTemplates.templates.find((t) => t.id === type))
     }
   }, [availableTemplates])
-  
+
+  const mappedBlocks = useMemo(() => {
+    return blocks?.blocks?.map((block) => {
+      return {
+        ...block
+      }
+    }) ?? []
+  }, [blocks])
+
   return (
     <Container className="px-6 py-4">
       <Heading level="h1" className="mb-2">Blocks list for {type} template</Heading>
 
       {template && !isBlocksLoading && (
-        <BlockForm template_id={id} template={template} blocks={template.blocks} items={blocks.blocks} />
+        <BlocksForm template_id={id} template={template} blocks={template.blocks} items={mappedBlocks} />
       ) }
     </Container>
   )

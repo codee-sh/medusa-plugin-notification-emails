@@ -13,7 +13,7 @@ import { useQueryClient } from "@tanstack/react-query"
 import {
   useEditTemplate,
   useListTemplates,
-} from "../../../../hooks/api/templates"
+} from "../../../../../hooks/api/templates"
 import {
   TemplateFormValues,
   Tab,

@@ -30,6 +30,7 @@ export const baseBlocksSchema = z.object({
     position: z.number().optional(),
     template_id: z.string().optional(),
     parent_id: z.string().nullable().optional(),
+    children: z.array(z.any()).optional(),
     metadata: z.any(),
   }))
 })

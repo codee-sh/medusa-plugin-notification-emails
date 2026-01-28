@@ -13,7 +13,7 @@ import { useQueryClient } from "@tanstack/react-query"
 import {
   useCreateTemplate,
   useListTemplates,
-} from "../../../../hooks/api/templates"
+} from "../../../../../hooks/api/templates"
 import { TemplatesGeneralForm } from "../templates-general-form"
 import {
   TemplateFormValues,

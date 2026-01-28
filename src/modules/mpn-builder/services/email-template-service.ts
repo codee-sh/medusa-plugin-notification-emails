@@ -80,6 +80,11 @@ export class EmailTemplateService extends BaseTemplateService {
       ],
     },
     {
+      type: "group",
+      label: "group",
+      fields: [],
+    },
+    {
       type: "separator",
       label: "Separator",
       fields: [],
