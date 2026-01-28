@@ -23,6 +23,17 @@ export const AdminTemplateListParams =
     id: z.string().optional(),
   })
 
+export const AdminTemplateBlockListParams =
+  createFindParams().extend({
+    id: z.string().optional(),
+    template_id: z.string().optional(),
+  })
+
+export const AdminAvailableBlocksListParams =
+  createFindParams().extend({
+    blockType: z.string().optional(),
+  })
+
 export default defineMiddlewares({
   routes: [
     {
@@ -50,6 +61,38 @@ export default defineMiddlewares({
             isList: true,
           }
         ),
+      ],
+    },
+    {
+      matcher: "/admin/mpn/templates/:id/blocks",
+      methods: ["GET"],
+      middlewares: [
+        authenticate("user", ["session", "bearer"], {
+          allowUnauthenticated: false,
+        }),
+        validateAndTransformQuery(
+          AdminTemplateBlockListParams,
+          {
+            defaults: [
+              "id",
+              "template_id",
+              "type",
+              "parent_id",
+              "position",
+              "metadata",
+            ],
+            isList: true,
+          }
+        ),
+      ],
+    },
+    {
+      matcher: "/admin/mpn/available-blocks",
+      methods: ["GET"],
+      middlewares: [
+        authenticate("user", ["session", "bearer"], {
+          allowUnauthenticated: false,
+        })
       ],
     },
     {

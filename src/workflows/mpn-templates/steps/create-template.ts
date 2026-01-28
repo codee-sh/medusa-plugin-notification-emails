@@ -28,7 +28,6 @@ export const createTemplateStep = createStep(
           channel: item.channel,
           locale: item.locale,
           is_active: item.is_active,
-          blocks: item.blocks,
         }))
       )
 

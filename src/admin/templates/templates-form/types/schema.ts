@@ -1,6 +1,5 @@
 import { z } from "zod"
 
-// Base schema without dynamic validation
 export const baseTemplateFormSchema = z.object({
   general: z.object({
     name: z
@@ -21,4 +20,16 @@ export const baseTemplateFormSchema = z.object({
     locale: z.string().min(1, "Locale is required"),
     is_active: z.boolean(),
   })
+})
+
+export const baseBlocksSchema = z.object({
+  items: z.array(z.object({
+    id: z.string().nullable().optional(),
+    type: z.string(), 
+    virtual: z.boolean().optional(),
+    position: z.number().optional(),
+    template_id: z.string().optional(),
+    parent_id: z.string().nullable().optional(),
+    metadata: z.any(),
+  }))
 })

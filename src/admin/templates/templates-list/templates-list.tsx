@@ -18,8 +18,11 @@ import {
   TemplatesCreateForm,
 } from "../templates-form"
 import { TemplateDeleteButton } from "./components/template-delete-button"
+import { Button } from "@medusajs/ui"
+import { useNavigate } from "react-router-dom"
 
 export const TemplatesList = () => {
+  const navigate = useNavigate()
   const [pagination, setPagination] =
     useState<DataTablePaginationState>({
       pageSize: 8,
@@ -162,6 +165,7 @@ export const TemplatesList = () => {
               <TemplateDeleteButton
                 id={row?.original?.id}
               />
+              <Button variant="primary" onClick={() => navigate(`/mpn/templates/${row?.original?.id}/blocks`)}>Blocks</Button>
             </div>
           )
         },
