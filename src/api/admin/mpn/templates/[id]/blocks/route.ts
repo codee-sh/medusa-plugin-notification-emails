@@ -50,6 +50,48 @@ export async function POST(
   }
 }
 
+type Block = {
+  id: string
+  template_id: string
+  parent_id: string | null
+  type?: string | null
+  position?: number | null
+  metadata?: Record<string, any> | null
+}
+
+type BlockNode = Block & { children: BlockNode[] }
+
+function buildTree(items: Block[]): BlockNode[] {
+  const byId = new Map<string, BlockNode>()
+  const roots: BlockNode[] = []
+
+  // 1) utwórz "node" dla każdego rekordu (bez relacji)
+  for (const b of items) {
+    byId.set(b.id, { ...b, children: [] })
+  }
+
+  // 2) podepnij do rodzica albo wrzuć do rootów
+  for (const b of items) {
+    const node = byId.get(b.id)!
+    const pid = b.parent_id
+
+    if (pid && byId.has(pid)) {
+      byId.get(pid)!.children.push(node)
+    } else {
+      roots.push(node)
+    }
+  }
+
+  // 3) sortowanie rekurencyjne po position (opcjonalne)
+  const sortRec = (arr: BlockNode[]) => {
+    arr.sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
+    for (const n of arr) sortRec(n.children)
+  }
+  sortRec(roots)
+
+  return roots
+}
+
 export async function GET(
   req: MedusaStoreRequest,
   res: MedusaResponse
@@ -83,8 +125,11 @@ export async function GET(
     ...req.queryConfig,
   })
 
+  const tree = buildTree(blocks as Block[])
+
   res.json({
     blocks: blocks,
+    tree: tree,
     count: count || 0,
     limit: take || 15,
     offset: skip || 0,

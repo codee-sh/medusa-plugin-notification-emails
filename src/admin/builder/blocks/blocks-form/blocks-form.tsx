@@ -21,15 +21,17 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable"
 
+import { handleDragEnd } from "../../../../utils"
 import { BlockList } from "../components/block-list"
 import { BlockItem } from "../components/block-item"
-import { BlockItemBox } from "../components/block-item-box"
-import { BlocksGroup } from "../blocks-group/blocks-group"
+import { BlockItemWrapper } from "../components/block-item-wrapper"
+import { BlockItemFields } from "../components/block-item-fields"
 import { createBlockFormSchema } from "../../templates/templates-form/utils/block-form-schema"
 import { baseBlocksSchema } from "../../templates/templates-form/types/schema"
 import { BlockDropdownMenu } from "../components/block-dropdown"
 import { useEditTemplateBlocks } from "../../../../hooks/api/templates/blocks"
 import { useQueryClient } from "@tanstack/react-query"
+import { BlocksChildren } from "../blocks-children"
 
 type BlockFormValues = z.infer<typeof baseBlocksSchema>
 
@@ -44,13 +46,15 @@ export const BlocksForm = (props: any) => {
 
   const form = useForm<BlockFormValues>({
     resolver: zodResolver(blockFormSchema),
-    defaultValues: { items: items.map(i => ({ ...i, children: i.children ?? [] })) },
+    defaultValues: { items: items.map((i: any) => ({ ...i, children: i.children ?? [] })) },
     mode: "onChange",
   })
 
+  const itemsPath = "items"
+
   const { fields, append, remove, move, replace } = useFieldArray({
     control: form.control,
-    name: "items",
+    name: itemsPath,
     keyName: "rhf_id"
   })
 
@@ -70,19 +74,6 @@ export const BlocksForm = (props: any) => {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   )
-
-  function handleDragEnd(event: any) {
-    const { active, over } = event
-    if (!over) return
-    if (active.id === over.id) return
-
-    const oldIndex = fields.findIndex((f) => f.rhf_id === active.id)
-    const newIndex = fields.findIndex((f) => f.rhf_id === over.id)
-
-    if (oldIndex === -1 || newIndex === -1) return
-
-    move(oldIndex, newIndex)
-  }
 
   const queryClient = useQueryClient()
 
@@ -104,11 +95,11 @@ export const BlocksForm = (props: any) => {
 
     console.log("items", items)
 
-    // await editTemplateBlocks(items)
+    await editTemplateBlocks(items)
 
-    // queryClient.invalidateQueries({
-    //   queryKey: ["template-blocks", template_id],
-    // })
+    queryClient.invalidateQueries({
+      queryKey: ["template-blocks", template_id],
+    })
 
     toast.success(
       "Blocks updated successfully",
@@ -124,7 +115,7 @@ export const BlocksForm = (props: any) => {
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
+        onDragEnd={(event) => handleDragEnd({ form, path: itemsPath, event, fields, move })}
       >
         <SortableContext
           items={fields.map((f) => f.rhf_id)}
@@ -134,25 +125,26 @@ export const BlocksForm = (props: any) => {
             {fields.map((field, index) => {
               return (
                 <BlockItem key={field.rhf_id} id={field.rhf_id} item={field} index={index} form={form} remove={remove}>
-                  {field.type === "group" && (
-                    <BlocksGroup
-                      path={`items.${index}`}
-                      blocks={blocks}
-                      form={form}
-                      sensors={sensors}
-                      handleDragEnd={handleDragEnd}
-                    />
-                  ) }
-                  {field.type !== "group" && (
-                    <BlockItemBox
-                      path={`items.${index}`}
-                      index={index}
-                      field={field}
-                      blocks={blocks}
-                      form={form}
-                      remove={remove}
-                    />
-                  )}
+                  <BlockItemWrapper index={index} field={field} blocks={blocks}>
+                    {field.type === "group" && (
+                      <BlocksChildren
+                        path={`items.${index}`}
+                        blocks={blocks}
+                        form={form}
+                        sensors={sensors}
+                        handleDragEnd={handleDragEnd}
+                      />
+                    ) }
+                    {field.type !== "group" && (
+                      <BlockItemFields
+                        path={`items.${index}`}
+                        index={index}
+                        field={field}
+                        blocks={blocks}
+                        form={form}
+                      />
+                    )}
+                  </BlockItemWrapper>
                 </BlockItem>
               )
             })}

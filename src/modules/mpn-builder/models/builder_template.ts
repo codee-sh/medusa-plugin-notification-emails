@@ -14,6 +14,15 @@ const MpnBuilderTemplate = model.define("mpn_builder_template", {
   blocks: model.hasMany(() => MpnBuilderTemplateBlock, {
     mappedBy: "template",
   }),
-})
+}).indexes([
+  {
+    on: ["id"],
+    unique: true,
+  },
+  {
+    on: ["name"],
+    unique: true,
+  },
+])
 
 export default MpnBuilderTemplate

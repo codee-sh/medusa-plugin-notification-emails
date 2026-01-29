@@ -8,7 +8,7 @@ import { useAvailableTemplates } from "../../../../hooks/api/available-templates
 import { BlocksForm } from "../blocks-form/blocks-form"
 import { useListTemplateBlocks } from "../../../../hooks/api/templates/blocks"
 
-export const BlocksList = ({ id, type = "email" }: { id: string, type?: string }) => {
+export const BlocksContainer = ({ id, type = "email" }: { id: string, type?: string }) => {
   const { data: availableTemplates } = useAvailableTemplates({
     type: type,
   })
@@ -25,20 +25,12 @@ export const BlocksList = ({ id, type = "email" }: { id: string, type?: string }
     }
   }, [availableTemplates])
 
-  const mappedBlocks = useMemo(() => {
-    return blocks?.blocks?.map((block) => {
-      return {
-        ...block
-      }
-    }) ?? []
-  }, [blocks])
-
   return (
     <Container className="px-6 py-4">
       <Heading level="h1" className="mb-2">Blocks list for {type} template</Heading>
 
       {template && !isBlocksLoading && (
-        <BlocksForm template_id={id} template={template} blocks={template.blocks} items={mappedBlocks} />
+        <BlocksForm template_id={id} template={template} blocks={template.blocks} items={blocks?.tree} />
       ) }
     </Container>
   )

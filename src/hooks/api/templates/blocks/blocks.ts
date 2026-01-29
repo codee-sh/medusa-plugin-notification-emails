@@ -33,6 +33,7 @@ export type useListTemplateBlocksParams = {
 
 type ListTemplateBlocksQueryData = {
   blocks: any
+  tree: any
   count: number
   limit: number
   offset: number

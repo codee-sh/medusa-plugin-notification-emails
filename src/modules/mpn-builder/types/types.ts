@@ -1,3 +1,13 @@
+export type BlockType = {
+  id: string
+  type: string
+  position: number
+  metadata: Record<string, any>
+  parent_id: string
+  virtual?: boolean
+  children?: BlockType[]
+}
+
 export interface FieldConfig {
   name: string
   key: string

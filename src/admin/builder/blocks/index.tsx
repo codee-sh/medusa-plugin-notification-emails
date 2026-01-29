@@ -1,1 +1,1 @@
-export { BlocksList } from "./blocks-list/blocks-list"
+export { BlocksContainer } from "./blocks-container/blocks-container"

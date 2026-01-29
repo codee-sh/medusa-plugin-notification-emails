@@ -125,6 +125,15 @@
           "expression": "CREATE INDEX IF NOT EXISTS \"IDX_mpn_builder_template_deleted_at\" ON \"mpn_builder_template\" (deleted_at) WHERE deleted_at IS NULL"
         },
         {
+          "keyName": "IDX_mpn_builder_template_id_unique",
+          "columnNames": [],
+          "composite": false,
+          "constraint": false,
+          "primary": false,
+          "unique": false,
+          "expression": "CREATE UNIQUE INDEX IF NOT EXISTS \"IDX_mpn_builder_template_id_unique\" ON \"mpn_builder_template\" (id) WHERE deleted_at IS NULL"
+        },
+        {
           "keyName": "mpn_builder_template_pkey",
           "columnNames": [
             "id"
@@ -249,6 +258,24 @@
           "primary": false,
           "unique": false,
           "expression": "CREATE INDEX IF NOT EXISTS \"IDX_mpn_builder_template_block_deleted_at\" ON \"mpn_builder_template_block\" (deleted_at) WHERE deleted_at IS NULL"
+        },
+        {
+          "keyName": "IDX_mpn_builder_template_block_id_unique",
+          "columnNames": [],
+          "composite": false,
+          "constraint": false,
+          "primary": false,
+          "unique": false,
+          "expression": "CREATE UNIQUE INDEX IF NOT EXISTS \"IDX_mpn_builder_template_block_id_unique\" ON \"mpn_builder_template_block\" (id) WHERE deleted_at IS NULL"
+        },
+        {
+          "keyName": "IDX_mpn_builder_template_block_parent_id",
+          "columnNames": [],
+          "composite": false,
+          "constraint": false,
+          "primary": false,
+          "unique": false,
+          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_mpn_builder_template_block_parent_id\" ON \"mpn_builder_template_block\" (parent_id) WHERE deleted_at IS NULL"
         },
         {
           "keyName": "mpn_builder_template_block_pkey",

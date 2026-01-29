@@ -1,6 +1,6 @@
 import { defineRouteConfig } from "@medusajs/admin-sdk"
 import { SingleColumnPage } from "../../../../../components/layout/pages"
-import { BlocksList } from "../../../../../builder/blocks"
+import { BlocksContainer } from "../../../../../builder/blocks"
 import { useParams } from "react-router-dom"
 
 const ListPage = () => {
@@ -13,7 +13,7 @@ const ListPage = () => {
         after: [],
       }}
     >
-      <BlocksList id={id ?? ""} />
+      <BlocksContainer id={id ?? ""} />
     </SingleColumnPage>
   )
 }
