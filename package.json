@@ -49,7 +49,8 @@
     "changeset": "changeset",
     "version": "changeset version",
     "release": "changeset publish",
-    "release:manual": "npm run build && npm publish --access public"
+    "release:manual": "npm publish --access public",
+    "prepare-release": "bash scripts/prepare-release.sh"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
