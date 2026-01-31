@@ -16,7 +16,7 @@ const ListPage = () => {
 }
 
 export const config = defineRouteConfig({
-  label: "emplates",
+  label: "Templates",
 })
 
 export default ListPage
