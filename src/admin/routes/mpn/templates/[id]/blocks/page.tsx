@@ -1,8 +1,8 @@
 import { defineRouteConfig } from "@medusajs/admin-sdk"
+import { useParams } from "react-router-dom"
 import { SingleColumnPage } from "../../../../../components/layout/pages"
 import { BlocksContainer } from "../../../../../builder/blocks"
-import { useParams } from "react-router-dom"
-import { TwoColumnPage } from "../../../../../components/layout/pages/two-column-page/two-column-page"
+import { BlocksPreviewContainer } from "../../../../../builder/blocks/blocks-preview/blocks-preview-container"
 
 const ListPage = () => {
   const { id } = useParams()
@@ -19,7 +19,7 @@ const ListPage = () => {
           <BlocksContainer id={id ?? ""} />
         </div>
         <div className="col-span-1">
-          View email preview
+          <BlocksPreviewContainer templateId={id ?? ""} />
         </div>
       </div>
     </SingleColumnPage>

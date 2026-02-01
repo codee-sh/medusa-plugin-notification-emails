@@ -1,3 +1,3 @@
 export * from "./types"
 export * from "./interfaces"
-export * from "./base-type"
+export * from "./template-service-interface"

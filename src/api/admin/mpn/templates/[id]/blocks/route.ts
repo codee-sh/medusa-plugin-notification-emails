@@ -8,6 +8,8 @@ import {
 } from "@medusajs/framework/utils"
 import { z } from "zod"
 import { editTemplateBlocksWorkflow } from "../../../../../../workflows/mpn-templates/edit-template-blocks"
+import { MPN_BUILDER_MODULE } from "../../../../../../modules/mpn-builder"
+import { MpnBuilderService } from "../../../../../../modules/mpn-builder/services"
 
 export const PostTemplateBlocksSchema = z.object({
   template_id: z.string(),
@@ -99,41 +101,48 @@ export async function GET(
   const query = req.scope.resolve(
     ContainerRegistrationKeys.QUERY
   )
-  const { id, template_id } = req.query
+  const mpnBuilderService = req.scope.resolve(MPN_BUILDER_MODULE) as MpnBuilderService
+  const { template_id } = req.query
   const filters: any = {}
 
-  if (id) {
-    filters.id = {
-      $eq: id,
+  const isSystemTemplate = typeof template_id === "string" && template_id.startsWith("system_")
+
+  if (!isSystemTemplate) {
+    if (template_id) {
+      filters.template_id = {
+        $eq: template_id,
+      }
     }
+
+    const {
+      data: blocks,
+      metadata: { count, take, skip } = {},
+    } = await query.graph({
+      entity: "mpn_builder_template_block",
+      filters: filters,
+      ...req.queryConfig,
+    })
+
+    const tree = buildTree(blocks as Block[])
+
+    res.json({
+      blocks: blocks,
+      tree: tree,
+      count: count || 0,
+      limit: take || 15,
+      offset: skip || 0,
+    })    
+  } else {
+    const templateSystemId = template_id.replace("system_", "")
+    const emailTemplateService = mpnBuilderService.getTemplateService("email")?.templateService
+    const systemTemplate = emailTemplateService?.getSystemTemplates().find((template: any) => template.name === templateSystemId)
+    console.log("systemTemplatesSingle", systemTemplate)
+
+    res.json({
+      blocks: [],
+      tree: [],
+    })
   }
-
-  if (template_id) {
-    filters.template_id = {
-      $eq: template_id,
-    }
-  }
-
-  console.log("filters", filters)
-
-  const {
-    data: blocks,
-    metadata: { count, take, skip } = {},
-  } = await query.graph({
-    entity: "mpn_builder_template_block",
-    filters: filters,
-    ...req.queryConfig,
-  })
-
-  const tree = buildTree(blocks as Block[])
-
-  res.json({
-    blocks: blocks,
-    tree: tree,
-    count: count || 0,
-    limit: take || 15,
-    offset: skip || 0,
-  })
 }
 
 // export const DeleteTemplateSchema = z.object({

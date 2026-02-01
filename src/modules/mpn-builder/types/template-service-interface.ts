@@ -1,18 +1,9 @@
-import { FieldConfig } from "./types"
+import { BlockType, TemplateRenderer } from "./types"
 
 /**
- * Template renderer function type - can be sync or async
+ * Template service interface - implement this to create custom template services
  */
-export type TemplateRenderer = (params: {
-  context: any
-  contextType?: string | null
-  options?: any
-}) => any | Promise<any>
-
-/**
- * Action handler interface - implement this to create custom actions
- */
-export interface BaseTemplateService {
+export interface BaseTemplateServiceInterface {
   /**
    * Unique identifier for the action (e.g., "email", "sms", "custom_email")
    */
@@ -29,9 +20,9 @@ export interface BaseTemplateService {
   description?: string
 
   /**
-   * Fields for the action configuration
+   * Fields for the template configuration
    */
-  blocks?: any[]
+  blocks?: BlockType[]
 
   /**
    * Optional path to config component for dynamic import
@@ -44,7 +35,13 @@ export interface BaseTemplateService {
   templateLoaders?: Record<string, any>
 
   /**
-   * Register a template for this action handler
+   * Transform blocks for rendering
+   * @returns Transformed blocks
+   */
+  transformBlocksForRendering?: () => any[]
+
+  /**
+   * Register a template for this template service
    * @param name - Template name
    * @param renderer - Template renderer function
    */

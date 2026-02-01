@@ -17,3 +17,41 @@ export interface TemplateBlock {
 export interface TemplateBlockProps {
   [key: string]: any
 }
+
+/**
+ * Parameters for render method
+ */
+export interface TemplateRenderParams {
+  templateName?: string
+  templateId?: string
+  data: any
+  options?: any
+  container?: any
+}
+
+export interface TemplateRenderOptionsType {
+  blocks?: any[]
+  theme?: any
+  locale?: any
+  customTranslations?: Record<string, Record<string, any>>
+}
+
+export interface TemplateOptionsType {
+  blocks?: any[]
+  theme?: any
+  locale?: any
+  customTranslations?: Record<string, Record<string, any>>
+}
+
+export interface RenderTemplateParams {
+  templateName: string | null
+  data: any
+  options?: TemplateRenderOptionsType
+}
+
+export interface RenderTemplateSyncParams {
+  templateName: string | null
+  data: any
+  options?: TemplateRenderOptionsType
+}
+

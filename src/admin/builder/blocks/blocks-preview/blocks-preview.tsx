@@ -1,48 +1,24 @@
 import { useEffect, useState } from "react"
 import { Alert } from "@medusajs/ui"
-import { useOrder } from "../../../../hooks/api/orders"
 import { usePreview } from "../../../../hooks/api/preview"
+import { contactFormMockData } from "../../../../../emails-previews/contact-form"
 import { TEMPLATES_EMAILS_NAMES } from "../../../../modules/mpn-builder/types"
 
-export const OrderPlacedTemplate = ({
-  orderId,
-}: {
-  orderId: string
-}) => {
-  const [context, setContext] = useState<any>(null)
+export const BlocksPreview = ({ contextType, templateId, context }: { contextType: string, templateId: string, context: any }) => {
   const [previewContext, setPreviewData] =
     useState<any>(null)
 
-  const { data: order, isLoading: isOrderLoading } =
-    useOrder({
-      order_id: orderId,
-      enabled: !!orderId,
-    })
-
-  useEffect(() => {
-    if (order?.display_id) {
-      setContext({
-        order: order,
-      })
-    }
-  }, [order])
-
   const { data: preview, isLoading: isPreviewLoading } =
     usePreview({
-      templateName: TEMPLATES_EMAILS_NAMES.ORDER_PLACED,
+      templateId: templateId,
       context: context,
-      contextType: "order",
+      contextType: contextType,
       locale: "pl",
       enabled: !!context,
-      extraKey: [context, orderId],
+      extraKey: [context],
     })
 
-  useEffect(() => {
-    if (isOrderLoading) {
-      setPreviewData(null)
-    }
-  }, [isOrderLoading])
-
+  // console.log("context", context)
   useEffect(() => {
     if (preview) {
       setPreviewData(preview)
@@ -51,10 +27,8 @@ export const OrderPlacedTemplate = ({
 
   return (
     <div className="px-6 py-4">
-      {isOrderLoading && (
-        <Alert variant="info">
-          Loading order {orderId}...
-        </Alert>
+      {isPreviewLoading && (
+        <Alert variant="info">Loading preview...</Alert>
       )}
       {previewContext && (
         <div className="px-6 py-4">

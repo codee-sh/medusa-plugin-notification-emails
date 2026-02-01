@@ -1,3 +1,23 @@
+export const TEMPLATES_EMAILS_NAMES = {
+  BASE_TEMPLATE: "base-template",
+  INVENTORY_LEVEL: "inventory-level",
+  ORDER_PLACED: "order-placed",
+  ORDER_COMPLETED: "order-completed",
+  ORDER_UPDATED: "order-updated",
+  CONTACT_FORM: "contact-form",
+} as const
+
+/**
+ * Template renderer function type - can be sync or async
+ */
+export type TemplateRenderer = {
+  getConfig?: () => any
+  [key: string]: any
+}
+
+/**
+ * Block type
+ */
 export type BlockType = {
   id: string
   type: string
@@ -8,6 +28,9 @@ export type BlockType = {
   children?: BlockType[]
 }
 
+/**
+ * Field config type
+ */
 export interface FieldConfig {
   name: string
   key: string
@@ -33,6 +56,9 @@ export interface FieldConfig {
   step?: number
 }
 
+/**
+ * Module options type
+ */
 export type ModuleOptions = {
   builder?: {
     

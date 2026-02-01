@@ -1,1 +1,0 @@
-import { TemplateOptionsType } from "../types"

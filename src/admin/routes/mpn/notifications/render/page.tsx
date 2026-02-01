@@ -10,7 +10,7 @@ import {
 import { SingleColumnPage } from "../../../../components/layout/pages"
 import { OrderTemplateGroup } from "../../../../notifications-templates/groups/order"
 import { ContactFormTemplateGroup } from "../../../../notifications-templates/groups/contact-form"
-import { TEMPLATES_NAMES } from "../../../../../templates/emails/types"
+import { TEMPLATES_EMAILS_NAMES } from "../../../../../modules/mpn-builder/types/types"
 
 const PreviewTemplatePage = () => {
   const templateName = ""
@@ -19,7 +19,7 @@ const PreviewTemplatePage = () => {
   const templates = [
     {
       label: "Contact Form",
-      value: TEMPLATES_NAMES.CONTACT_FORM,
+      value: TEMPLATES_EMAILS_NAMES.CONTACT_FORM,
     },
     { label: "Order", value: "order" },
   ]
@@ -72,7 +72,7 @@ const PreviewTemplatePage = () => {
                 <OrderTemplateGroup />
               )}
               {selectedTemplate ===
-                TEMPLATES_NAMES.CONTACT_FORM && (
+                TEMPLATES_EMAILS_NAMES.CONTACT_FORM && (
                 <ContactFormTemplateGroup />
               )}
             </div>

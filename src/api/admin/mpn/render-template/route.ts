@@ -4,15 +4,14 @@ import {
 } from "@medusajs/framework/http"
 import { MedusaError } from "@medusajs/framework/utils"
 import { defaultTheme } from "../../../../templates/shared/theme"
-import {
-  emailService,
-  TEMPLATES_NAMES,
-} from "../../../../templates/emails"
 import { transformContext } from "../../../../utils/transforms"
 import { getPluginOptions } from "../../../../utils/plugins"
+import { MPN_BUILDER_MODULE } from "../../../../modules/mpn-builder"
+import { emailServiceWorkflow } from "../../../../workflows/email-service"
 
 export async function POST(
   req: MedusaRequest<{
+    templateId: string
     templateName: string
     context: any
     contextType: any
@@ -25,16 +24,17 @@ export async function POST(
     "@codee-sh/medusa-plugin-notification"
   )
 
+  const templateId = req.body?.templateId
   const templateName = req.body?.templateName
   const context = req.body?.context
   const contextType = req.body?.contextType
 
   const locale = req.body?.locale || "pl"
 
-  if (!templateName || !context || !locale) {
+  if (!templateId || !context || !locale) {
     throw new MedusaError(
       MedusaError.Types.INVALID_ARGUMENT,
-      "Template name, template data and locale are required"
+      "Template id, template data and locale are required"
     )
   }
 
@@ -44,19 +44,22 @@ export async function POST(
     locale
   )
 
-  const { html, text } = await emailService.render({
-    templateName,
-    data: transformedTemplateData,
-    options: {
-      locale: locale,
-      theme: pluginOptions?.theme || defaultTheme,
-      translations:
-        pluginOptions?.customTranslations?.[templateName],
+  const { result: { html, text, subject } } = await emailServiceWorkflow(req.scope).run({
+    input: {
+      templateId: templateId,
+      data: transformedTemplateData,
+      options: {
+        locale: locale,
+        theme: pluginOptions?.theme || defaultTheme,
+        translations:
+          pluginOptions?.customTranslations?.[templateName],
+      },
     },
   })
 
   res.status(200).json({
     html,
     text,
+    subject,
   })
 }

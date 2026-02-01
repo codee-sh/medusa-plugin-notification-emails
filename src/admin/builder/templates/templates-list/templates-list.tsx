@@ -88,46 +88,21 @@ export const TemplatesList = () => {
           return <span>{row?.original?.locale}</span>
         },
       }),
-      // columnHelper.accessor("event_name", {
-      //   header: "Event Name",
-      //   cell: ({ row }) => {
-      //     return <span>{row?.original?.event_name}</span>
-      //   },
-      // }),
-      // columnHelper.accessor("last_run_at", {
-      //   header: "Last Run At",
-      //   cell: ({ row }) => {
-      //     const lastRunAtAll = row?.original?.states
-      //       ?.map((state: any) => state.last_triggered_at)
-      //       .sort(
-      //         (a: any, b: any) =>
-      //           new Date(b).getTime() -
-      //           new Date(a).getTime()
-      //       )
-      //     return (
-      //       <span>
-      //         {lastRunAtAll.length > 0
-      //           ? new Date(lastRunAtAll[0]).toLocaleString()
-      //           : "-"}
-      //       </span>
-      //     )
-      //   },
-      // }),
-      // columnHelper.accessor("active", {
-      //   header: "Active",
-      //   cell: ({ row }) => {
-      //     const color = row?.original?.active
-      //       ? "green"
-      //       : "red"
-      //     const text = row?.original?.active ? "Yes" : "No"
+      columnHelper.accessor("active", {
+        header: "Active",
+        cell: ({ row }) => {
+          const color = row?.original?.is_active
+            ? "green"
+            : "red"
+          const text = row?.original?.is_active ? "Yes" : "No"
 
-      //     return (
-      //       <Badge size="small" color={color}>
-      //         {text}
-      //       </Badge>
-      //     )
-      //   },
-      // }),
+          return (
+            <Badge size="small" color={color}>
+              {text}
+            </Badge>
+          )
+        },
+      }),
       columnHelper.accessor("created_at", {
         header: "Created At",
         cell: ({ row }) => {
@@ -159,6 +134,14 @@ export const TemplatesList = () => {
       columnHelper.accessor("actions", {
         header: "Actions",
         cell: ({ row }) => {
+          if (row?.original?.is_system) {
+            return (
+              <div className="flex items-center gap-2">
+                <Button variant="primary" onClick={() => navigate(`/mpn/templates/system_${row?.original?.name}/blocks`)}>Blocks</Button>
+              </div>
+            )
+          }
+          
           return (
             <div className="flex items-center gap-2">
               <TemplatesEditForm id={row?.original?.id} />
@@ -185,6 +168,17 @@ export const TemplatesList = () => {
     rowCount: templatesData?.count ?? 0,
   })
 
+  const systemTemplatesTable = useDataTable({
+    columns,
+    data: templatesData?.systemTemplates ?? [],
+    isLoading: isTemplatesLoading,
+    pagination: {
+      state: pagination,
+      onPaginationChange: setPagination,
+    },
+    rowCount: templatesData?.count ?? 0,
+  })
+
   return (
     <Container className="p-0">
       <DataTable instance={table}>
@@ -195,6 +189,13 @@ export const TemplatesList = () => {
         <DataTable.Table />
         <DataTable.Pagination />
       </DataTable>
+
+      <DataTable instance={systemTemplatesTable}>
+        <DataTable.Toolbar className="flex items-start justify-between gap-2 md:flex-row md:items-center">
+          <Heading level="h2">List of system templates</Heading>
+        </DataTable.Toolbar>
+        <DataTable.Table />
+      </DataTable>      
     </Container>
   )
 }

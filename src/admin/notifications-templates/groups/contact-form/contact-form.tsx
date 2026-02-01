@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { Alert } from "@medusajs/ui"
 import { usePreview } from "../../../../hooks/api/preview"
 import { contactFormMockData } from "../../../../../emails-previews/contact-form"
-import { TEMPLATES_NAMES } from "../../../../templates/emails"
+import { TEMPLATES_EMAILS_NAMES } from "../../../../modules/mpn-builder/types"
 
 export const ContactFormTemplate = () => {
   const [context, setContext] = useState<any>(null)
@@ -15,7 +15,7 @@ export const ContactFormTemplate = () => {
 
   const { data: preview, isLoading: isPreviewLoading } =
     usePreview({
-      templateName: TEMPLATES_NAMES.CONTACT_FORM,
+      templateName: TEMPLATES_EMAILS_NAMES.CONTACT_FORM,
       context: context,
       contextType: "contact_form",
       locale: "pl",

@@ -6,11 +6,13 @@ import {
   Modules,
   MedusaError,
 } from "@medusajs/framework/utils"
-import { emailService } from "../templates/emails"
-import { TEMPLATES_NAMES } from "../templates/emails/types"
+import { EmailTemplateService } from "../modules/mpn-builder/services/email-template-service"
+import { TEMPLATES_EMAILS_NAMES } from "../modules/mpn-builder/types/types"
 import { transformContext } from "../utils/transforms"
 import { getPluginOptions } from "../utils/plugins"
 import { getOrderByIdWorkflow } from "../workflows/order/get-order-by-id"
+import { MPN_BUILDER_MODULE } from "../modules/mpn-builder"
+import { emailServiceWorkflow } from "../workflows/email-service"
 
 export default async function orderPlacedEmailsHandler({
   event: {
@@ -26,6 +28,7 @@ export default async function orderPlacedEmailsHandler({
   const notificationModuleService = container.resolve(
     Modules.NOTIFICATION
   )
+
   const triggerType = trigger_type || "system"
 
   if (!id) {
@@ -50,19 +53,19 @@ export default async function orderPlacedEmailsHandler({
   // Transform raw order data to email template format
   const context = transformContext("order", order, "pl")
 
-  const templateName = TEMPLATES_NAMES.ORDER_COMPLETED
+  const templateName = TEMPLATES_EMAILS_NAMES.ORDER_COMPLETED
 
-  const { html, text, subject } = await emailService.render(
-    {
-      templateName,
+  const { result: { html, text, subject } } = await emailServiceWorkflow(container).run({
+    input: {
+      templateId: templateName,
       data: context,
       options: {
         locale: "pl",
         translations:
           pluginOptions?.customTranslations?.[templateName],
       },
-    }
-  )
+    },
+  })
 
   const result =
     await notificationModuleService.createNotifications({

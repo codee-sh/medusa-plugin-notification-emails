@@ -73,6 +73,7 @@ export type useListTemplatesParams = {
 
 type ListTemplatesQueryData = {
   templates: any
+  systemTemplates: any
   count: number
   limit: number
   offset: number

@@ -15,6 +15,8 @@ import {
   EditTemplateWorkflowInput,
   editTemplateWorkflow,
 } from "../../../../workflows/mpn-templates"
+import { MPN_BUILDER_MODULE } from "../../../../modules/mpn-builder"
+import { MpnBuilderService } from "../../../../modules/mpn-builder/services"
 
 export const PostTemplateSchema = z.object({
   id: z.string().optional(),
@@ -67,6 +69,9 @@ export async function GET(
   const query = req.scope.resolve(
     ContainerRegistrationKeys.QUERY
   )
+
+  const mpnBuilderService = req.scope.resolve(MPN_BUILDER_MODULE) as MpnBuilderService
+
   const { id } = req.query
   const filters: any = {}
 
@@ -85,8 +90,13 @@ export async function GET(
     ...req.queryConfig,
   })
 
+  const emailTemplateService = mpnBuilderService.getTemplateService("email")?.templateService
+  const systemTemplates = emailTemplateService?.getSystemTemplates()
+  console.log("systemTemplates", systemTemplates)
+
   res.json({
     templates: templates,
+    systemTemplates: systemTemplates,
     count: count || 0,
     limit: take || 15,
     offset: skip || 0,

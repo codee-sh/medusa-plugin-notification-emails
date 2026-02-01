@@ -1,5 +1,5 @@
 import { defaultTheme } from "../src/templates/shared/theme";
-import { emailService } from "../src/templates/emails";
+import { EmailTemplateService } from "../src/modules/mpn-builder/services/email-template-service";
 
 export const orderCompletedMockData: any = {
   order: {
@@ -70,7 +70,7 @@ export const orderCompletedMockData: any = {
 };
 
 export default function OrderCompleted() {
-  const renderTemplate = emailService.renderSync({
+  const renderTemplate = new EmailTemplateService().renderSync({
     templateName: "order-completed",
     data: orderCompletedMockData,
     options: {

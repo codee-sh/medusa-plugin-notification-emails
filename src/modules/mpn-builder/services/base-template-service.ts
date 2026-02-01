@@ -1,6 +1,8 @@
-import { BaseTemplateService as BaseTemplateServiceInterface, TemplateRenderer } from "../types"
-import { FieldConfig } from "../types"
-import { Modules } from "@medusajs/framework/utils"
+import { BaseTemplateServiceInterface, BlockType, TemplateRenderer } from "../types"
+import {
+  createTranslator,
+  mergeTranslations,
+} from "../../../utils"
 
 /**
  * Base action service class
@@ -18,8 +20,8 @@ export class BaseTemplateService implements BaseTemplateServiceInterface {
 
   configComponentKey = "BaseConfigComponent"
 
-  // Fields for the action configuration rendered in the admin panel then saved in the action config
-  blocks: any[] = []
+  // Fields for the Template configuration rendered in the admin panel then saved in the metadata config
+  blocks: BlockType[] = []
 
   // Template registry - each service manages its own templates
   protected templates_: Map<string, TemplateRenderer> =
@@ -30,7 +32,7 @@ export class BaseTemplateService implements BaseTemplateServiceInterface {
    * @param name - Template name
    * @param renderer - Template renderer function
    */
-  registerType(
+  registerTemplate(
     name: string,
     renderer: TemplateRenderer
   ): void {
@@ -38,90 +40,116 @@ export class BaseTemplateService implements BaseTemplateServiceInterface {
   }
 
   /**
-   * Get template renderer by name
+   * Get template by name
+   *
    * @param name - Template name
-   * @returns Template renderer or undefined
+   * @returns Template renderer
+   * @throws Error if template not found
    */
-  getTemplate(name: string): TemplateRenderer | undefined {
-    return this.templates_.get(name)
-  }
+  getTemplate(name: string): TemplateRenderer {
+    const template = this.templates_.get(name)
 
-  /**
-   * Initialize default templates (override in subclasses)
-   * Called automatically in constructor
-   */
-  protected initializeTemplates(): void {
-    // Override in subclasses to register default templates
-  }
-
-  /**
-   * Helper method to add templateName field to fields array
-   * Call this in constructor or fields initialization if you need template selection
-   *
-   * @param options - Template options array (will be populated dynamically by service if eventName is provided)
-   * @param defaultValue - Default template value
-   * @returns FieldConfig for template
-   */
-  protected addTemplateNameField(
-    options: Array<{ value: string; name: string }> = [],
-    defaultValue?: string
-  ): FieldConfig {
-    return {
-      name: "templateName",
-      key: "templateName",
-      label: "Template Name",
-      type: "select" as const,
-      required: true,
-      options: options,
-      defaultValue: defaultValue,
+    if (!template) {
+      throw new Error(
+        `Template "${name}" not found. Available templates: ${Array.from(
+          this.templates_.keys()
+        ).join(", ")}`
+      )
     }
+
+    return template
+  }
+
+  getSystemTemplates() {
+    return Array.from(this.templates_.entries()).map(([name, renderer]) => ({
+      name,
+      label: name,
+      description: null,
+      channel: this.id,
+      is_system: true,
+      is_active: true,
+      blocks: renderer.getConfig?.().blocks || [],
+    }))
   }
 
   /**
-   * Function that executes the action in the workflow actions
+   * Prepare template data.
    *
-   * @param trigger - Trigger object
-   * @param action - Action object
-   * @param context - Context object
-   * @param container - Container object
-   * @param eventName - Event name
-   * @param contextType - Context type determining structure of data in context
-   * @returns object with actionId, actionType and success status
+   * This method prepares the data for the template renderer.
+   * Merge translations from template config and options (if provided),
+   * then interpolate blocks using the interpolate function.
+   *
+   * @param params - Parameters object
+   * @returns Prepared template data
    */
-  async executeAction({
-    trigger,
-    action,
-    context,
-    container,
-    eventName,
-    contextType,
-  }: {
-    trigger: any
-    action: Record<string, any>
-    context: any
-    container: any
-    eventName: string
-    contextType?: string | null
-  }) {
-    const eventBusService = container.resolve(
-      Modules.EVENT_BUS
+  protected prepareData(params: {
+    templateName: string
+    data: any
+    options?: any
+  }): {
+    template: TemplateRenderer
+    translator: {
+      t: (key: string, data?: Record<string, any>) => string
+    }
+    blocks: any[]
+  } {
+    // Get locale from options or default to "en"
+    const locale = params.options?.locale || "en"
+
+    // Get registered template
+    const template = this.getTemplate(params.templateName)
+    const config =
+      (template as TemplateRenderer).getConfig?.() || {}
+
+    const configTranslations = config?.translations || {}
+    const configBlocks = config?.blocks || []
+
+    const optionsBlocks = params.options?.blocks || []
+    const optionsTranslations = params.options?.translations
+
+    // If blocks are not provided in options, use basic blocks from config
+    const blocks: BlockType[] =
+      optionsBlocks.length > 0
+        ? optionsBlocks
+        : configBlocks
+
+    // Merge translations
+    const mergedTranslations = mergeTranslations(
+      configTranslations,
+      optionsTranslations
     )
 
-    await eventBusService.emit({
-      name: eventName,
-      data: {
-        eventName: eventName,
-        action: action,
-        trigger: trigger.id,
-        context: context,
-        contextType: contextType,
-      },
-    })
+    // Create translator function
+    const translator = createTranslator(
+      locale,
+      mergedTranslations
+    )
+
+    // Interpolate blocks using the interpolate function
+    const interpolatedBlocks =
+      blocks.length > 0
+        ? this.interpolateFunction(
+            blocks,
+            params.data,
+            translator
+          )
+        : blocks
 
     return {
-      actionId: action.id,
-      actionType: action.action_type,
-      success: true,
+      template,
+      translator,
+      blocks: interpolatedBlocks,
     }
   }
+
+  /**
+   * Interpolation function for blocks
+   * Set by subclasses in constructor
+   */
+  protected interpolateFunction: (
+    blocks: any[],
+    data: any,
+    translator: any,
+    config?: any
+  ) => any[]
 }

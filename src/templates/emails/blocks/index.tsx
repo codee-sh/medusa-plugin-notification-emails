@@ -5,6 +5,7 @@ import { HeadingBlock } from "./components/heading"
 import { RowBlock } from "./components/row"
 import { SeparatorBlock } from "./components/separator"
 import { ProductItemBlock } from "./components/product-item"
+import { GroupBlock } from "./components/group"
 
 export function BlockRenderer({
   blocks,
@@ -28,6 +29,15 @@ export function BlockRenderer({
             data={data}
             isLastBlock={isLastBlock}
             isFirstBlock={isFirstBlock}
+          />
+        )
+      case "group":
+        return (
+          <GroupBlock
+            key={blockKey}
+            id={blockKey}
+            props={block.props}
+            data={data}
           />
         )
       case "row":

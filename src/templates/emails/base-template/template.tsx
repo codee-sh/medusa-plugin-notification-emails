@@ -18,7 +18,7 @@ import {
   pretty,
   toPlainText,
 } from "@react-email/render"
-import { TemplateOptionsType } from "../types"
+import { TemplateOptionsType } from "../../../modules/mpn-builder/types/interfaces"
 import { BlockRenderer } from "../blocks"
 
 export function renderHTMLReact(
@@ -39,6 +39,7 @@ export function renderHTMLReact(
       >
         <Body className="mx-auto my-auto px-4 font-arial font-normal text-base bg-ui-bg text-ui-text">
           <Container className="py-4">
+            ss
             <BlockRenderer blocks={blocks} data={data} />
           </Container>
         </Body>

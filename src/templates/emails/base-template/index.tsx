@@ -1,4 +1,4 @@
-import { TemplateOptionsType } from "../types"
+import { TemplateOptionsType } from "../../../modules/mpn-builder/types"
 import {
   renderHTML,
   renderText,

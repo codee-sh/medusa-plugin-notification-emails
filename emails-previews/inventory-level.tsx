@@ -1,5 +1,5 @@
 import { defaultTheme } from "../src/templates/shared/theme";
-import { emailService } from "../src/templates/emails";
+import { EmailTemplateService } from "../src/modules/mpn-builder/services/email-template-service";
 
 export const inventoryLevelMockData: any = {
   inventory_level: {
@@ -12,7 +12,7 @@ export const inventoryLevelMockData: any = {
 };
 
 export default function InventoryLevel() {
-  const renderTemplate = emailService.renderSync({
+  const renderTemplate = new EmailTemplateService().renderSync({
     templateName: "inventory-level",
     data: inventoryLevelMockData,
     options: {
