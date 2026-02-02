@@ -7,6 +7,7 @@ import {
   MedusaError,
 } from "@medusajs/framework/utils"
 import { z } from "zod"
+import { toKebabCase } from "../../../../utils/string-helpers"
 import {
   CreateTemplateWorkflowInput,
   createTemplateWorkflow,
@@ -23,7 +24,7 @@ export const PostTemplateSchema = z.object({
   items: z.array(
     z.object({
       id: z.string().optional(),
-      name: z.string(),
+      name: z.string().transform((val) => toKebabCase(val)),
       label: z.string(),
       description: z.string(),
       channel: z.string(),

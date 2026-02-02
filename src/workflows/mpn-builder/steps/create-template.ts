@@ -5,6 +5,7 @@ import {
 import MpnBuilderService from "../../../modules/mpn-builder/services/service"
 import { MPN_BUILDER_MODULE } from "../../../modules/mpn-builder"
 import { Template } from "../../../modules/mpn-builder/types/interfaces"
+import { toKebabCase } from "../../../utils/string-helpers"
 
 type CreateTemplateStepInput = {
   items: Template[]
@@ -22,7 +23,7 @@ export const createTemplateStep = createStep(
     const template =
       await mpnBuilderService.createMpnBuilderTemplates(
         items.map((item) => ({
-          name: item.name,
+          name: toKebabCase(item.name),
           description: item.description,
           label: item.label,
           channel: item.channel,

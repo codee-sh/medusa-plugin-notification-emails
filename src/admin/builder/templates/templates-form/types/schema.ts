@@ -1,11 +1,13 @@
 import { z } from "zod"
+import { toKebabCase } from "../../../../../utils/string-helpers"
 
 export const baseTemplateFormSchema = z.object({
   general: z.object({
     name: z
       .string()
       .min(1, "Name is required")
-      .min(3, "Name must be at least 3 characters"),
+      .min(3, "Name must be at least 3 characters")
+      .transform((val) => toKebabCase(val)),
     label: z
       .string()
       .min(1, "Label is required")
