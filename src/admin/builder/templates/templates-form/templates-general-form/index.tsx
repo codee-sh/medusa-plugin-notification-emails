@@ -40,8 +40,14 @@ export function TemplatesGeneralForm({
                 <>
                   <Input
                     {...field}
-                    placeholder="Enter the name of the automation"
+                    placeholder="Enter the name of the template"
                   />
+                  <Text
+                    size="small"
+                    className="text-ui-fg-subtle"
+                  >
+                    The name of the template. It will be used to identify the template in the system.
+                  </Text>
                   {fieldState.error && (
                     <span className="text-red-500 text-sm">
                       {fieldState.error.message}
@@ -64,6 +70,12 @@ export function TemplatesGeneralForm({
                     {...field}
                     placeholder="Enter the label of the template"
                   />
+                  <Text
+                    size="small"
+                    className="text-ui-fg-subtle"
+                  >
+                    The label of the template. It will be used to display the template in the system.
+                  </Text>
                   {fieldState.error && (
                     <span className="text-red-500 text-sm">
                       {fieldState.error.message}
@@ -86,6 +98,12 @@ export function TemplatesGeneralForm({
                     {...field}
                     placeholder="Enter the description text of the template"
                   />
+                  <Text
+                    size="small"
+                    className="text-ui-fg-subtle"
+                  >
+                    The description of the template. It will be used to display the template in the system.
+                  </Text>
                   {fieldState.error && (
                     <span className="text-red-500 text-sm">
                       {fieldState.error.message}
@@ -125,6 +143,12 @@ export function TemplatesGeneralForm({
                       ))}
                     </Select.Content>
                   </Select>
+                  <Text
+                    size="small"
+                    className="text-ui-fg-subtle"
+                  >
+                    The channel of the template. It will be used to send the template to the channel.
+                  </Text>
                   {fieldState.error && (
                     <span className="text-red-500 text-sm">
                       {fieldState.error.message}
@@ -164,6 +188,12 @@ export function TemplatesGeneralForm({
                       ))}
                     </Select.Content>
                   </Select>
+                  <Text
+                    size="small"
+                    className="text-ui-fg-subtle"
+                  >
+                    The locale of the template. It will be used to display the template in the system.
+                  </Text>
                   {fieldState.error && (
                     <span className="text-red-500 text-sm">
                       {fieldState.error.message}
@@ -187,6 +217,12 @@ export function TemplatesGeneralForm({
                     value={field.value || ""}
                     placeholder="Enter the email subject"
                   />
+                  <Text
+                    size="small"
+                    className="text-ui-fg-subtle"
+                  >
+                    The email subject of the template.
+                  </Text>
                   {fieldState.error && (
                     <span className="text-red-500 text-sm">
                       {fieldState.error.message}
@@ -220,6 +256,12 @@ export function TemplatesGeneralForm({
                     >
                       {field.value ? "Yes" : "No"}
                     </Label>
+                    <Text
+                      size="small"
+                      className="text-ui-fg-subtle"
+                    >
+                      Whether the template is active or not.
+                    </Text>
                     {fieldState.error && (
                       <span className="text-red-500 text-sm">
                         {fieldState.error.message}

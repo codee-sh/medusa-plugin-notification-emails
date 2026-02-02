@@ -153,7 +153,7 @@ export function TemplatesEditForm({
       <FocusModal.Content>
         <FocusModal.Header>
           <Heading level="h3" className="shrink-0">
-            Edit Automation
+            Edit Template
           </Heading>
           <div className="-my-2 w-full border-l">
             <ProgressTabs

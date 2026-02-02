@@ -147,7 +147,7 @@ export const TemplatesList = () => {
           if (row?.original?.is_system) {
             return (
               <div className="flex items-center gap-2">
-                <Button variant="primary" onClick={() => navigate(`/mpn/templates/system_${row?.original?.name}/blocks`)}>Blocks</Button>
+                <Button size="small" variant="primary" onClick={() => navigate(`/mpn/templates/system_${row?.original?.name}/blocks`)}>Blocks</Button>
               </div>
             )
           }
@@ -158,7 +158,7 @@ export const TemplatesList = () => {
               <TemplateDeleteButton
                 id={row?.original?.id}
               />
-              <Button variant="primary" onClick={() => navigate(`/mpn/templates/${row?.original?.id}/blocks`)}>Blocks</Button>
+              <Button size="small" variant="primary" onClick={() => navigate(`/mpn/templates/${row?.original?.id}/blocks`)}>Blocks</Button>
             </div>
           )
         },
