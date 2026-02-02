@@ -53,8 +53,7 @@ export default async function orderPlacedEmailsHandler({
   // Transform raw order data to email template format
   const context = transformContext("order", order, "pl")
 
-  const templateName = TEMPLATES_EMAILS_NAMES.ORDER_COMPLETED
-  const templateId = `system_${templateName}`
+  const templateId = TEMPLATES_EMAILS_NAMES.ORDER_COMPLETED
 
   // TODO: Uncomment this when we have a way to get the region from the order
   // const { result: { store } } = await getStoreWorkflow(container).run()

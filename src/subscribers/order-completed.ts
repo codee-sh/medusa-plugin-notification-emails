@@ -51,8 +51,7 @@ export default async function orderPlacedEmailsHandler({
   // Transform raw order data to email template format
   const context = transformContext("order", order, "pl")
 
-  const templateName = TEMPLATES_EMAILS_NAMES.ORDER_COMPLETED
-  const templateId = `system_${templateName}`
+  const templateId = TEMPLATES_EMAILS_NAMES.ORDER_COMPLETED
 
   const { result: { html, text, subject } } = await emailServiceWorkflow(container).run({
     input: {
@@ -61,7 +60,7 @@ export default async function orderPlacedEmailsHandler({
       options: {
         locale: "pl",
         translations:
-          pluginOptions?.customTranslations?.[templateName],
+          pluginOptions?.customTranslations?.[templateId],
       },
     },
   })
@@ -70,7 +69,7 @@ export default async function orderPlacedEmailsHandler({
     await notificationModuleService.createNotifications({
       to: order.order.customer.email,
       channel: "email",
-      template: templateName,
+      template: templateId,
       trigger_type: triggerType,
       resource_id: id,
       resource_type: "order",

@@ -53,14 +53,15 @@ export const TemplatesList = () => {
   const columns = useMemo(
     () => [
       columnHelper.accessor("to", {
-        header: "Name and descriptions",
+        header: "Label",
         cell: ({ row }) => {
           const tooltip = `Device (DB) ID: \n ${row?.original?.id}`
           return (
             <>
               <div className="py-2">
                 <div className="flex items-center gap-2 mb-2">
-                  <span>{row?.original?.name}</span>
+                  <span>{row?.original?.label}</span>
+                  {row?.original?.id &&
                   <Tooltip
                     content={
                       <div
@@ -73,6 +74,7 @@ export const TemplatesList = () => {
                   >
                     <InformationCircleSolid />
                   </Tooltip>
+                  }
                 </div>
                 <div className="whitespace-normal text-xs max-w-[180px] min-w-[180px]">
                   <span>{row?.original?.description}</span>
@@ -80,6 +82,18 @@ export const TemplatesList = () => {
               </div>
             </>
           )
+        },
+      }),
+      columnHelper.accessor("name", {
+        header: "Name",
+        cell: ({ row }) => {
+          return <span>{row?.original?.name}</span>
+        },
+      }),
+      columnHelper.accessor("channel", {
+        header: "Channel",
+        cell: ({ row }) => {
+          return <span>{row?.original?.channel}</span>
         },
       }),
       columnHelper.accessor("locale", {
@@ -113,34 +127,34 @@ export const TemplatesList = () => {
           )
         },
       }),
-      columnHelper.accessor("created_at", {
-        header: "Created At",
-        cell: ({ row }) => {
-          return (
-            <span>
-              {row?.original?.created_at
-                ? new Date(
-                    row.original.created_at
-                  ).toLocaleString()
-                : "-"}
-            </span>
-          )
-        },
-      }),
-      columnHelper.accessor("updated_at", {
-        header: "Updated At",
-        cell: ({ row }) => {
-          return (
-            <span>
-              {row?.original?.updated_at
-                ? new Date(
-                    row.original.updated_at
-                  ).toLocaleString()
-                : "-"}
-            </span>
-          )
-        },
-      }),
+      // columnHelper.accessor("created_at", {
+      //   header: "Created At",
+      //   cell: ({ row }) => {
+      //     return (
+      //       <span>
+      //         {row?.original?.created_at
+      //           ? new Date(
+      //               row.original.created_at
+      //             ).toLocaleString()
+      //           : "-"}
+      //       </span>
+      //     )
+      //   },
+      // }),
+      // columnHelper.accessor("updated_at", {
+      //   header: "Updated At",
+      //   cell: ({ row }) => {
+      //     return (
+      //       <span>
+      //         {row?.original?.updated_at
+      //           ? new Date(
+      //               row.original.updated_at
+      //             ).toLocaleString()
+      //           : "-"}
+      //       </span>
+      //     )
+      //   },
+      // }),
       columnHelper.accessor("actions", {
         header: "Actions",
         cell: ({ row }) => {

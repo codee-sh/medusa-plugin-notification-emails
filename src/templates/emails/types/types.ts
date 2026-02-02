@@ -1,8 +1,8 @@
 export const TEMPLATES_NAMES = {
   BASE_TEMPLATE: "base-template",
-  INVENTORY_LEVEL: "inventory-level",
-  ORDER_PLACED: "order-placed",
-  ORDER_COMPLETED: "order-completed",
-  ORDER_UPDATED: "order-updated",
-  CONTACT_FORM: "contact-form",
+  INVENTORY_LEVEL: "system_inventory-level",
+  ORDER_PLACED: "system_order-placed",
+  ORDER_COMPLETED: "system_order-completed",
+  ORDER_UPDATED: "system_order-updated",
+  CONTACT_FORM: "system_contact-form",
 } as const
