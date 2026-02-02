@@ -6,12 +6,10 @@ import {
   Modules,
   MedusaError,
 } from "@medusajs/framework/utils"
-import { EmailTemplateService } from "../modules/mpn-builder/services/email-template-service"
-import { TEMPLATES_EMAILS_NAMES } from "../modules/mpn-builder/types/types"
+import { TEMPLATES_EMAILS_NAMES } from "../modules/mpn-builder/types"
 import { transformContext } from "../utils/transforms"
 import { getPluginOptions } from "../utils/plugins"
 import { getOrderByIdWorkflow } from "../workflows/order/get-order-by-id"
-import { MPN_BUILDER_MODULE } from "../modules/mpn-builder"
 import { emailServiceWorkflow } from "../workflows/mpn-builder-services/email-service"
 
 export default async function orderPlacedEmailsHandler({

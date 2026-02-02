@@ -31,21 +31,6 @@ export const templateBlocks = [
     },
   },
   {
-    type: "section",
-    id: "section-1",
-    props: {
-      blocks: [
-        {
-          id: "heading-1",
-          type: "heading",
-          props: {
-            value: "{{translations.headerTitle}}",
-          },
-        },
-      ],
-    },
-  },
-  {
     type: "group",
     id: "group-1",
     props: {

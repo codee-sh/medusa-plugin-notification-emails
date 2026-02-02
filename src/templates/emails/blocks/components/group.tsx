@@ -15,7 +15,7 @@ export function GroupBlock({
   data?: any
 }) {
   return (
-    <Section className="m-0 p-0">ss
+    <Section className="m-0 p-0">
       <BlockRenderer
         blocks={props.blocks || []}
         data={data}

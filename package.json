@@ -17,6 +17,7 @@
     "./modules/*": "./.medusa/server/src/modules/*/index.js",
     "./providers/*": "./.medusa/server/src/providers/*/index.js",
     "./templates/emails": "./.medusa/server/src/templates/emails/index.js",
+    "./templates/emails/types": "./.medusa/server/src/templates/emails/types.js",
     "./templates/slack": "./.medusa/server/src/templates/slack/index.js",
     "./templates/slack/*": "./.medusa/server/src/templates/slack/*/index.js",
     "./templates/slack/types": "./.medusa/server/src/templates/slack/types.js",

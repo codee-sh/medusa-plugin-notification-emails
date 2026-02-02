@@ -10,7 +10,7 @@ import {
 import { SingleColumnPage } from "../../../../components/layout/pages"
 import { OrderTemplateGroup } from "../../../../notifications-templates/groups/order"
 import { ContactFormTemplateGroup } from "../../../../notifications-templates/groups/contact-form"
-import { TEMPLATES_EMAILS_NAMES } from "../../../../../modules/mpn-builder/types/types"
+import { TEMPLATES_EMAILS_NAMES } from "../../../../../modules/mpn-builder/types"
 
 const PreviewTemplatePage = () => {
   const templateName = ""
