@@ -49,9 +49,7 @@ class MpnBuilderService extends MedusaService({
    */
   private initializeTemplateServices() {
     const defaultTemplateServices: BaseTemplateService[] = [
-      new EmailTemplateService({
-        container: this.container_ as any,
-      }),
+      new EmailTemplateService(),
     ]
 
     defaultTemplateServices.forEach((templateService) => {

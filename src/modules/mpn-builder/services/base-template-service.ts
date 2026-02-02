@@ -104,6 +104,12 @@ export class BaseTemplateService implements BaseTemplateServiceInterface {
     const configTranslations = config?.translations || {}
     const configBlocks = config?.blocks || []
 
+    console.log("templates", this.templates_)
+
+    console.log("params", params)
+    console.log("template", template)
+    console.log("configBlocks", configBlocks)
+
     const optionsBlocks = params.options?.blocks || []
     const optionsTranslations = params.options?.translations
 

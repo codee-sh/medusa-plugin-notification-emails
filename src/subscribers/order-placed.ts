@@ -6,13 +6,12 @@ import {
   Modules,
   MedusaError,
 } from "@medusajs/framework/utils"
-import { EmailTemplateService } from "../modules/mpn-builder/services/email-template-service"
 import { TEMPLATES_EMAILS_NAMES } from "../modules/mpn-builder/types/types"
 import { transformContext } from "../utils/transforms"
 import { getPluginOptions } from "../utils/plugins"
 import { getOrderByIdWorkflow } from "../workflows/order/get-order-by-id"
 import { MPN_BUILDER_MODULE } from "../modules/mpn-builder"
-import { emailServiceWorkflow } from "../workflows/email-service"
+import { emailServiceWorkflow } from "../workflows/mpn-builder-services/email-service"
 
 export default async function orderPlacedEmailsHandler({
   event: {
@@ -55,10 +54,11 @@ export default async function orderPlacedEmailsHandler({
   const context = transformContext("order", order, "pl")
 
   const templateName = TEMPLATES_EMAILS_NAMES.ORDER_COMPLETED
+  const templateId = `system_${templateName}`
 
   const { result: { html, text, subject } } = await emailServiceWorkflow(container).run({
     input: {
-      templateId: templateName,
+      templateId: templateId,
       data: context,
       options: {
         locale: "pl",
@@ -72,7 +72,7 @@ export default async function orderPlacedEmailsHandler({
     await notificationModuleService.createNotifications({
       to: order.order.customer.email,
       channel: "email",
-      template: templateName,
+      template: templateId,
       trigger_type: triggerType,
       resource_id: id,
       resource_type: "order",

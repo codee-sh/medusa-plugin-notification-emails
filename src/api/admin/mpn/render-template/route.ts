@@ -7,7 +7,7 @@ import { defaultTheme } from "../../../../templates/shared/theme"
 import { transformContext } from "../../../../utils/transforms"
 import { getPluginOptions } from "../../../../utils/plugins"
 import { MPN_BUILDER_MODULE } from "../../../../modules/mpn-builder"
-import { emailServiceWorkflow } from "../../../../workflows/email-service"
+import { emailServiceWorkflow } from "../../../../workflows/mpn-builder-services/email-service"
 
 export async function POST(
   req: MedusaRequest<{

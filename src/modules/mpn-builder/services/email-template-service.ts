@@ -456,8 +456,6 @@ export class EmailTemplateService extends BaseTemplateService {
       blocks,
     }
 
-    console.log("options", options)
-
     return {
       html: await template.getHtml(params.data, options),
       text: await template.getText(params.data, options),
