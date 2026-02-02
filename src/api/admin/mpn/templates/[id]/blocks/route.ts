@@ -7,7 +7,7 @@ import {
   MedusaError,
 } from "@medusajs/framework/utils"
 import { z } from "zod"
-import { editTemplateBlocksWorkflow } from "../../../../../../workflows/mpn-templates/edit-template-blocks"
+import { editTemplateBlocksWorkflow } from "../../../../../../workflows/mpn-builder/edit-template-blocks"
 import { MPN_BUILDER_MODULE } from "../../../../../../modules/mpn-builder"
 import { MpnBuilderService } from "../../../../../../modules/mpn-builder/services"
 

@@ -12,7 +12,6 @@ import {
 import { Logger } from "@medusajs/framework/types"
 import { EmailTemplateService } from "./email-template-service"
 import { BaseTemplateService } from "./base-template-service"
-import { getBlocksByTemplateWorkflow } from "../../../workflows/mpn-templates/get-blocks-by-template-id"
 
 type InjectedDependencies = {
   logger: Logger
@@ -134,14 +133,6 @@ class MpnBuilderService extends MedusaService({
     const templateServices = this.getTemplateServices()
     return templateServices.get(templateServiceId)
   }
-
-  // getBlocksByTemplateWorkflow(container: any, templateId: string) {
-  //   return getBlocksByTemplateWorkflow(container).run({
-  //     input: {
-  //       template_id: templateId,
-  //     },
-  //   })
-  // }
 }
 
 export default MpnBuilderService

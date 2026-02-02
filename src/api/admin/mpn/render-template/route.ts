@@ -25,7 +25,6 @@ export async function POST(
   )
 
   const templateId = req.body?.templateId
-  const templateName = req.body?.templateName
   const context = req.body?.context
   const contextType = req.body?.contextType
 
@@ -52,7 +51,7 @@ export async function POST(
         locale: locale,
         theme: pluginOptions?.theme || defaultTheme,
         translations:
-          pluginOptions?.customTranslations?.[templateName],
+          pluginOptions?.customTranslations?.[templateId],
       },
     },
   })

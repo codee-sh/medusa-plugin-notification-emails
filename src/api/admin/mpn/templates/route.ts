@@ -14,7 +14,7 @@ import {
   deleteTemplateWorkflow,
   EditTemplateWorkflowInput,
   editTemplateWorkflow,
-} from "../../../../workflows/mpn-templates"
+} from "../../../../workflows/mpn-builder"
 import { MPN_BUILDER_MODULE } from "../../../../modules/mpn-builder"
 import { MpnBuilderService } from "../../../../modules/mpn-builder/services"
 

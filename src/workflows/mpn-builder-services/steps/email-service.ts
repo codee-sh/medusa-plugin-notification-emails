@@ -2,7 +2,7 @@ import {
   createStep,
   StepResponse,
 } from "@medusajs/framework/workflows-sdk"
-import { getBlocksByTemplateWorkflow } from "../../mpn-templates/get-blocks-by-template-id"
+import { getBlocksByTemplateWorkflow } from "../../../workflows/mpn-builder/get-blocks-by-template-id"
 
 export const emailServiceStepId = "mpn-builder-email-service-step"
 
