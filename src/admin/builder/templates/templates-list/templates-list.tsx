@@ -34,8 +34,6 @@ export const TemplatesList = () => {
     return pagination.pageIndex * limit
   }, [pagination])
 
-  const queryClient = useQueryClient()
-
   const {
     data: templatesData,
     isLoading: isTemplatesLoading,
@@ -161,7 +159,7 @@ export const TemplatesList = () => {
           if (row?.original?.is_system) {
             return (
               <div className="flex items-center gap-2">
-                <Button size="small" variant="primary" onClick={() => navigate(`/mpn/templates/system_${row?.original?.name}/blocks`)}>Blocks</Button>
+                <Button size="small" variant="primary" onClick={() => navigate(`/mpn/templates/${row?.original?.name}/blocks`)}>Blocks</Button>
               </div>
             )
           }

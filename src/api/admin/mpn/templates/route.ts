@@ -94,7 +94,6 @@ export async function GET(
 
   const emailTemplateService = mpnBuilderService.getTemplateService("email")?.templateService
   const systemTemplates = emailTemplateService?.getSystemTemplates()
-  console.log("systemTemplates", systemTemplates)
 
   res.json({
     templates: templates,
