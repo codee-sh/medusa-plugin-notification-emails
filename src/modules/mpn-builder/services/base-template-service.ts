@@ -104,13 +104,7 @@ export class BaseTemplateService implements BaseTemplateServiceInterface {
     const configTranslations = config?.translations || {}
     const configBlocks = config?.blocks || []
 
-    console.log("templates", this.templates_)
-
-    console.log("params", params)
-    console.log("template", template)
-    console.log("configBlocks", configBlocks)
-
-    const optionsBlocks = params.options?.blocks || []
+    const optionsBlocks = params.options?.blocks || [] // blocks from data in mpn builder
     const optionsTranslations = params.options?.translations
 
     // If blocks are not provided in options, use basic blocks from config

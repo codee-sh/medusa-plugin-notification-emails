@@ -460,7 +460,7 @@ export class EmailTemplateService extends BaseTemplateService {
       html: await template.getHtml(params.data, options),
       text: await template.getText(params.data, options),
       subject: multiInterpolate(
-        "{{translations.headerTitle}}",
+        options?.subject || "{{translations.headerTitle}}",
         params.data,
         translator
       ),

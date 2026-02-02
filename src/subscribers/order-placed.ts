@@ -52,7 +52,9 @@ export default async function orderPlacedEmailsHandler({
   const context = transformContext("order", order, "pl")
 
   const templateName = TEMPLATES_EMAILS_NAMES.ORDER_COMPLETED
-  const templateId = `system_${templateName}`
+  // const templateId = `system_${templateName}`
+
+  const templateId = "01KG2MMD3K2QMVYSZ3AWB4XYDM"
 
   const { result: { html, text, subject } } = await emailServiceWorkflow(container).run({
     input: {

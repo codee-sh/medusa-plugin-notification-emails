@@ -5,6 +5,7 @@ export interface Template {
   description: string | null
   channel: string
   locale: string
+  subject: string | null
   is_active: boolean
 }
 
@@ -30,6 +31,7 @@ export interface TemplateRenderParams {
 }
 
 export interface TemplateRenderOptionsType {
+  subject?: string
   blocks?: any[]
   theme?: any
   locale?: any

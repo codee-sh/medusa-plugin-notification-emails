@@ -68,6 +68,7 @@ export function TemplatesEditForm({
         description: "",
         channel: "email",
         locale: "en",
+        subject: null,
         is_active: true,
       },
     },
@@ -86,6 +87,7 @@ export function TemplatesEditForm({
           description: template.description || "",
           channel: template.channel || "email",
           locale: template.locale || "en",
+          subject: template.subject || null,
           is_active: template.is_active || true,
         },
       })
@@ -105,6 +107,7 @@ export function TemplatesEditForm({
           description: "",
           channel: "email",
           locale: "en",
+          subject: null,
           is_active: true,
         },
       })
@@ -120,6 +123,7 @@ export function TemplatesEditForm({
         description: data.general.description,
         channel: data.general.channel,
         locale: data.general.locale,
+        subject: data.general.subject,
         is_active: data.general.is_active,
       }
 

@@ -56,6 +56,7 @@ export default defineMiddlewares({
               "channel",
               "locale",
               "is_active",
+              "subject",
               "blocks",
             ],
             isList: true,
@@ -80,6 +81,8 @@ export default defineMiddlewares({
               "parent_id",
               "position",
               "metadata",
+              "template",
+              "template.subject"
             ],
             isList: true,
           }

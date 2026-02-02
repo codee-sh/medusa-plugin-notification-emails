@@ -28,6 +28,7 @@ export const PostTemplateSchema = z.object({
       description: z.string(),
       channel: z.string(),
       locale: z.string(),
+      subject: z.string().nullable().optional(),
       is_active: z.boolean(),
     })
   ),

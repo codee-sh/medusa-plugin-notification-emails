@@ -88,6 +88,16 @@ export const TemplatesList = () => {
           return <span>{row?.original?.locale}</span>
         },
       }),
+      columnHelper.accessor("subject", {
+        header: "Subject",
+        cell: ({ row }) => {
+          return (
+            <span className="whitespace-normal text-xs max-w-[200px] min-w-[200px]">
+              {row?.original?.subject || "-"}
+            </span>
+          )
+        },
+      }),
       columnHelper.accessor("active", {
         header: "Active",
         cell: ({ row }) => {

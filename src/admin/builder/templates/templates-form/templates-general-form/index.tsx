@@ -173,6 +173,29 @@ export function TemplatesGeneralForm({
               )}
             />
           </div>
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="subject" className="block">
+              Subject
+            </Label>
+            <Controller
+              name="general.subject"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <>
+                  <Input
+                    {...field}
+                    value={field.value || ""}
+                    placeholder="Enter the email subject"
+                  />
+                  {fieldState.error && (
+                    <span className="text-red-500 text-sm">
+                      {fieldState.error.message}
+                    </span>
+                  )}
+                </>
+              )}
+            />
+          </div>
 
           <div className="flex flex-col gap-2">
             <Label htmlFor="active" className="block">

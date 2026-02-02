@@ -65,6 +65,7 @@ export function TemplatesCreateForm() {
         description: "",
         channel: "email",
         locale: "en",
+        subject: null,
         is_active: true
       }
     },
@@ -79,6 +80,7 @@ export function TemplatesCreateForm() {
           description: "",
           channel: "email",
           locale: "en",
+          subject: null,
           is_active: true,
         }
       })
@@ -98,6 +100,7 @@ export function TemplatesCreateForm() {
         description: data.general.description,
         channel: data.general.channel,
         locale: data.general.locale,
+        subject: data.general.subject,
         is_active: data.general.is_active,
       }
 

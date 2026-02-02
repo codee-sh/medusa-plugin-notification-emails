@@ -86,13 +86,15 @@ export const getBlocksByTemplateStep = createStep(
 
     const { data: blocks } = await query.graph({
       entity: "mpn_builder_template_block",
-      fields: ["id", "type", "parent_id", "position", "metadata"],
+      fields: ["id", "type", "parent_id", "position", "metadata", "template_id", "template", "template.subject"],
       filters: {
         template_id: {
           $in: [input.template_id],
         },
       },
     })
+
+    console.log("blocks", blocks)
 
     const tree = buildTree(blocks as Block[])
 

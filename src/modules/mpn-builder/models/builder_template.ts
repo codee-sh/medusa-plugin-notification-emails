@@ -9,7 +9,7 @@ const MpnBuilderTemplate = model.define("mpn_builder_template", {
   channel: model.text(), // "email" | "slack" | "sms"
   locale: model.text(), // "pl" | "en" | ...
   // event_type: model.text().nullable(), // "order.placed", "inventory.updated"
-  // subject: model.text().nullable(), // dla email
+  subject: model.text().nullable(),
   is_active: model.boolean().default(true),
   blocks: model.hasMany(() => MpnBuilderTemplateBlock, {
     mappedBy: "template",

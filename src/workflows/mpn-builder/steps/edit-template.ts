@@ -25,8 +25,10 @@ export const editTemplateStep = createStep(
           id: item.id,
           name: item.name,
           description: item.description,
+          label: item.label,
           channel: item.channel,
           locale: item.locale,
+          subject: item.subject ?? null,
           is_active: item.is_active
         }))
       )

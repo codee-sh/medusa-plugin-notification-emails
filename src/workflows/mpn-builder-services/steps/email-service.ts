@@ -3,6 +3,7 @@ import {
   StepResponse,
 } from "@medusajs/framework/workflows-sdk"
 import { getBlocksByTemplateWorkflow } from "../../../workflows/mpn-builder/get-blocks-by-template-id"
+import { getTemplateByIdWorkflow } from "../../../workflows/mpn-builder/get-template-by-id"
 
 export const emailServiceStepId = "mpn-builder-email-service-step"
 
@@ -31,6 +32,7 @@ export const emailServiceStep = createStep(
     ) : "base-template"
 
     let blocks: any[] = []
+    let template: any = {}
 
     if (!isSystemTemplateId) {
       const {
@@ -41,9 +43,17 @@ export const emailServiceStep = createStep(
         },
       })
 
+      const { result: templateData } = await getTemplateByIdWorkflow(container).run({
+        input: {
+          template_id: templateId,
+        }
+      })      
+
       blocks = templateEmailService?.transformBlocksForRendering(
         templateBlocks
       )
+
+      template = templateData?.template
     }
 
     const { html, text, subject } =
@@ -57,6 +67,7 @@ export const emailServiceStep = createStep(
           theme: input.options.theme,
           translations: input.options.translations,
           blocks: blocks,
+          subject: template?.subject,
         },
       })
 

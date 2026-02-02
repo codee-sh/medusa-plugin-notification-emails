@@ -18,6 +18,7 @@ export const baseTemplateFormSchema = z.object({
       message: "Channel must be either Email or Slack",
     }),
     locale: z.string().min(1, "Locale is required"),
+    subject: z.string().nullable().optional(),
     is_active: z.boolean(),
   })
 })
