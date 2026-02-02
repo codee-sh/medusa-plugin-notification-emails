@@ -59,8 +59,8 @@ export default async function orderPlacedEmailsHandler({
       data: context,
       options: {
         locale: "pl",
-        translations:
-          pluginOptions?.customTranslations?.[templateId],
+        // translations:
+        //   pluginOptions?.customTranslations?.[templateId],
       },
     },
   })

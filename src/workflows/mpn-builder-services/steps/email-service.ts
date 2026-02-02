@@ -23,14 +23,8 @@ export const emailServiceStep = createStep(
       )?.templateService
 
     const templateId = input.templateId
-
     const isSystemTemplateId = templateId?.startsWith("system_")
     
-    const templateName = isSystemTemplateId ? templateId.replace(
-      "system_",
-      ""
-    ) : "base-template"
-
     let blocks: any[] = []
     let template: any = {}
 
@@ -59,7 +53,7 @@ export const emailServiceStep = createStep(
     const { html, text, subject } =
       await templateEmailService.render({
         templateName: isSystemTemplateId
-          ? templateName
+          ? templateId
           : "base-template",
         data: input.data,
         options: {
