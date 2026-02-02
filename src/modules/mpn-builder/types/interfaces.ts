@@ -24,10 +24,8 @@ export interface TemplateBlockProps {
  */
 export interface TemplateRenderParams {
   templateName?: string
-  templateId?: string
   data: any
   options?: any
-  container?: any
 }
 
 export interface TemplateRenderOptionsType {
