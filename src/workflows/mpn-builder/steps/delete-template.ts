@@ -2,7 +2,7 @@
   createStep,
   StepResponse,
 } from "@medusajs/framework/workflows-sdk"
-import MpnBuilderService from "../../../modules/mpn-builder/services/service"
+import MpnBuilderService from "../../../modules/mpn-builder/service"
 import { MPN_BUILDER_MODULE } from "../../../modules/mpn-builder"
 
 type DeleteTemplateStepInput = {

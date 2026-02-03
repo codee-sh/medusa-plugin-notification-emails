@@ -5,13 +5,14 @@ import {
 import {
   MpnBuilderTemplate,
   MpnBuilderTemplateBlock,
-} from "../models"
+} from "./models"
 import {
   ModuleOptions,
-} from "../types"
+} from "./types"
 import { Logger } from "@medusajs/framework/types"
-import { EmailTemplateService } from "./email-template-service"
-import { BaseTemplateService } from "./base-template-service"
+import { EmailTemplateService } from "./services-local/email-template-service"
+import { BaseTemplateService } from "./services-local/base-template-service"
+import { SlackTemplateService } from "./services-local/slack-template-service"
 
 type InjectedDependencies = {
   logger: Logger
@@ -37,9 +38,7 @@ class MpnBuilderService extends MedusaService({
     this.options_ = options || {}
     this.container_ = container || null
 
-
     logger.info("MpnBuilderService constructor")
-
 
     // Initialize default templates
     this.initializeTemplateServices()    
@@ -53,6 +52,7 @@ class MpnBuilderService extends MedusaService({
   private initializeTemplateServices() {
     const defaultTemplateServices: BaseTemplateService[] = [
       new EmailTemplateService(),
+      new SlackTemplateService(),
     ]
 
     defaultTemplateServices.forEach((templateService) => {

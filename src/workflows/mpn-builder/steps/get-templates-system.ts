@@ -15,7 +15,7 @@ export interface GetTemplatesStepOutput {
   templates: any[]
 }
 
-export const getTemplatesStepId = "get-templates"
+export const getTemplatesStepId = "get-templates-system"
 
 /**
  * This step retrieves a template by its ID.
@@ -23,7 +23,7 @@ export const getTemplatesStepId = "get-templates"
  * @example
  * const data = getTemplatesStep()
  */
-export const getTemplatesStep = createStep(
+export const getTemplatesSystemStep = createStep(
   getTemplatesStepId,
   async (
     input: GetTemplatesStepInput,
@@ -42,35 +42,11 @@ export const getTemplatesStep = createStep(
     const newTemplates = await Promise.all(availableServicesTemplates.map(async (template: any) => {
       const serviceTemplate = mpnBuilderService.getTemplateService(template.id)?.templateService
 
-      const { data: templates } = await query.graph({
-        entity: "mpn_builder_template",
-        fields: [
-          "id",
-          "name",
-          "label",
-          "description",
-          "channel",
-          "locale",
-          "subject",
-          "is_active",
-          "created_at",
-          "updated_at",
-        ],
-        filters: {
-          channel: {
-            $eq: template.id,
-          },
-        },
-      })
-
       return {
         id: template.id,
         label: template.label,
         channel: template.id,
-        templates: {
-          system: serviceTemplate?.getSystemTemplates(),
-          db: templates,
-        }
+        templates: serviceTemplate?.getSystemTemplates()
       }
     }))
 

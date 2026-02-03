@@ -2,7 +2,7 @@ import {
   createStep,
   StepResponse,
 } from "@medusajs/framework/workflows-sdk"
-import MpnBuilderService from "../../../modules/mpn-builder/services/service"
+import MpnBuilderService from "../../../modules/mpn-builder/service"
 import { MPN_BUILDER_MODULE } from "../../../modules/mpn-builder"
 import { Template } from "../../../modules/mpn-builder/types/interfaces"
 import { toKebabCase } from "../../../utils/string-helpers"

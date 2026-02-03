@@ -3,7 +3,7 @@ import {
   MedusaResponse,
 } from "@medusajs/framework/http"
 import { MPN_BUILDER_MODULE } from "../../../../modules/mpn-builder"
-import { MpnBuilderService } from "../../../../modules/mpn-builder/services"
+import MpnBuilderService from "../../../../modules/mpn-builder/service"
 
 export async function GET(
   req: MedusaStoreRequest,

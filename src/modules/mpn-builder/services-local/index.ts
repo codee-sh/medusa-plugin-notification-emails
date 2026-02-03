@@ -1,4 +1,4 @@
-import { default as MpnBuilderService } from "./service"
+import { default as MpnBuilderService } from "../service"
 export { MpnBuilderService }
 
 export { BaseTemplateService } from "./base-template-service"

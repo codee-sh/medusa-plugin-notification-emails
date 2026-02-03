@@ -11,7 +11,7 @@ import {
   Divider,
 } from "@medusajs/ui"
 import { useQueryClient } from "@tanstack/react-query"
-import { useListTemplates } from "../../../../hooks/api/templates"
+import { useListTemplatesDb } from "../../../../hooks/api/templates/templates"
 import { useState, useMemo } from "react"
 import {
   TemplatesEditForm,
@@ -21,9 +21,18 @@ import { TemplateDeleteButton } from "./components/template-delete-button"
 import { Button } from "@medusajs/ui"
 import { useNavigate } from "react-router-dom"
 import { useListTemplatesSystem } from "../../../../hooks/api/templates/templates"
-import { TemplatesListTable } from "./templates-list-table"
 
-export const TemplatesList = () => {
+export const TemplatesListTable = ({
+  title,
+  data,
+  isLoading,
+  type,
+}: {
+  title: string
+  data: any
+  isLoading: boolean
+  type: string
+}) => {
   const navigate = useNavigate()
   const [pagination, setPagination] =
     useState<DataTablePaginationState>({
@@ -35,26 +44,6 @@ export const TemplatesList = () => {
   const offset = useMemo(() => {
     return pagination.pageIndex * limit
   }, [pagination])
-
-  const {
-    data: templatesData,
-    isLoading: isTemplatesLoading,
-  } = useListTemplates({
-    extraKey: [],
-    limit: limit,
-    offset: offset,
-    order: "-created_at",
-  })
-
-  const {
-    data: systemTemplatesData,
-    isLoading: isSystemTemplatesLoading,
-  } = useListTemplatesSystem({
-    extraKey: [],
-    limit: limit,
-    offset: offset,
-    order: "-created_at",
-  })
 
   const columnHelper = createDataTableColumnHelper<any>()
 
@@ -165,8 +154,8 @@ export const TemplatesList = () => {
 
   const table = useDataTable({
     columns,
-    data: templatesData?.templates ?? [],
-    isLoading: isTemplatesLoading,
+    data: data ?? [],
+    isLoading: isLoading,
     // pagination: {
     //   state: pagination,
     //   onPaginationChange: setPagination,
@@ -175,15 +164,13 @@ export const TemplatesList = () => {
   })
 
   return (
-    <Container className="p-0">
-
-      {templatesData?.templates.map((template: any) => (
-        <TemplatesListTable title={`DB ${template.label} templates`} data={template.templates} isLoading={isTemplatesLoading} type="db" />
-      ))}      
-
-      {systemTemplatesData?.templates.map((template: any) => (
-        <TemplatesListTable title={`System ${template.label} templates`} data={template.templates} isLoading={isSystemTemplatesLoading} type="system" />
-      ))}
-    </Container>
+    <DataTable instance={table}>
+      <DataTable.Toolbar className="flex items-start justify-between gap-2 md:flex-row md:items-center">
+        <Heading level="h2">{title}</Heading>
+        <TemplatesCreateForm />
+      </DataTable.Toolbar>
+      <DataTable.Table />
+      {/* <DataTable.Pagination /> */}
+    </DataTable>
   )
 }

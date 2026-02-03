@@ -1,5 +1,5 @@
 import { Module } from "@medusajs/framework/utils"
-import { MpnBuilderService } from "./services"
+import MpnBuilderService from "./service"
 
 export const MPN_BUILDER_MODULE = "mpnBuilder"
 

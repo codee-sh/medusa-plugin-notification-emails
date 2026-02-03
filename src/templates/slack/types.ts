@@ -1,15 +1,15 @@
 import { TemplateName, TemplateData } from "../shared"
 
 export const TEMPLATES_NAMES = {
-  BASE_TEMPLATE: "base-template",
-  INVENTORY_LEVEL: "inventory-level",
-  PRODUCT: "product",
-  PRODUCT_VARIANT: "product-variant",
-  ORDER_PLACED: "order-placed",
-  ORDER_COMPLETED: "order-completed",
-  ORDER_UPDATED: "order-updated",
-  ORDER_CANCELED: "order-canceled",
-  ORDER_ARCHIVED: "order-archived",
+  // BASE_TEMPLATE: "base-template",
+  INVENTORY_LEVEL: "system_inventory-level",
+  PRODUCT: "system_product",
+  PRODUCT_VARIANT: "system_product-variant",
+  ORDER_PLACED: "system_order-placed",
+  ORDER_COMPLETED: "system_order-completed",
+  ORDER_UPDATED: "system_order-updated",
+  ORDER_CANCELED: "system_order-canceled",
+  ORDER_ARCHIVED: "system_order-archived",
 } as const
 
 export type SlackBlock = {

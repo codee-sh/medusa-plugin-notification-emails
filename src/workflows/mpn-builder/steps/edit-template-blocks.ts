@@ -2,7 +2,7 @@ import {
   createStep,
   StepResponse,
 } from "@medusajs/framework/workflows-sdk"
-import MpnBuilderService from "../../../modules/mpn-builder/services/service"
+import MpnBuilderService from "../../../modules/mpn-builder/service"
 import { MPN_BUILDER_MODULE } from "../../../modules/mpn-builder"
 import flatMapDeep from "lodash/flatMapDeep"
 import { BlockType } from "../../../modules/mpn-builder/types/types"

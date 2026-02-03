@@ -1,5 +1,5 @@
 import { defaultTheme } from "../src/templates/shared/theme";
-import { EmailTemplateService } from "../src/modules/mpn-builder/services/email-template-service";
+import { EmailTemplateService } from "../src/modules/mpn-builder/services-local/email-template-service";
 
 export const orderCompletedMockData: any = {
   order: {

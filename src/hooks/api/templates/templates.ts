@@ -134,3 +134,153 @@ export const useListTemplates = (
 
   return { data, ...rest }
 }
+
+
+export type useListTemplatesSystemParams = {
+  id?: string
+  limit?: number
+  offset?: number
+  extraKey?: unknown[]
+  enabled?: boolean
+  fields?: string
+  order?: string
+}
+
+type ListTemplatesSystemQueryData = {
+  templates: any
+  count: number
+  limit: number
+  offset: number
+}
+
+export const useListTemplatesSystem = (
+  params: any,
+  options?: any
+) => {
+  const {
+    limit = 100,
+    offset = 0,
+    extraKey = [],
+    enabled,
+    fields,
+    order = "created_at",
+    type,
+    id,
+  } = params
+
+  const queryKey: QueryKey = [
+    "templates-system",
+    id,
+    limit,
+    offset,
+    ...extraKey,
+  ]
+
+  const query: any = {
+    limit,
+    offset,
+    fields,
+    order,
+  }
+
+  if (id) {
+    query.id = id
+  }
+
+  const { data, ...rest } = useQuery<
+    ListTemplatesSystemQueryData,
+    FetchError,
+    ListTemplatesSystemQueryData,
+    QueryKey
+  >({
+    queryKey,
+    queryFn: async () => {
+      return await sdk.client.fetch(
+        "/admin/mpn/templates/system",
+        {
+          method: "GET",
+          query,
+        }
+      )
+    },
+    enabled,
+    ...(options as any),
+  })
+
+  return { data, ...rest }
+}
+
+
+export type useListTemplatesDbParams = {
+  id?: string
+  limit?: number
+  offset?: number
+  extraKey?: unknown[]
+  enabled?: boolean
+  fields?: string
+  order?: string
+}
+
+type ListTemplatesDbQueryData = {
+  templates: any
+  count: number
+  limit: number
+  offset: number
+}
+
+export const useListTemplatesDb = (
+  params: any,
+  options?: any
+) => {
+  const {
+    limit = 100,
+    offset = 0,
+    extraKey = [],
+    enabled,
+    fields,
+    order = "created_at",
+    type,
+    id,
+  } = params
+
+  const queryKey: QueryKey = [
+    "templates-db",
+    id,
+    limit,
+    offset,
+    ...extraKey,
+  ]
+
+  const query: any = {
+    limit,
+    offset,
+    fields,
+    order,
+  }
+
+  if (id) {
+    query.id = id
+  }
+
+  const { data, ...rest } = useQuery<
+    ListTemplatesDbQueryData,
+    FetchError,
+    ListTemplatesDbQueryData,
+    QueryKey
+  >({
+    queryKey,
+    queryFn: async () => {
+      return await sdk.client.fetch(
+        "/admin/mpn/templates-db",
+        {
+          method: "GET",
+          query,
+        }
+      )
+    },
+    enabled,
+    ...(options as any),
+  })
+
+  return { data, ...rest }
+}

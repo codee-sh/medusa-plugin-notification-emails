@@ -69,7 +69,7 @@ export class BaseTemplateService implements BaseTemplateServiceInterface {
       channel: this.id,
       is_system: true,
       is_active: true,
-      blocks: renderer.getConfig?.().blocks || [],
+      blocks: renderer?.getConfig?.()?.blocks || [],
     }))
   }
 
