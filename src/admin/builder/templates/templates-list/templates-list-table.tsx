@@ -169,8 +169,11 @@ export const TemplatesListTable = ({
         <Heading level="h2">{title}</Heading>
         <TemplatesCreateForm />
       </DataTable.Toolbar>
-      <DataTable.Table />
-      {/* <DataTable.Pagination /> */}
-    </DataTable>
+      {data?.length > 0 && (
+        <>
+          <DataTable.Table />
+        </>
+      )}
+    </DataTable>  
   )
 }

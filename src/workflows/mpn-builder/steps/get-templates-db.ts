@@ -54,11 +54,11 @@ export const getTemplatesDbStep = createStep(
           "created_at",
           "updated_at",
         ],
-        // filters: {
-        //   channel: {
-        //     $eq: template.channel,
-        //   },
-        // },
+        filters: {
+          channel: {
+            $eq: template.id,
+          },
+        },
       })
 
       return {
