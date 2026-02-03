@@ -62,6 +62,7 @@ export class BaseTemplateService implements BaseTemplateServiceInterface {
 
   getSystemTemplates() {
     return Array.from(this.templates_.entries()).map(([name, renderer]) => ({
+      id: name,
       name,
       label: name,
       description: null,

@@ -37,6 +37,10 @@ class MpnBuilderService extends MedusaService({
     this.options_ = options || {}
     this.container_ = container || null
 
+
+    logger.info("MpnBuilderService constructor")
+
+
     // Initialize default templates
     this.initializeTemplateServices()    
   }
