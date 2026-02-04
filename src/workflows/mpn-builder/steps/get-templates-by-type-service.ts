@@ -71,7 +71,7 @@ export const getTemplatesByTypeServiceStep = createStep(
           service_id
         )?.templateService
       templates =
-        serviceTemplate?.getSystemTemplates() || []
+        serviceTemplate?.getExternalTemplates() || []
     }
 
     return new StepResponse({

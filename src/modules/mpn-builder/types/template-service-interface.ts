@@ -44,10 +44,12 @@ export interface BaseTemplateServiceInterface {
    * Register a template for this template service
    * @param name - Template name
    * @param renderer - Template renderer function
+   * @param type - Template type (default: "system")
    */
   registerTemplate?: (
     name: string,
-    renderer: TemplateRenderer
+    renderer: TemplateRenderer,
+    type?: string
   ) => void
 
   /**

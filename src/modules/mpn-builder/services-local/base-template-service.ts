@@ -1,4 +1,5 @@
 import { BaseTemplateServiceInterface, BlockType, TemplateRenderer } from "../types"
+import { TEMPLATE_TYPES } from "../types/constants"
 import {
   createTranslator,
   mergeTranslations,
@@ -31,12 +32,14 @@ export class BaseTemplateService implements BaseTemplateServiceInterface {
    * Register a template for this service
    * @param name - Template name
    * @param renderer - Template renderer function
+   * @param type - Template type (default: "system")
    */
   registerTemplate(
     name: string,
-    renderer: TemplateRenderer
+    renderer: TemplateRenderer,
+    type: string = TEMPLATE_TYPES.SYSTEM_TEMPLATE
   ): void {
-    this.templates_.set(name, renderer)
+    this.templates_.set(name, { renderer, type: type })
   }
 
   /**
@@ -57,20 +60,44 @@ export class BaseTemplateService implements BaseTemplateServiceInterface {
       )
     }
 
-    return template
+    return template.renderer
   }
 
+  /**
+   * Get templates by type
+   * @param type - Template type (TEMPLATE_TYPES.SYSTEM_TEMPLATE or TEMPLATE_TYPES.EXTERNAL_TEMPLATE)
+   * @returns Array of templates matching the specified type
+   */
+  protected getTemplatesByType(type: string) {
+    return Array.from(this.templates_.entries())
+      .filter(([_, renderer]) => renderer.type === type)
+      .map(([name, renderer]) => ({
+        id: name,
+        name,
+        label: name,
+        description: null,
+        channel: this.id,
+        is_system: type === TEMPLATE_TYPES.SYSTEM_TEMPLATE,
+        is_active: true,
+        type: renderer.type,
+        blocks: renderer.renderer?.getConfig?.()?.blocks || [],
+      }))
+  }
+
+  /**
+   * Get system templates (type: "system")
+   * @returns Array of system templates
+   */
   getSystemTemplates() {
-    return Array.from(this.templates_.entries()).map(([name, renderer]) => ({
-      id: name,
-      name,
-      label: name,
-      description: null,
-      channel: this.id,
-      is_system: true,
-      is_active: true,
-      blocks: renderer?.getConfig?.()?.blocks || [],
-    }))
+    return this.getTemplatesByType(TEMPLATE_TYPES.SYSTEM_TEMPLATE)
+  }
+
+  /**
+   * Get external templates (type: "external")
+   * @returns Array of external templates
+   */
+  getExternalTemplates() {
+    return this.getTemplatesByType(TEMPLATE_TYPES.EXTERNAL_TEMPLATE)
   }
 
   /**
