@@ -65,6 +65,15 @@ export const getTemplatesByTypeServiceStep = createStep(
         serviceTemplate?.getSystemTemplates() || []
     }
 
+    if (type_id === "external") {
+      const serviceTemplate =
+        mpnBuilderService.getTemplateService(
+          service_id
+        )?.templateService
+      templates =
+        serviceTemplate?.getSystemTemplates() || []
+    }
+
     return new StepResponse({
       templates: templates,
     })
