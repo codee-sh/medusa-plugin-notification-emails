@@ -7,6 +7,7 @@ import {
   import { getTemplateWorkflow } from "../get-template"
   
   export interface GetServicesTypesTemplatesStepInput {
+    service_id?: string
   }
   
   export interface GetServicesTypesTemplatesStepOutput {
@@ -16,10 +17,12 @@ import {
   export const getServicesTypesTemplatesStepId = "get-services-types-templates"
   
   /**
-   * This step retrieves all services, types and templates.
+   * Retrieves services, types and templates. If service_id is provided, returns only templates for that service.
    *
    * @example
-   * const data = getServicesTypesTemplatesStep()
+   * const data = getServicesTypesTemplatesStep({
+   *   service_id: "email"
+   * })
    */
   export const getServicesTypesTemplatesStep = createStep(
     getServicesTypesTemplatesStepId,
@@ -31,7 +34,14 @@ import {
         MPN_BUILDER_MODULE
       ) as MpnBuilderService
   
-      const listTemplateServices = mpnBuilderService.listTemplateServices()
+      let listTemplateServices = mpnBuilderService.listTemplateServices()
+  
+      // Filter by service_id if provided
+      if (input.service_id) {
+        listTemplateServices = listTemplateServices.filter(
+          (service: any) => service.id === input.service_id
+        )
+      }
   
       const newTemplates = await Promise.all(listTemplateServices.map(async (template: any) => {
         const serviceTemplate = mpnBuilderService.getTemplateService(template.id)?.templateService

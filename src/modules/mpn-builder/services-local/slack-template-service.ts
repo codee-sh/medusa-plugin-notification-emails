@@ -493,8 +493,7 @@ export class SlackTemplateService extends BaseTemplateService {
 
     // Add backendUrl to data for interpolation
     const dataWithOptions = {
-      ...params.data,
-      backendUrl: params.options?.backendUrl || "",
+      ...params.data
     }
 
     const { template, translator, blocks } =

@@ -29,6 +29,7 @@ export interface TemplateRenderParams {
 }
 
 export interface TemplateRenderOptionsType {
+  backendUrl?: string
   subject?: string
   blocks?: any[]
   theme?: any
