@@ -231,6 +231,39 @@ export class EmailTemplateService extends BaseTemplateService {
       label: "Separator",
       fields: [],
     },
+    {
+      type: "product-item",
+      label: "Product Item",
+      fields: [
+        {
+          key: "label",
+          label: "Label",
+          type: "text",
+          required: false,
+          name: "label",
+          value: "",
+          defaultValue: "",
+        },
+        {
+          key: "thumbnail",
+          label: "Thumbnail",
+          type: "text",
+          required: false,
+          name: "thumbnail",
+          value: "",
+          defaultValue: "",
+        },
+        {
+          key: "value",
+          label: "Value",
+          type: "textarea",
+          required: true,
+          name: "value",
+          value: "",
+          defaultValue: "",
+        },
+      ],
+    },
   ]
 
   /**
@@ -455,6 +488,8 @@ export class EmailTemplateService extends BaseTemplateService {
       ...params.options,
       blocks,
     }
+
+    console.log(options)
 
     return {
       html: await template.getHtml(params.data, options),

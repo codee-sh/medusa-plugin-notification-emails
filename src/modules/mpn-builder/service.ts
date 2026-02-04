@@ -163,12 +163,12 @@ class MpnBuilderService extends MedusaService({
   getTemplateTypes(): Array<{ id: string; name: string }> {
     return [
       {
-        id: TEMPLATE_TYPES.SYSTEM_TEMPLATE,
-        name: TEMPLATE_TYPES_NAMES.SYSTEM_TEMPLATE,
-      },
-      {
         id: TEMPLATE_TYPES.DB_TEMPLATE,
         name: TEMPLATE_TYPES_NAMES.DB_TEMPLATE,
+      },
+      {
+        id: TEMPLATE_TYPES.SYSTEM_TEMPLATE,
+        name: TEMPLATE_TYPES_NAMES.SYSTEM_TEMPLATE,
       },
       {
         id: TEMPLATE_TYPES.EXTERNAL_TEMPLATE,

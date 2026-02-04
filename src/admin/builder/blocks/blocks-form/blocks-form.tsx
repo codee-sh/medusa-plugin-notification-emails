@@ -32,6 +32,7 @@ import { BlockDropdownMenu } from "../components/block-dropdown"
 import { useEditTemplateBlocks } from "../../../../hooks/api/templates/blocks"
 import { useQueryClient } from "@tanstack/react-query"
 import { BlocksChildren } from "../blocks-children"
+import { BlocksRepeater } from "../blocks-repeater"
 
 type BlockFormValues = z.infer<typeof baseBlocksSchema>
 
@@ -133,7 +134,16 @@ export const BlocksForm = (props: any) => {
                         handleDragEnd={handleDragEnd}
                       />
                     ) }
-                    {field.type !== "group" && (
+                    {field.type === "repeater" && (
+                      <BlocksRepeater
+                        path={`items.${index}`}
+                        blocks={blocks}
+                        form={form}
+                        sensors={sensors}
+                        handleDragEnd={handleDragEnd}
+                      />
+                    ) }
+                    {field.type !== "group" && field.type !== "repeater" && (
                       <BlockItemFields
                         path={`items.${index}`}
                         index={index}

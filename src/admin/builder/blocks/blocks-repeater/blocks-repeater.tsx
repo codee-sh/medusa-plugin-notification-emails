@@ -14,12 +14,14 @@ import { BlockList } from "../components/block-list"
 import { BlockItem } from "../components/block-item"
 import { BlockItemFields } from "../components/block-item-fields"
 import { BlockDropdownMenu } from "../components/block-dropdown"
-import { BlocksRepeater } from "../blocks-repeater"
+import { BlocksChildren } from "../blocks-children"
 
-export const BlocksChildren = (props: any) => {
+export const BlocksRepeater = (props: any) => {
   const { blocks, form, path, sensors } = props
 
   const childrenPath = `${path}.children`
+  const index = parseInt(path.split(".")[1])
+  const field = form.watch(path)
 
   const { fields: childFields, append: appendChild, move: moveChild, remove: removeChild } = useFieldArray({
     control: form.control,
@@ -29,6 +31,18 @@ export const BlocksChildren = (props: any) => {
 
   return (
     <>
+      {/* Array Path field */}
+      <div className="mb-4">
+        <BlockItemFields
+          path={path}
+          index={index}
+          field={field}
+          blocks={blocks}
+          form={form}
+        />
+      </div>
+
+      {/* Children blocks */}
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
