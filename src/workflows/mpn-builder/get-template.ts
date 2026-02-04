@@ -29,7 +29,7 @@ export const getTemplateWorkflowId = "get-template"
 export const getTemplateWorkflow = createWorkflow(
   getTemplateWorkflowId,
   (input: WorkflowData<GetTemplateByIdWorkflowInput>) => {
-    const template = getTemplateStep({
+    const templates = getTemplateStep({
       template_id: input.template_id,
       channel: input.channel,
       name: input.name,
@@ -38,6 +38,6 @@ export const getTemplateWorkflow = createWorkflow(
       fields: input.fields,
     })
 
-    return new WorkflowResponse(template)
+    return new WorkflowResponse(templates)
   }
 )

@@ -1,17 +1,13 @@
 import { InformationCircleSolid } from "@medusajs/icons"
 import {
-  Container,
   Heading,
   DataTable,
   useDataTable,
   createDataTableColumnHelper,
   DataTablePaginationState,
   Tooltip,
-  Badge,
-  Divider,
+  Badge
 } from "@medusajs/ui"
-import { useQueryClient } from "@tanstack/react-query"
-import { useListTemplatesDb } from "../../../../hooks/api/templates/templates"
 import { useState, useMemo } from "react"
 import {
   TemplatesEditForm,
@@ -20,7 +16,6 @@ import {
 import { TemplateDeleteButton } from "./components/template-delete-button"
 import { Button } from "@medusajs/ui"
 import { useNavigate } from "react-router-dom"
-import { useListTemplatesSystem } from "../../../../hooks/api/templates/templates"
 
 export const TemplatesListTable = ({
   title,
@@ -167,7 +162,7 @@ export const TemplatesListTable = ({
     <DataTable instance={table}>
       <DataTable.Toolbar className="flex items-start justify-between gap-2 md:flex-row md:items-center">
         <Heading level="h2">{title}</Heading>
-        <TemplatesCreateForm />
+        {type !== "system" && <TemplatesCreateForm />}
       </DataTable.Toolbar>
       {data?.length > 0 && (
         <>

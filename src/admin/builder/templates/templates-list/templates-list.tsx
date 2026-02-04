@@ -1,39 +1,35 @@
 import {
   Container
 } from "@medusajs/ui"
-import { useListTemplates } from "../../../../hooks/api/templates"
-import { useListTemplatesSystem } from "../../../../hooks/api/templates/templates"
+import { useListTemplates } from "../../../../hooks/api/templates/services/templates"
 import { TemplatesListTable } from "./templates-list-table"
 
-export const TemplatesList = () => {
+export const TemplatesList = ({
+  title,
+  service_id,
+  type_id,
+}: {
+  title: string
+  service_id: string
+  type_id: string
+}) => {
   const {
     data: templatesData,
     isLoading: isTemplatesLoading,
   } = useListTemplates({
     extraKey: [],
     order: "-created_at",
-  })
-
-  const {
-    data: systemTemplatesData,
-    isLoading: isSystemTemplatesLoading,
-  } = useListTemplatesSystem({
-    extraKey: [],
-    order: "-created_at",
+    service_id: service_id,
+    type_id: type_id,
   })
 
   return (
     <>
-      <Container className="p-0">
-        {templatesData?.templates.map((template: any) => (
-          <TemplatesListTable title={`DB ${template.label} templates`} data={template.templates} isLoading={isTemplatesLoading} type="db" />
-        ))}
-      </Container>
-      <Container className="p-0">
-        {systemTemplatesData?.templates.map((template: any) => (
-          <TemplatesListTable title={`System ${template.label} templates`} data={template.templates} isLoading={isSystemTemplatesLoading} type="system" />
-        ))}
-      </Container>
+      {isTemplatesLoading ? (
+        <div className="p-6">Loading...</div>
+      ) : (
+          <TemplatesListTable title={title} data={templatesData?.list || []} isLoading={isTemplatesLoading} type={type_id} />
+      )}
     </>
   )
 }

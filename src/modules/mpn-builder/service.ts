@@ -13,6 +13,7 @@ import { Logger } from "@medusajs/framework/types"
 import { EmailTemplateService } from "./services-local/email-template-service"
 import { BaseTemplateService } from "./services-local/base-template-service"
 import { SlackTemplateService } from "./services-local/slack-template-service"
+import { TEMPLATE_TYPES, TEMPLATE_TYPES_NAMES } from "./types/constants"
 
 type InjectedDependencies = {
   logger: Logger
@@ -25,7 +26,7 @@ class MpnBuilderService extends MedusaService({
   private options_: ModuleOptions
   private logger_: Logger
   private templateServices_: Map<string, { templateService: BaseTemplateService; enabled: boolean }> = new Map()
-
+  
   constructor(
     { logger }: InjectedDependencies,
     options?: ModuleOptions
@@ -60,6 +61,28 @@ class MpnBuilderService extends MedusaService({
         `Template service for ${templateService.id} registered`
       )      
     })
+  }
+
+  /**
+   * Get template types
+   *
+   * @returns Array of template types with key, value, and name
+   */
+  getTemplateTypes(): Array<{ id: string; name: string }> {
+    return [
+      {
+        id: TEMPLATE_TYPES.SYSTEM_TEMPLATE,
+        name: TEMPLATE_TYPES_NAMES.SYSTEM_TEMPLATE,
+      },
+      {
+        id: TEMPLATE_TYPES.DB_TEMPLATE,
+        name: TEMPLATE_TYPES_NAMES.DB_TEMPLATE,
+      },
+      {
+        id: TEMPLATE_TYPES.EXTERNAL_TEMPLATE,
+        name: TEMPLATE_TYPES_NAMES.EXTERNAL_TEMPLATE,
+      },
+    ]
   }
 
   /**

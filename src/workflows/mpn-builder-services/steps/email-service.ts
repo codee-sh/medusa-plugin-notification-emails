@@ -2,13 +2,33 @@ import {
   createStep,
   StepResponse,
 } from "@medusajs/framework/workflows-sdk"
-import { getBlocksByTemplateWorkflow } from "../../../workflows/mpn-builder/get-blocks-by-template-id"
 import { getTemplateWorkflow } from "../../mpn-builder/get-template"
 import { buildTree } from "../../../utils"
-import { TEMPLATE_TYPES } from "../../../modules/mpn-builder/types/types"
+import { TEMPLATE_TYPES } from "../../../modules/mpn-builder/types"
 
 export const emailServiceStepId = "mpn-builder-email-service-step"
 
+/**
+ * This step renders an email template using the email service.
+ *
+ * @param input - The input for the step.
+ * - template_id: Required - The ID of the template to render. It can be a system template or a database template.
+ * - data: Required - The data to render the template with.
+ * - options: Optional - The options to render the template with.
+ *
+ * @example
+ * const { html, text, subject } = emailServiceStep({
+ *   template_id: "system_template_123", // or "123" - ID from the database template
+ *   data: {
+ *     name: "John Doe",
+ *   },
+ *   options: {
+ *     locale: "en",
+ *   },
+ * })
+ * 
+ * @returns The HTML, text, and subject of the rendered template.
+ */
 export const emailServiceStep = createStep(
   emailServiceStepId,
   async (
@@ -39,7 +59,7 @@ export const emailServiceStep = createStep(
         }
       })
 
-      const blocksTree = buildTree(templateData?.template?.blocks)
+      const blocksTree = buildTree(templateData?.templates[0]?.blocks)
 
       blocks = templateEmailService?.transformBlocksForRendering(
         blocksTree

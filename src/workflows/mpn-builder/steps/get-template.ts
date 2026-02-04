@@ -17,7 +17,7 @@ export interface GetTemplateStepInput {
 }
 
 export interface GetTemplateStepOutput {
-  template: any
+  templates: any[]
 }
 
 export const getTemplateStepId = "get-template"
@@ -42,13 +42,6 @@ export const getTemplateStep = createStep(
     const query = container.resolve(
       ContainerRegistrationKeys.QUERY
     )
-
-    if (!input.template_id) {
-      throw new MedusaError(
-        MedusaError.Types.INVALID_ARGUMENT,
-        "Template ID is required"
-      )
-    }
 
     const filters: any = {}
 
@@ -102,6 +95,7 @@ export const getTemplateStep = createStep(
       filters,
     })
 
+    console.log("filters", filters)
     console.log("templates", templates)
 
     if (!templates || templates.length === 0) {
@@ -112,7 +106,7 @@ export const getTemplateStep = createStep(
     }
 
     return new StepResponse({
-      template: templates[0],
+      templates: templates,
     })
   }
 )

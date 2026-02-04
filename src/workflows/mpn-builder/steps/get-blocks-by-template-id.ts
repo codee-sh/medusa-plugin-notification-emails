@@ -94,8 +94,6 @@ export const getBlocksByTemplateStep = createStep(
       },
     })
 
-    console.log("blocks", blocks)
-
     const tree = buildTree(blocks as Block[])
 
     return new StepResponse({

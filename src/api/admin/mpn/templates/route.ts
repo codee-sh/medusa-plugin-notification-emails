@@ -2,10 +2,6 @@ import {
   MedusaStoreRequest,
   MedusaResponse,
 } from "@medusajs/framework/http"
-import {
-  ContainerRegistrationKeys,
-  MedusaError,
-} from "@medusajs/framework/utils"
 import { z } from "zod"
 import { toKebabCase } from "../../../../utils/string-helpers"
 import {
@@ -16,9 +12,7 @@ import {
   EditTemplateWorkflowInput,
   editTemplateWorkflow,
 } from "../../../../workflows/mpn-builder"
-import { MPN_BUILDER_MODULE } from "../../../../modules/mpn-builder"
-import MpnBuilderService from "../../../../modules/mpn-builder/service"
-import { getTemplatesDbWorkflow } from "../../../../workflows/mpn-builder/get-templates-db"
+import { getTemplateWorkflow } from "../../../../workflows/mpn-builder/get-template"
 
 export const PostTemplateSchema = z.object({
   id: z.string().optional(),
@@ -69,13 +63,7 @@ export async function GET(
   req: MedusaStoreRequest,
   res: MedusaResponse
 ) {
-  const query = req.scope.resolve(
-    ContainerRegistrationKeys.QUERY
-  )
-
-  const mpnBuilderService = req.scope.resolve(MPN_BUILDER_MODULE) as MpnBuilderService
-
-  const { id, type } = req.query
+  const { id } = req.query
   const filters: any = {}
 
   if (id) {
@@ -84,13 +72,11 @@ export async function GET(
     }
   }
 
-  const { result: templatesResult } = await getTemplatesDbWorkflow(req.scope).run({
+  const { result: templatesResult } = await getTemplateWorkflow(req.scope).run({
     input: {
-      type: type ?? "",
+      template_id: id as string,
     },
   })
-
-  console.log("templatesResult", JSON.stringify(templatesResult, null, 2))
 
   res.json({
     templates: templatesResult?.templates

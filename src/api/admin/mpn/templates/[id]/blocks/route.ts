@@ -9,7 +9,7 @@ import {
 import { z } from "zod"
 import { editTemplateBlocksWorkflow } from "../../../../../../workflows/mpn-builder/edit-template-blocks"
 import { MPN_BUILDER_MODULE } from "../../../../../../modules/mpn-builder"
-import { MpnBuilderService } from "../../../../../../modules/mpn-builder/services"
+import MpnBuilderService from "../../../../../../modules/mpn-builder/service"
 
 export const PostTemplateBlocksSchema = z.object({
   template_id: z.string(),
