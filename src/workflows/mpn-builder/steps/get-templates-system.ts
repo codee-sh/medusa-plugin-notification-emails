@@ -37,7 +37,7 @@ export const getTemplatesSystemStep = createStep(
       MPN_BUILDER_MODULE
     ) as MpnBuilderService
 
-    const availableServicesTemplates = mpnBuilderService.getAvailableTemplates()
+    const availableServicesTemplates = mpnBuilderService.listTemplateServices()
 
     const newTemplates = await Promise.all(availableServicesTemplates.map(async (template: any) => {
       const serviceTemplate = mpnBuilderService.getTemplateService(template.id)?.templateService

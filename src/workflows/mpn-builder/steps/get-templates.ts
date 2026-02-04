@@ -37,9 +37,9 @@ export const getTemplatesStep = createStep(
       MPN_BUILDER_MODULE
     ) as MpnBuilderService
 
-    const availableServicesTemplates = mpnBuilderService.getAvailableTemplates()
+    const listTemplateServices = mpnBuilderService.listTemplateServices()
 
-    const newTemplates = await Promise.all(availableServicesTemplates.map(async (template: any) => {
+    const newTemplates = await Promise.all(listTemplateServices.map(async (template: any) => {
       const serviceTemplate = mpnBuilderService.getTemplateService(template.id)?.templateService
 
       const { data: templates } = await query.graph({

@@ -3,7 +3,9 @@ import {
   StepResponse,
 } from "@medusajs/framework/workflows-sdk"
 import { getBlocksByTemplateWorkflow } from "../../../workflows/mpn-builder/get-blocks-by-template-id"
-import { getTemplateByIdWorkflow } from "../../../workflows/mpn-builder/get-template-by-id"
+import { getTemplateWorkflow } from "../../mpn-builder/get-template"
+import { buildTree } from "../../../utils"
+import { TEMPLATE_TYPES } from "../../../modules/mpn-builder/types/types"
 
 export const emailServiceStepId = "mpn-builder-email-service-step"
 
@@ -22,32 +24,26 @@ export const emailServiceStep = createStep(
         "email"
       )?.templateService
 
-    const templateId = input.templateId
-    const isSystemTemplateId = templateId?.startsWith("system_")
-    
+    const templateId = input.template_id
+    const isSystemTemplateId = templateId?.startsWith(TEMPLATE_TYPES.SYSTEM_TEMPLATE)
+
     let blocks: any[] = []
     let template: any = {}
 
+    // If it's not a system template, get the blocks from the database
     if (!isSystemTemplateId) {
-      const {
-        result: { blocks: templateBlocks },
-      } = await getBlocksByTemplateWorkflow(container).run({
+      const { result: templateData } = await getTemplateWorkflow(container).run({
         input: {
           template_id: templateId,
-        },
+          fields: ["blocks.*"],
+        }
       })
 
-      const { result: templateData } = await getTemplateByIdWorkflow(container).run({
-        input: {
-          template_id: templateId,
-        }
-      })      
+      const blocksTree = buildTree(templateData?.template?.blocks)
 
       blocks = templateEmailService?.transformBlocksForRendering(
-        templateBlocks
+        blocksTree
       )
-
-      template = templateData?.template
     }
 
     const { html, text, subject } =

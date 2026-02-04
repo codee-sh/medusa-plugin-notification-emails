@@ -1,3 +1,9 @@
+export const TEMPLATE_TYPES = {
+  SYSTEM_TEMPLATE: "system_",
+  DB_TEMPLATE: "db_",
+  EXTERNAL_TEMPLATE: "external_",
+} as const
+
 /**
  * Template renderer function type - can be sync or async
  */

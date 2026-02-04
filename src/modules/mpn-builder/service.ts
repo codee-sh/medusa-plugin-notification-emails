@@ -25,27 +25,22 @@ class MpnBuilderService extends MedusaService({
   private options_: ModuleOptions
   private logger_: Logger
   private templateServices_: Map<string, { templateService: BaseTemplateService; enabled: boolean }> = new Map()
-  private container_: any
 
   constructor(
     { logger }: InjectedDependencies,
-    options?: ModuleOptions,
-    container?: any
+    options?: ModuleOptions
   ) {
     super(...arguments)
 
     this.logger_ = logger
     this.options_ = options || {}
-    this.container_ = container || null
-
-    logger.info("MpnBuilderService constructor")
 
     // Initialize default templates
     this.initializeTemplateServices()    
   }
 
   /**
-   * Initialize action handlers from defaults and options
+   * Initialize template services from defaults and options
    *
    * @returns void
    */
@@ -80,12 +75,27 @@ class MpnBuilderService extends MedusaService({
   }
 
   /**
-   * Get available templates for the admin panel form
+   * Get template service by ID for the admin panel form
    *
-   * @param type - Optional type to filter templates dynamically
-   * @returns Array of templates
+   * @param templateServiceId - Template service ID
+   * @returns Template service
    */
-  getAvailableTemplates(type?: string) {
+  getTemplateService(
+    templateServiceId: string
+  ):
+    | { templateService: BaseTemplateService; enabled: boolean }
+    | undefined {
+    const templateServices = this.getTemplateServices()
+    return templateServices.get(templateServiceId)
+  }
+
+  /**
+   * List all registered template services (e.g., email, slack)
+   *
+   * @param type - Optional type to filter by service ID
+   * @returns Array of template service configurations
+   */
+  listTemplateServices(type?: string) {
     let templates = this.getTemplateServices()
 
     if (type) {
@@ -121,21 +131,6 @@ class MpnBuilderService extends MedusaService({
         enabled: template.enabled,
       }
     })
-  }
-
-  /**
-   * Get template service by ID for the admin panel form
-   *
-   * @param templateServiceId - Template service ID
-   * @returns Template service
-   */
-  getTemplateService(
-    templateServiceId: string
-  ):
-    | { templateService: BaseTemplateService; enabled: boolean }
-    | undefined {
-    const templateServices = this.getTemplateServices()
-    return templateServices.get(templateServiceId)
   }
 }
 

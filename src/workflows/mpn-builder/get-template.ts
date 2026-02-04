@@ -3,13 +3,18 @@ import {
   WorkflowData,
   WorkflowResponse,
 } from "@medusajs/framework/workflows-sdk"
-import { getTemplateByIdStep } from "./steps/get-template-by-id"
+import { getTemplateStep } from "./steps/get-template"
 
 export interface GetTemplateByIdWorkflowInput {
-  template_id: string
+  template_id?: string
+  channel?: string
+  name?: string
+  locale?: string
+  active?: boolean
+  fields?: string[]
 }
 
-export const getTemplateByIdWorkflowId = "get-template-by-id"
+export const getTemplateWorkflowId = "get-template"
 
 /**
  * This workflow retrieves a template by its ID.
@@ -21,11 +26,16 @@ export const getTemplateByIdWorkflowId = "get-template-by-id"
  *   }
  * })
  */
-export const getTemplateByIdWorkflow = createWorkflow(
-  getTemplateByIdWorkflowId,
+export const getTemplateWorkflow = createWorkflow(
+  getTemplateWorkflowId,
   (input: WorkflowData<GetTemplateByIdWorkflowInput>) => {
-    const template = getTemplateByIdStep({
+    const template = getTemplateStep({
       template_id: input.template_id,
+      channel: input.channel,
+      name: input.name,
+      locale: input.locale,
+      active: input.active,
+      fields: input.fields,
     })
 
     return new WorkflowResponse(template)

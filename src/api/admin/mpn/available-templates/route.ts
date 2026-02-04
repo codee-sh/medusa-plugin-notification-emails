@@ -19,7 +19,7 @@ export async function GET(
     | undefined
 
   const templates =
-    builderService.getAvailableTemplates(type ?? "")
+    builderService.listTemplateServices(type ?? "")
 
   res.json({
     templates: templates,
