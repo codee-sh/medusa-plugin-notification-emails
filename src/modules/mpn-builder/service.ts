@@ -38,6 +38,14 @@ class MpnBuilderService extends MedusaService({
 
     // Initialize default templates
     this.initializeTemplateServices()    
+
+    // Initialize extended services (custom handlers and templates)
+    // Note: templates with import paths will be loaded asynchronously
+    this.initializeExtendedServices().catch((error) => {
+      this.logger_.error(
+        `Failed to initialize extended services: ${error?.message || "Unknown error"}`
+      )
+    })    
   }
 
   /**
@@ -61,6 +69,89 @@ class MpnBuilderService extends MedusaService({
         `Template service for ${templateService.id} registered`
       )      
     })
+  }
+
+
+  /**
+   * Initialize extended actions (custom handlers and templates)
+   * Handles both custom handler registration and template loading
+   *
+   * @returns Promise<void>
+   */
+  private async initializeExtendedServices(): Promise<void> {
+    const extendedServices = this.options_.extend?.services || []
+
+    await Promise.all(
+      extendedServices.map(async (serviceConfig: any) => {
+        // 2. Register templates (for existing or newly registered handler)
+        if (
+          serviceConfig.templates
+        ) {
+          const handlerData = this.getTemplateService(
+            serviceConfig.id
+          )
+
+          if (!handlerData) {
+            this.logger_.warn(
+              `Cannot register templates for "${serviceConfig.id}" - handler not found`
+            )
+            return
+          }
+
+          const { templateService } = handlerData
+
+          if (!templateService.registerTemplate) {
+            this.logger_.warn(
+              `Handler "${serviceConfig.id}" does not support template registration`
+            )
+            return
+          }
+
+          await Promise.all(
+            serviceConfig.templates.map(
+              async (template: any) => {
+                const templateName = template.name
+                const templateValue = template.path
+
+                let renderer = templateValue
+
+                try {
+                  const templateModule = await import(
+                    templateValue
+                  )
+                  const template = templateModule.default
+                  // renderer = template?.default || template
+                  renderer = template?.default || templateModule
+
+                  if (!renderer) {
+                    this.logger_.warn(
+                      `Template module from "${templateValue}" does not export a default function or expected named export`
+                    )
+                    return
+                  }
+                } catch (error: any) {
+                  this.logger_.warn(
+                    `Failed to load template from "${templateValue}": ${error?.message || "Unknown error"}`
+                  )
+                  return
+                }
+
+                if (templateName) {
+                  templateService.registerTemplate!(
+                    templateName,
+                    renderer
+                  )
+
+                  this.logger_.info(
+                    `Custom template "${templateName}" registered for handler "${serviceConfig.id}"`
+                  )
+                }
+              }
+            )
+          )
+        }
+      })
+    )
   }
 
   /**
@@ -133,7 +224,6 @@ class MpnBuilderService extends MedusaService({
           label: template?.label,
           description: template?.description,
           configComponentKey: template?.configComponentKey,
-          // templateLoaders: template?.templateLoaders,
           blocks: templateBlocks,
           enabled: enabled,
         }
@@ -149,7 +239,6 @@ class MpnBuilderService extends MedusaService({
         description: template.templateService.description,
         configComponentKey:
           template.templateService.configComponentKey,
-        // templateLoaders: template.template.templateLoaders,
         blocks: blocks,
         enabled: template.enabled,
       }

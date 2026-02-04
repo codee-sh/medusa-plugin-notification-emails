@@ -51,7 +51,13 @@ export interface FieldConfig {
  * Module options type
  */
 export type ModuleOptions = {
-  builder?: {
-    
+  extend?: {
+    services?: Array<{
+      id: string
+      templates?: Array<{
+        name: string
+        path: string
+      }>
+    }>
   }
 }
