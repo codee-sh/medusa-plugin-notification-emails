@@ -65,6 +65,7 @@ export const slackServiceStep = createStep(
       )
     }
 
+    // TODO CHECK WHY .config is undefined in the prepareData method when using external templates
     const { blocks: renderedBlocks } =
       await templateSlackService.render({
         templateName: isSystemTemplateId
@@ -79,6 +80,8 @@ export const slackServiceStep = createStep(
           backendUrl: input.options.backendUrl,
         },
       })
+
+    console.log("renderedBlocks", renderedBlocks)
 
     return new StepResponse({
       blocks: renderedBlocks,

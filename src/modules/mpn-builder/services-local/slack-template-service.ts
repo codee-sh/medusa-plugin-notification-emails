@@ -244,36 +244,36 @@ export class SlackTemplateService extends BaseTemplateService {
   ]
 
   /**
-   * Transform blocks from database format (with metadata) to rendering format (with props)
+   * Transform blocks from database format (with metadata) to Slack Block Kit format
    * 
-   * This method acts as a proxy/map layer between database storage and rendering:
+   * This method transforms blocks from database storage format to Slack Block Kit format:
    * - Database stores: { type: "heading", metadata: { value: "..." } }
-   * - Rendering expects: { type: "heading", props: { value: "..." } }
+   * - Slack Block Kit expects: { type: "header", text: { type: "plain_text", text: "..." } }
    * 
    * Handles nested blocks recursively:
-   * - children → props.blocks (for section, group)
-   * - children → props.itemBlocks (for repeater)
+   * - children → flattened blocks (for group)
+   * - children → itemBlocks for repeater (handled separately during interpolation)
    * 
-   * **Usage:** Call this method before passing blocks to emailService.render() or interpolateBlocks()
+   * **Usage:** Call this method before passing blocks to interpolateBlocks()
    * 
    * @param blocks - Blocks from database with metadata property
-   * @returns Blocks transformed to rendering format with props property
+   * @returns Blocks transformed to Slack Block Kit format
    * 
    * @example
    * // Input (from database):
    * [
    *   { type: "heading", metadata: { value: "{{data.order.id}}" } },
-   *   { type: "section", metadata: {}, children: [
+   *   { type: "separator", metadata: {} },
+   *   { type: "group", metadata: {}, children: [
    *     { type: "text", metadata: { value: "Hello" } }
    *   ]}
    * ]
    * 
-   * // Output (for rendering):
+   * // Output (Slack Block Kit):
    * [
-   *   { type: "heading", props: { value: "{{data.order.id}}" } },
-   *   { type: "section", props: { blocks: [
-   *     { type: "text", props: { value: "Hello" } }
-   *   ]}}
+   *   { type: "header", text: { type: "plain_text", text: "{{data.order.id}}" } },
+   *   { type: "divider" },
+   *   { type: "section", text: { type: "mrkdwn", text: "Hello" } }
    * ]
    * 
    */
@@ -282,52 +282,116 @@ export class SlackTemplateService extends BaseTemplateService {
       return []
     }
 
-    return blocks.map((block) => {
-      // Create base block structure
-      const transformedBlock: any = {
-        id: block.id,
-        type: block.type,
-      }
+    const result: any[] = []
 
-      // Transform metadata to props
-      if (block.metadata && typeof block.metadata === "object") {
-        transformedBlock.props = { ...block.metadata }
-      } else {
-        transformedBlock.props = {}
-      }
+    for (const block of blocks) {
+      const metadata = block.metadata || {}
+      const children = block.children || []
 
-      // Handle nested blocks based on block type
-      if (block.children && Array.isArray(block.children) && block.children.length > 0) {
-        const transformedChildren = this.transformBlocksForRendering(block.children)
+      // Transform block based on type
+      switch (block.type) {
+        case "heading": {
+          // heading → header block
+          result.push({
+            type: "header",
+            text: {
+              type: "plain_text",
+              text: metadata.value || "",
+              emoji: true,
+            },
+          })
+          break
+        }
 
-        if (block.type === "repeater") {
-          // For repeater, children become itemBlocks
-          transformedBlock.props.itemBlocks = transformedChildren
-        } else if (
-          block.type === "section" ||
-          block.type === "group"
-        ) {
-          // For section/group, children become props.blocks
-          transformedBlock.props.blocks = transformedChildren
+        case "text": {
+          // text → section block with mrkdwn
+          result.push({
+            type: "section",
+            text: {
+              type: "mrkdwn",
+              text: metadata.value || "",
+            },
+          })
+          break
+        }
+
+        case "row": {
+          // row → section block with fields
+          result.push({
+            type: "section",
+            fields: [
+              {
+                type: "mrkdwn",
+                text: metadata.label || "",
+              },
+              {
+                type: "mrkdwn",
+                text: metadata.value || "",
+              },
+            ],
+          })
+          break
+        }
+
+        case "separator": {
+          // separator → divider block
+          result.push({
+            type: "divider",
+          })
+          break
+        }
+
+        case "group": {
+          // group → flatten children blocks
+          if (children.length > 0) {
+            const transformedChildren = this.transformBlocksForRendering(children)
+            result.push(...transformedChildren)
+          }
+          break
+        }
+
+        case "repeater": {
+          // repeater → keep structure for later processing during interpolation
+          // Children will be transformed to itemBlocks
+          const transformedChildren = this.transformBlocksForRendering(children)
+          result.push({
+            type: "repeater",
+            arrayPath: metadata.arrayPath || "",
+            itemBlocks: transformedChildren,
+          })
+          break
+        }
+
+        default: {
+          // Unknown block type - keep as is (might be custom Slack block)
+          const transformedBlock: any = {
+            type: block.type,
+          }
+
+          // Copy metadata as properties
+          if (metadata && typeof metadata === "object") {
+            Object.assign(transformedBlock, metadata)
+          }
+
+          // Handle children if present
+          if (children.length > 0) {
+            const transformedChildren = this.transformBlocksForRendering(children)
+            transformedBlock.blocks = transformedChildren
+          }
+
+          result.push(transformedBlock)
+          break
         }
       }
+    }
 
-      // If block already has props (from config.ts), merge with metadata
-      // This allows config blocks to work alongside database blocks
-      if (block.props && typeof block.props === "object") {
-        transformedBlock.props = {
-          ...transformedBlock.props,
-          ...block.props,
-        }
-      }
-
-      return transformedBlock
-    })
+    return result
   }
 
   /**
    * Recursively interpolate text in SlackBlock[] structure
    * Finds all "text" properties in the entire tree and interpolates them
+   * Handles repeater blocks by expanding itemBlocks for each array item
    */
   private interpolateSlackBlocks(
     blocks: any[],
@@ -335,7 +399,35 @@ export class SlackTemplateService extends BaseTemplateService {
     translator: any,
     config?: any
   ): any[] {
-    return blocks.map((block) => {
+    const result: any[] = []
+
+    for (const block of blocks) {
+      // Handle repeater blocks
+      if (block.type === "repeater") {
+        const { arrayPath, itemBlocks } = block
+
+        if (arrayPath && itemBlocks) {
+          const array = pickValueFromObject(arrayPath, data)
+
+          if (Array.isArray(array) && array.length > 0) {
+            // For each item in the array, interpolate itemBlocks
+            const interpolatedItemBlocks = array.flatMap((item: any) => {
+              return this.interpolateSlackBlocks(
+                itemBlocks,
+                item,
+                translator,
+                {
+                  arrayPath: arrayPath,
+                }
+              )
+            })
+
+            result.push(...interpolatedItemBlocks)
+          }
+        }
+        continue
+      }
+
       // Create fields array if fieldTemplate and fieldsPath is provided and array is not empty
       if (
         block.type === "section" &&
@@ -363,21 +455,36 @@ export class SlackTemplateService extends BaseTemplateService {
               }
             )
 
-            block = {
+            const processedBlock = {
               ...omit(block, "fieldsPath", "fieldTemplate"),
               fields: interpolatedFieldBlocks,
             }
+
+            result.push(
+              this.recursivelyInterpolateText(
+                processedBlock,
+                data,
+                translator,
+                config
+              )
+            )
+            continue
           }
         }
       }
 
-      return this.recursivelyInterpolateText(
-        block,
-        data,
-        translator,
-        config
+      // Process regular blocks
+      result.push(
+        this.recursivelyInterpolateText(
+          block,
+          data,
+          translator,
+          config
+        )
       )
-    })
+    }
+
+    return result
   }
 
   /**

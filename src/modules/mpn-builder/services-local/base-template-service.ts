@@ -126,7 +126,7 @@ export class BaseTemplateService implements BaseTemplateServiceInterface {
 
     // Get registered template
     const template = this.getTemplate(params.templateName)
-    const config = (template).getConfig?.() || {}
+    const config = (template)?.getConfig?.() || {}
 
     const configTranslations = config?.translations || {}
     const configBlocks = config?.blocks || []
