@@ -43,7 +43,6 @@ import {
 import { TEMPLATES_NAMES } from "../../../templates/slack/types"
 import {
   TEMPLATES_EMAILS_NAMES,
-  TemplateOptionsType,
   TemplateRenderOptionsType,
 } from "../types"
 
@@ -199,7 +198,7 @@ export class SlackTemplateService extends BaseTemplateService {
       fields: [
         {
           key: "label",
-          label: "Etykieta",
+          label: "Label",
           type: "text",
           required: true,
           name: "label",

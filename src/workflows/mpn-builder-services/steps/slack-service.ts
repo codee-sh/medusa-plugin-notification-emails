@@ -49,8 +49,6 @@ export const slackServiceStep = createStep(
 
     let blocks: any[] = []
 
-    console.log("context", input.data)
-
     // If it's not a system template, get the blocks from the database
     if (!isSystemTemplateId) {
       const { result: templateData } = await getTemplateWorkflow(container).run({

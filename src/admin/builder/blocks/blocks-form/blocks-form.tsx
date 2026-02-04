@@ -93,8 +93,6 @@ export const BlocksForm = (props: any) => {
       blocks: payload,
     }
 
-    console.log("items", items)
-
     await editTemplateBlocks(items)
 
     queryClient.invalidateQueries({

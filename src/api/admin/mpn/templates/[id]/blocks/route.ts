@@ -136,7 +136,6 @@ export async function GET(
     const templateSystemId = template_id.replace("system_", "")
     const emailTemplateService = mpnBuilderService.getTemplateService("email")?.templateService
     const systemTemplate = emailTemplateService?.getSystemTemplates().find((template: any) => template.name === templateSystemId)
-    console.log("systemTemplatesSingle", systemTemplate)
 
     res.json({
       blocks: [],
