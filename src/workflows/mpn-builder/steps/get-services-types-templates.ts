@@ -65,6 +65,7 @@ import {
           channel: template.id,
           templates: {
             system: serviceTemplate?.getSystemTemplates(),
+            external: serviceTemplate?.getExternalTemplates(),
             db: templates,
           }
         }
