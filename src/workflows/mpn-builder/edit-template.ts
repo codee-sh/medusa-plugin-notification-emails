@@ -10,6 +10,17 @@ export type EditTemplateWorkflowInput = {
   items: Template[]
 }
 
+/**
+ * Updates existing notification templates.
+ *
+ * @example
+ * const { result } = await editTemplateWorkflow(container).run({
+ *   input: {
+ *     id: "template_123",
+ *     items: [{ id: "template_123", name: "updated", ... }]
+ *   }
+ * })
+ */
 export const editTemplateWorkflow = createWorkflow(
   "edit-template",
   ({ id, items }: EditTemplateWorkflowInput) => {

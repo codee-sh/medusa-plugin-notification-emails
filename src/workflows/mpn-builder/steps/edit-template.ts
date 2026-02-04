@@ -11,6 +11,14 @@ type EditTemplateStepInput = {
   items: Template[]
 }
 
+/**
+ * Updates existing notification templates.
+ *
+ * @example
+ * const data = editTemplateStep({
+ *   items: [{ id: "template_123", name: "updated", ... }]
+ * })
+ */
 export const editTemplateStep = createStep(
   "edit-template",
   async (

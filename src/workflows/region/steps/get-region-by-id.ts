@@ -24,11 +24,12 @@ export interface GetRegionByIdStepOutput {
 export const getRegionStepName = "get-region"
 
 /**
- * This step retrieves an order by its ID with related items, customer, addresses, and payment collections.
+ * Retrieves a region by ID with optional field selection.
  *
  * @example
- * const data = getOrderByIdStep({
- *   store_id: "store_123"
+ * const data = getRegionStep({
+ *   region_id: "region_123",
+ *   fields: ["id", "name", "currency_code"]
  * })
  */
 export const getRegionStep = createStep(

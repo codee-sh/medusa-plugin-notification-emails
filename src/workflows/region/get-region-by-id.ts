@@ -13,12 +13,13 @@ export interface GetRegionWorkflowInput {
 export const getRegionWorkflowName = "get-region"
 
 /**
- * This workflow retrieves an order by its ID with related items, customer, addresses, and payment collections.
+ * Retrieves a region by ID with optional field selection.
  *
  * @example
  * const { result } = await getRegionWorkflow(container).run({
  *   input: {
- *     region_id: "region_123"
+ *     region_id: "region_123",
+ *     fields: ["id", "name", "currency_code"]
  *   }
  * })
  */

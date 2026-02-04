@@ -8,6 +8,16 @@ export type DeleteTemplateWorkflowInput = {
   id: string
 }
 
+/**
+ * Deletes a notification template by ID.
+ *
+ * @example
+ * const { result } = await deleteTemplateWorkflow(container).run({
+ *   input: {
+ *     id: "template_123"
+ *   }
+ * })
+ */
 export const deleteTemplateWorkflow = createWorkflow(
   "delete-template",
   ({ id }: DeleteTemplateWorkflowInput) => {

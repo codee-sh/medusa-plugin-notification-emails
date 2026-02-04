@@ -12,7 +12,7 @@ export interface GetStoreWorkflowInput {
 export const getStoreWorkflowName = "get-store"
 
 /**
- * This workflow retrieves an order by its ID with related items, customer, addresses, and payment collections.
+ * Retrieves store information by ID.
  *
  * @example
  * const { result } = await getStoreWorkflow(container).run({

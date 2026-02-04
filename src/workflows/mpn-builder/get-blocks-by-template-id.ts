@@ -12,12 +12,12 @@ export interface GetBlocksByTemplateWorkflowInput {
 export const getBlocksByTemplateStepId = "get-blocks-by-template"
 
 /**
- * This workflow retrieves an order by its ID with related items, customer, addresses, and payment collections.
+ * Retrieves all blocks for a specific template, organized as a tree structure.
  *
  * @example
- * const { result } = await getOrderByIdWorkflow(container).run({
+ * const { result } = await getBlocksByTemplateWorkflow(container).run({
  *   input: {
- *     order_id: "order_123"
+ *     template_id: "template_123"
  *   }
  * })
  */

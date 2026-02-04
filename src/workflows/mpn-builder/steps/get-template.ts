@@ -23,13 +23,13 @@ export interface GetTemplateStepOutput {
 export const getTemplateStepId = "get-template"
 
 /**
- * This step retrieves a template by its ID.
+ * Retrieves templates matching the provided filters (template_id, channel, name, locale, active).
  *
  * @example
- * const data = getTemplateByIdStep({
- *   channel: "email"
- *   name: "welcome"
- *   locale: "en"
+ * const data = getTemplateStep({
+ *   channel: "email",
+ *   name: "welcome",
+ *   locale: "en",
  *   active: true
  * })
  */
@@ -94,9 +94,6 @@ export const getTemplateStep = createStep(
       fields: fields,
       filters,
     })
-
-    console.log("filters", filters)
-    console.log("templates", templates)
 
     if (!templates || templates.length === 0) {
       throw new MedusaError(

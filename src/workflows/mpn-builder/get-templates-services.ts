@@ -12,12 +12,12 @@ export interface GetTemplateServicesWorkflowInput {
 export const getTemplateServicesWorkflowName = "get-template-services"
 
 /**
- * This workflow retrieves a template by its ID.
+ * Retrieves available template services filtered by type.
  *
  * @example
- * const { result } = await getTemplateByIdWorkflow(container).run({
+ * const { result } = await getTemplateServicesWorkflow(container).run({
  *   input: {
- *     template_id: "template_123"
+ *     type: "email"
  *   }
  * })
  */

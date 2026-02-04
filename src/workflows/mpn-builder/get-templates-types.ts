@@ -10,13 +10,11 @@ export interface GetTemplateTypesWorkflowInput {
 export const getTemplateTypesWorkflowName = "get-template-types"
 
 /**
- * This workflow retrieves a template by its ID.
+ * Retrieves all available template types.
  *
  * @example
- * const { result } = await getTemplateByIdWorkflow(container).run({
- *   input: {
- *     template_id: "template_123"
- *   }
+ * const { result } = await getTemplateTypesWorkflow(container).run({
+ *   input: {}
  * })
  */
 export const getTemplateTypesWorkflow = createWorkflow(

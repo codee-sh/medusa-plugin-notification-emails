@@ -9,6 +9,14 @@ type DeleteTemplateStepInput = {
   id: string
 }
 
+/**
+ * Deletes a notification template by ID.
+ *
+ * @example
+ * const data = deleteTemplateStep({
+ *   id: "template_123"
+ * })
+ */
 export const deleteTemplateStep = createStep(
   "delete-template",
   async (

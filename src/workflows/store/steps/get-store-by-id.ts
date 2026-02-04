@@ -23,10 +23,10 @@ export interface GetStoreByIdStepOutput {
 export const getStoreStepName = "get-store"
 
 /**
- * This step retrieves an order by its ID with related items, customer, addresses, and payment collections.
+ * Retrieves store information by ID.
  *
  * @example
- * const data = getOrderByIdStep({
+ * const data = getStoreStep({
  *   store_id: "store_123"
  * })
  */

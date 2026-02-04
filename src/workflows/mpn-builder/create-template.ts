@@ -9,6 +9,16 @@ export type CreateTemplateWorkflowInput = {
   items: Template[]
 }
 
+/**
+ * Creates new notification templates.
+ *
+ * @example
+ * const { result } = await createTemplateWorkflow(container).run({
+ *   input: {
+ *     items: [{ name: "welcome", label: "Welcome Email", ... }]
+ *   }
+ * })
+ */
 export const createTemplateWorkflow = createWorkflow(
   "create-template",
   ({ items }: CreateTemplateWorkflowInput) => {

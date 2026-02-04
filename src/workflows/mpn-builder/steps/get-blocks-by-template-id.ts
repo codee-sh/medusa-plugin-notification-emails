@@ -60,11 +60,11 @@ function buildTree(items: Block[]): BlockNode[] {
 }
 
 /**
- * This step retrieves an order by its ID with related items, customer, addresses, and payment collections.
+ * Retrieves all blocks for a specific template, organized as a tree structure.
  *
  * @example
- * const data = getOrderByIdStep({
- *   order_id: "order_123"
+ * const data = getBlocksByTemplateStep({
+ *   template_id: "template_123"
  * })
  */
 export const getBlocksByTemplateStep = createStep(

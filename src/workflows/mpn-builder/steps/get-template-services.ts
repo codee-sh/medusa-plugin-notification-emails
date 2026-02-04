@@ -19,10 +19,12 @@ export interface GetTemplateServicesStepOutput {
 export const getTemplateServicesStepId = "get-template-services"
 
 /**
- * This step retrieves a list of template services.
+ * Retrieves available template services filtered by type.
  *
  * @example
- * const data = getTemplatesStep()
+ * const data = getTemplateServicesStep({
+ *   type: "email"
+ * })
  */
 export const getTemplateServicesStep = createStep(
   getTemplateServicesStepId,

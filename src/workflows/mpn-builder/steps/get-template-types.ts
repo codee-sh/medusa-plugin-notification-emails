@@ -18,10 +18,10 @@ export interface GetTemplateTypesStepOutput {
 export const getTemplateTypesStepId = "get-template-types"
 
 /**
- * This step retrieves a list of template services.
+ * Retrieves all available template types.
  *
  * @example
- * const data = getTemplatesStep()
+ * const data = getTemplateTypesStep()
  */
 export const getTemplateTypesStep = createStep(
   getTemplateTypesStepId,

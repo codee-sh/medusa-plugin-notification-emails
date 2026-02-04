@@ -11,6 +11,14 @@ type CreateTemplateStepInput = {
   items: Template[]
 }
 
+/**
+ * Creates new notification templates.
+ *
+ * @example
+ * const data = createTemplateStep({
+ *   items: [{ name: "welcome", label: "Welcome Email", ... }]
+ * })
+ */
 export const createTemplateStep = createStep(
   "create-template",
   async (

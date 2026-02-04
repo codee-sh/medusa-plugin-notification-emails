@@ -32,11 +32,13 @@ const configWithUndefined = (config: any) => {
 }
 
 /**
- * Edit template blocks step input
- * 
- * @param template_id - The template id
- * @param blocks - The blocks to edit
- * @returns The updated blocks
+ * Updates template blocks for a notification template.
+ *
+ * @example
+ * const data = editTemplateBlocksStep({
+ *   template_id: "template_123",
+ *   blocks: [{ type: "text", content: "Hello" }]
+ * })
  */
 export const editTemplateBlocksStep = createStep(
   "edit-template-blocks",
