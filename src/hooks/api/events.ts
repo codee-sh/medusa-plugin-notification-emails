@@ -44,7 +44,7 @@ export const useEvents = (
   >({
     mutationFn: async (variables) => {
       return await sdk.client.fetch(
-        "/admin/notification-plugin/events",
+        "/admin/mpn/events",
         {
           method: "POST",
           body: {

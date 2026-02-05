@@ -18,7 +18,7 @@ import {
   pretty,
   toPlainText,
 } from "@react-email/render"
-import { TemplateOptionsType } from "../types"
+import { TemplateOptionsType } from "../../../modules/mpn-builder/types/interfaces"
 import { BlockRenderer } from "../blocks"
 
 export function renderHTMLReact(

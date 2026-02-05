@@ -32,7 +32,7 @@ export const templateBlocks = [
           type: "plain_text",
           text: "Open in Panel",
         },
-        url: `/app/products/{{data.product.id}}`,
+        url: `{{data.backendUrl}}/app/products/{{data.product.id}}`,
         style: "primary",
       },
     ],

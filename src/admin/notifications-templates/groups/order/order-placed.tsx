@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { Alert } from "@medusajs/ui"
 import { useOrder } from "../../../../hooks/api/orders"
 import { usePreview } from "../../../../hooks/api/preview"
-import { TEMPLATES_NAMES } from "../../../../templates/emails"
+import { TEMPLATES_EMAILS_NAMES } from "../../../../modules/mpn-builder/types"
 
 export const OrderPlacedTemplate = ({
   orderId,
@@ -29,7 +29,7 @@ export const OrderPlacedTemplate = ({
 
   const { data: preview, isLoading: isPreviewLoading } =
     usePreview({
-      templateName: TEMPLATES_NAMES.ORDER_PLACED,
+      templateName: TEMPLATES_EMAILS_NAMES.ORDER_PLACED,
       context: context,
       contextType: "order",
       locale: "pl",

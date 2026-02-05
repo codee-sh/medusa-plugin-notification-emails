@@ -68,7 +68,7 @@ export const useListNotifications = (
     queryKey,
     queryFn: async () => {
       return await sdk.client.fetch(
-        "/admin/notification-plugin/notifications",
+        "/admin/mpn/notifications",
         {
           method: "GET",
           query,

@@ -8,7 +8,6 @@ import { useTranslation } from "react-i18next"
 import { JsonViewSection } from "../../../common/json-view-section"
 import { MetadataSection } from "../../../common/metadata-section"
 import { PageProps } from "../types"
-import { Providers } from "../../../../../providers"
 
 interface TwoColumnPageProps<
   TData,
@@ -63,7 +62,7 @@ const Root = <TData,>({
   const showExtraData = showJSON || showMetadata
 
   return (
-    <Providers>
+    <>
       {!isLoading ? (
         RootHTML(
           data,
@@ -76,7 +75,7 @@ const Root = <TData,>({
       ) : (
         <Loading />
       )}
-    </Providers>
+    </>
   )
 }
 

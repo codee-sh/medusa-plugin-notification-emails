@@ -1,5 +1,6 @@
 import { defaultTheme } from "../src/templates/shared/theme";
-import { emailService } from "../src/templates/emails";
+import { EmailTemplateService } from "../src/modules/mpn-builder/services-local/email-template-service";
+import { TEMPLATES_NAMES } from "../src/templates/emails/types";
 
 export const orderPlacedMockData: any = {
   order: {
@@ -70,8 +71,8 @@ export const orderPlacedMockData: any = {
 };
 
 export default function OrderPlaced() {
-  const renderTemplate = emailService.renderSync({
-    templateName: "order-placed",
+  const renderTemplate = new EmailTemplateService().renderSync({
+    templateName: TEMPLATES_NAMES.ORDER_PLACED,
     data: orderPlacedMockData,
     options: {
       locale: "pl",

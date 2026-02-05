@@ -10,7 +10,7 @@ import {
 import { sdk } from "../../admin/lib/sdk"
 
 export type UsePreviewParams = {
-  templateName?: string
+  templateId?: string
   context?: any
   contextType?: any
   locale?: string
@@ -36,7 +36,7 @@ export const usePreview = (
   >
 ) => {
   const {
-    templateName,
+    templateId,
     context,
     contextType,
     locale,
@@ -46,7 +46,7 @@ export const usePreview = (
 
   const queryKey: QueryKey = [
     "preview",
-    templateName,
+    templateId,
     locale,
     ...extraKey,
   ]
@@ -60,11 +60,11 @@ export const usePreview = (
     queryKey,
     queryFn: async ({ queryKey }) => {
       return await sdk.client.fetch(
-        "/admin/notification-plugin/render-template",
+        "/admin/mpn/render-template",
         {
           method: "POST",
           body: {
-            templateName: templateName,
+            templateId: templateId,
             context: context,
             contextType: contextType,
             locale: locale,
@@ -74,7 +74,7 @@ export const usePreview = (
     },
     staleTime: 0,
     enabled:
-      enabled && !!templateName && !!context && !!locale,
+      enabled && !!templateId && !!context && !!locale,
     ...(options as any),
   })
 
