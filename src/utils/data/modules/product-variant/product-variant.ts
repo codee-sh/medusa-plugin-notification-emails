@@ -8,19 +8,30 @@ export const PRODUCT_VARIANT_ATTRIBUTES = [
   {
     value: "product_variant.title",
     label: "Title",
-    description: "Title/name of the product variant (e.g., size and color combination)",
-    examples: ["Small / Blue", "Medium / Red", "Large / Black"],
+    description:
+      "Title/name of the product variant (e.g., size and color combination)",
+    examples: [
+      "Small / Blue",
+      "Medium / Red",
+      "Large / Black",
+    ],
   },
   {
     value: "product_variant.sku",
     label: "SKU",
-    description: "SKU (Stock Keeping Unit) of the product variant",
-    examples: ["TSHIRT-SM-BLUE", "JEANS-32-BLACK", "SNEAKERS-42-WHITE"],
+    description:
+      "SKU (Stock Keeping Unit) of the product variant",
+    examples: [
+      "TSHIRT-SM-BLUE",
+      "JEANS-32-BLACK",
+      "SNEAKERS-42-WHITE",
+    ],
   },
   {
     value: "product_variant.barcode",
     label: "Barcode",
-    description: "Barcode identifier for the product variant",
+    description:
+      "Barcode identifier for the product variant",
     examples: ["1234567890123", "9876543210987"],
   },
   {
@@ -38,25 +49,29 @@ export const PRODUCT_VARIANT_ATTRIBUTES = [
   {
     value: "product_variant.allow_backorder",
     label: "Allow Backorder",
-    description: "Whether backorders are allowed for this variant",
+    description:
+      "Whether backorders are allowed for this variant",
     examples: ["true", "false"],
   },
   {
     value: "product_variant.manage_inventory",
     label: "Manage Inventory",
-    description: "Whether inventory is managed for this variant",
+    description:
+      "Whether inventory is managed for this variant",
     examples: ["true", "false"],
   },
   {
     value: "product_variant.hs_code",
     label: "HS Code",
-    description: "Harmonized System (HS) code for customs classification",
+    description:
+      "Harmonized System (HS) code for customs classification",
     examples: ["6109.10.00", "6403.99.00"],
   },
   {
     value: "product_variant.origin_country",
     label: "Origin Country",
-    description: "ISO 3166-1 alpha-2 country code where the variant originates",
+    description:
+      "ISO 3166-1 alpha-2 country code where the variant originates",
     examples: ["PL", "US", "CN", "DE"],
   },
   {
@@ -68,7 +83,8 @@ export const PRODUCT_VARIANT_ATTRIBUTES = [
   {
     value: "product_variant.material",
     label: "Material",
-    description: "Material composition of the product variant",
+    description:
+      "Material composition of the product variant",
     examples: ["Cotton", "Polyester", "Leather", "Metal"],
   },
   {
@@ -80,19 +96,22 @@ export const PRODUCT_VARIANT_ATTRIBUTES = [
   {
     value: "product_variant.length",
     label: "Length",
-    description: "Length of the product variant in centimeters",
+    description:
+      "Length of the product variant in centimeters",
     examples: ["10", "20", "30", "50"],
   },
   {
     value: "product_variant.height",
     label: "Height",
-    description: "Height of the product variant in centimeters",
+    description:
+      "Height of the product variant in centimeters",
     examples: ["5", "10", "15", "25"],
   },
   {
     value: "product_variant.width",
     label: "Width",
-    description: "Width of the product variant in centimeters",
+    description:
+      "Width of the product variant in centimeters",
     examples: ["10", "20", "30", "40"],
   },
   // {
@@ -114,14 +133,22 @@ export const PRODUCT_VARIANT_ATTRIBUTES = [
   {
     value: "product_variant.created_at",
     label: "Created At",
-    description: "Date and time when the variant was created (ISO 8601 format)",
-    examples: ["2024-01-15T10:30:00Z", "2024-12-25T00:00:00Z"],
+    description:
+      "Date and time when the variant was created (ISO 8601 format)",
+    examples: [
+      "2024-01-15T10:30:00Z",
+      "2024-12-25T00:00:00Z",
+    ],
   },
   {
     value: "product_variant.updated_at",
     label: "Updated At",
-    description: "Date and time when the variant was last updated (ISO 8601 format)",
-    examples: ["2024-01-15T10:30:00Z", "2024-12-25T00:00:00Z"],
+    description:
+      "Date and time when the variant was last updated (ISO 8601 format)",
+    examples: [
+      "2024-01-15T10:30:00Z",
+      "2024-12-25T00:00:00Z",
+    ],
   },
 ]
 
@@ -131,7 +158,7 @@ export const PRODUCT_VARIANT_ATTRIBUTES = [
 export const PRODUCT_VARIANT_QUERY_FIELDS = [
   // Basic fields from PRODUCT_VARIANT_ATTRIBUTES
   ...PRODUCT_VARIANT_ATTRIBUTES.map((attr) => attr.value),
-  
+
   // Technical relations required for complete data retrieval (if any)
   // These fields are not available in UI rules, but are needed for correct data retrieval
 ]

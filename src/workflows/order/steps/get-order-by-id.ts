@@ -1,4 +1,7 @@
-import type { OrderTypes, CustomerTypes } from "@medusajs/framework/types"
+import type {
+  OrderTypes,
+  CustomerTypes,
+} from "@medusajs/framework/types"
 import {
   ContainerRegistrationKeys,
   MedusaError,
@@ -75,4 +78,3 @@ export const getOrderByIdStep = createStep(
     })
   }
 )
-

@@ -3,4 +3,3 @@
  */
 export * from "./types"
 export * from "./abstract-template-service"
-  

@@ -1,7 +1,4 @@
-import {
-  pickValueFromObject,
-  isObject
-} from "../index"
+import { pickValueFromObject, isObject } from "../index"
 
 /**
  * Simple i18n utility for templates
@@ -16,7 +13,10 @@ import {
  * @returns Flattened translations object
  */
 function flattenTranslations(translations: any): any {
-  if (!isObject(translations) || !(translations as any).general) {
+  if (
+    !isObject(translations) ||
+    !(translations as any).general
+  ) {
     return translations
   }
 
@@ -28,9 +28,10 @@ function flattenTranslations(translations: any): any {
 /**
  * Get variable value from text
  */
-export function getVariableValue(
-  text: string
-): { replaced: string, original: string } {
+export function getVariableValue(text: string): {
+  replaced: string
+  original: string
+} {
   if (!text || typeof text !== "string") {
     return { replaced: text, original: text }
   }
@@ -42,23 +43,23 @@ export function getVariableValue(
         return key
       }
     ),
-    original: text
+    original: text,
   }
 }
 
 /**
  * Group interpolate - handles variables with prefixes (data. or translations.)
- * 
+ *
  * Variables with prefix `data.` are resolved using pickValueFromObject function
  * Variables with prefix `translations.` are resolved using translator.t function
- * 
+ *
  * @param text - Text with {{data.variable}} or {{translations.key}} placeholders
  * @param data - Data object for interpolation
  * @param translator - Translator instance with t method
  * @param config - Configuration object
  * @param config - arrayPath - Array path for data object
  * @returns Interpolated text with all variables resolved
- * 
+ *
  * @example
  * multiInterpolate(
  *   "Order {{data.order.id}} - {{translations.headerTitle}}",
@@ -70,7 +71,9 @@ export function getVariableValue(
 export function multiInterpolate(
   text: string,
   data: Record<string, any> = {},
-  translator: { t: (key: string, data?: Record<string, any>) => string },
+  translator: {
+    t: (key: string, data?: Record<string, any>) => string
+  },
   config?: any
 ): string {
   if (!text || typeof text !== "string") {
@@ -78,15 +81,16 @@ export function multiInterpolate(
   }
 
   // Find all variables in format {{...}}
-  const variableRegex = /\{\{((?:data\.|translations\.)?\w+(?:\.\w+)*)\}\}/g
+  const variableRegex =
+    /\{\{((?:data\.|translations\.)?\w+(?:\.\w+)*)\}\}/g
   const matches = Array.from(text.matchAll(variableRegex))
-  
+
   if (matches.length === 0) {
     return text
   }
 
   // Build dynamic data prefix array (e.g., ["data"] or ["data", "items"])
-  const dataPrefix = config?.arrayPath 
+  const dataPrefix = config?.arrayPath
     ? ["data", config.arrayPath]
     : ["data"]
   const dataPrefixString = dataPrefix.join(".")
@@ -95,14 +99,20 @@ export function multiInterpolate(
   let result = text
   for (const match of matches) {
     const fullMatch = match[0] // e.g., "{{data.order.id}}"
-    const variable = match[1]  // e.g., "data.order.id"
-    
+    const variable = match[1] // e.g., "data.order.id"
+
     let replacement: string | undefined
 
     // Check if variable starts with dynamic data prefix
     if (variable.startsWith(`${dataPrefixString}.`)) {
-      const escapedPrefix = dataPrefixString.replace(/\./g, '\\.')
-      const dataPath = variable.replace(new RegExp(`^${escapedPrefix}\\.`), "")
+      const escapedPrefix = dataPrefixString.replace(
+        /\./g,
+        "\\."
+      )
+      const dataPath = variable.replace(
+        new RegExp(`^${escapedPrefix}\\.`),
+        ""
+      )
       const value = pickValueFromObject(dataPath, data)
 
       if (value === undefined || value === null) {
@@ -113,11 +123,18 @@ export function multiInterpolate(
     }
     // Check if variable starts with translations. prefix
     else if (variable.startsWith("translations.")) {
-      const translationKey = variable.replace(/^translations\./, "")
+      const translationKey = variable.replace(
+        /^translations\./,
+        ""
+      )
       replacement = translator.t(translationKey, data)
-      replacement = multiInterpolate(replacement, data, translator)
+      replacement = multiInterpolate(
+        replacement,
+        data,
+        translator
+      )
     }
-    
+
     // Replace the variable in text if we found a replacement
     if (replacement !== undefined) {
       result = result.replace(fullMatch, replacement)
@@ -153,7 +170,10 @@ export function t(
   const { replaced, original } = getVariableValue(key)
 
   // Get translation value (supports nested keys)
-  const translation = pickValueFromObject(replaced as any, flatTranslations as any)
+  const translation = pickValueFromObject(
+    replaced as any,
+    flatTranslations as any
+  )
 
   // Use key as fallback if translation not found
   const text = translation || original
@@ -163,19 +183,21 @@ export function t(
 
 /**
  * Create a translator function
- * 
+ *
  * @param locale - Target locale (e.g., 'pl', 'en')
  * @param translations - Record of translations by locale
  * @returns Translator function that takes (key, data?) and returns translated string
  */
 export function createTranslator(
   locale: string,
-  translations: Record<string, any>,
-): { t: (key: string, data?: Record<string, any>) => string } {
+  translations: Record<string, any>
+): {
+  t: (key: string, data?: Record<string, any>) => string
+} {
   return {
     t: (key: string, data: Record<string, any> = {}) => {
       return t(locale, translations, key)
-    }
+    },
   }
 }
 

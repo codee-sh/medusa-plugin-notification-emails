@@ -1,7 +1,9 @@
 import { currencies } from "./data/currencies"
 
 export const getDecimalDigits = (currency: string) => {
-  return currencies[currency.toUpperCase()]?.decimal_digits ?? 0
+  return (
+    currencies[currency.toUpperCase()]?.decimal_digits ?? 0
+  )
 }
 
 /**
@@ -14,7 +16,10 @@ export const getDecimalDigits = (currency: string) => {
  * getFormattedAmount(10, "usd") // '$10.00' if the browser's locale is en-US
  * getFormattedAmount(10, "usd") // '10,00 $' if the browser's locale is fr-FR
  */
-export const getLocaleAmount = (amount: number, currencyCode: string) => {
+export const getLocaleAmount = (
+  amount: number,
+  currencyCode: string
+) => {
   const formatter = new Intl.NumberFormat([], {
     style: "currency",
     currencyDisplay: "narrowSymbol",
@@ -31,7 +36,10 @@ export const getNativeSymbol = (currencyCode: string) => {
     currencyDisplay: "narrowSymbol",
   }).format(0)
 
-  return formatted.replace(/\d/g, "").replace(/[.,]/g, "").trim()
+  return formatted
+    .replace(/\d/g, "")
+    .replace(/[.,]/g, "")
+    .trim()
 }
 
 /**
@@ -40,19 +48,22 @@ export const getNativeSymbol = (currencyCode: string) => {
  * user's locale and is only used in cases where we want to display the
  * currency code and symbol explicitly, e.g. for totals.
  */
-export const getStylizedAmount = (amount: number, currencyCode: string) => {
+export const getStylizedAmount = (
+  amount: number,
+  currencyCode: string
+) => {
   const symbol = getNativeSymbol(currencyCode)
   const decimalDigits = getDecimalDigits(currencyCode)
 
-  const lessThanRoundingPrecission = isAmountLessThenRoundingError(
-    amount,
-    currencyCode
-  )
+  const lessThanRoundingPrecission =
+    isAmountLessThenRoundingError(amount, currencyCode)
 
   const total = amount.toLocaleString(undefined, {
     minimumFractionDigits: decimalDigits,
     maximumFractionDigits: decimalDigits,
-    signDisplay: lessThanRoundingPrecission ? "exceptZero" : "auto",
+    signDisplay: lessThanRoundingPrecission
+      ? "exceptZero"
+      : "auto",
   })
 
   return `${symbol} ${total} ${currencyCode.toUpperCase()}`

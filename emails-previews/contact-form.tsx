@@ -1,5 +1,6 @@
 import { defaultTheme } from "../src/templates/shared/theme";
-import { emailService } from "../src/templates/emails";
+import { EmailTemplateService } from "../src/modules/mpn-builder/services-local/email-template-service";
+import { TEMPLATES_NAMES } from "../src/templates/emails/types";
 
 export const contactFormMockData: any = {
   contact_form: {
@@ -11,8 +12,8 @@ export const contactFormMockData: any = {
 };
 
 export default function ContactForm() {
-  const renderTemplate = emailService.renderSync({
-    templateName: "contact-form",
+  const renderTemplate = new EmailTemplateService().renderSync({
+    templateName: TEMPLATES_NAMES.CONTACT_FORM,
     data: contactFormMockData,
     options: {
       locale: "pl",

@@ -32,27 +32,35 @@ export const useEvents = (
     "mutationFn"
   >
 ) => {
-  const { data: eventsData, mutate, mutateAsync, ...rest } = useMutation<
+  const {
+    data: eventsData,
+    mutate,
+    mutateAsync,
+    ...rest
+  } = useMutation<
     EventsMutationData,
     FetchError,
     EventsMutationVariables
   >({
     mutationFn: async (variables) => {
-      return await sdk.client.fetch("/admin/notification-plugin/events", {
-        method: "POST",
-        body: {
-          name: variables.name,
-          data: variables.data,
-        },
-      })
+      return await sdk.client.fetch(
+        "/admin/mpn/events",
+        {
+          method: "POST",
+          body: {
+            name: variables.name,
+            data: variables.data,
+          },
+        }
+      )
     },
     ...(options as any),
   })
 
-  return { 
-    data: eventsData, 
-    mutate, 
+  return {
+    data: eventsData,
+    mutate,
     mutateAsync,
-    ...rest 
+    ...rest,
   }
 }

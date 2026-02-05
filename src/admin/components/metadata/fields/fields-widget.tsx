@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react"
 import { toast } from "@medusajs/ui"
 import { ManagerFields } from "./manager-fields"
-import { prepareMetadataForSave, filterEmptyMetadata } from "../../../lib/metadata-utils"
+import {
+  prepareMetadataForSave,
+  filterEmptyMetadata,
+} from "../../../lib/metadata-utils"
 import { FieldConfig } from "./types"
 
 interface EntityData {
@@ -14,17 +17,22 @@ interface UniversalFieldsWidgetProps {
   fields: FieldConfig[]
   title: string | null
   fetchEntity: (id: string) => Promise<EntityData>
-  updateEntity: (id: string, metadata: Record<string, any>) => Promise<void>
+  updateEntity: (
+    id: string,
+    metadata: Record<string, any>
+  ) => Promise<void>
 }
 
-export const FieldsWidget = ({ 
-  entityId, 
+export const FieldsWidget = ({
+  entityId,
   fields,
   title,
   fetchEntity,
-  updateEntity
+  updateEntity,
 }: UniversalFieldsWidgetProps) => {
-  const [entity, setEntity] = useState<EntityData | null>(null)
+  const [entity, setEntity] = useState<EntityData | null>(
+    null
+  )
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
 
@@ -44,22 +52,31 @@ export const FieldsWidget = ({
     loadEntity()
   }, [entityId, fetchEntity])
 
-  const handleSave = async (values: Record<string, any>) => {
+  const handleSave = async (
+    values: Record<string, any>
+  ) => {
     if (!entity) return
 
     try {
       setSaving(true)
-      
+
       // Use shared function to prepare metadata
-      const updatedMetadata = prepareMetadataForSave(entity.metadata || {}, values)
+      const updatedMetadata = prepareMetadataForSave(
+        entity.metadata || {},
+        values
+      )
 
       await updateEntity(entity.id, updatedMetadata)
 
       // Update local state
-      setEntity(prev => prev ? ({
-        ...prev,
-        metadata: updatedMetadata
-      }) : null)
+      setEntity((prev) =>
+        prev
+          ? {
+              ...prev,
+              metadata: updatedMetadata,
+            }
+          : null
+      )
 
       toast.success("Fields saved successfully!")
     } catch (error) {
@@ -82,8 +99,10 @@ export const FieldsWidget = ({
     <ManagerFields
       fields={fields}
       title={title}
-      initialValues={filterEmptyMetadata(entity.metadata || {})}
+      initialValues={filterEmptyMetadata(
+        entity.metadata || {}
+      )}
       onSave={handleSave}
     />
   )
-} 
+}

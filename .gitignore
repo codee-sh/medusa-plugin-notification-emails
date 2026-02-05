@@ -21,6 +21,7 @@ build/
 *.swp
 *.swo
 *~
+.github-workflow
 
 # OS
 .DS_Store
@@ -36,3 +37,6 @@ yarn-error.log*
 .env
 .env.local
 
+# Notes and internal docs
+things/
+builder-lexical/

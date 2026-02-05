@@ -1,10 +1,9 @@
-import { ContactFormTemplate } from "./contact-form";
+import { ContactFormTemplate } from "./contact-form"
 
 export const ContactFormTemplateGroup = () => {
   return (
     <>
       <ContactFormTemplate />
     </>
-  );
-};
-
+  )
+}
