@@ -1,12 +1,16 @@
-# Medusa plugin notification emails
+# Medusa plugin notification
 
-Medusa v2 plugin for notification templating with support for:
+Medusa v2 plugin for building and sending transactional notifications from one place.
+It provides a template system, admin builder, and rendering workflows for email and Slack.
 
-- email and slack channels
-- template types (`system`, `db`, `external`)
-- admin template builder (`/app/mpn/templates`)
-- workflow-first rendering
-- translation overrides and external templates
+## Features
+
+- Build and manage notification templates for two channels: email and Slack
+- Use three template sources: built-in (`system`), database-managed (`db`), and code-registered (`external`)
+- Build templates quickly with a reusable block system instead of writing full markup from scratch
+- Edit `db` templates in Medusa Admin using a block-based builder
+- Render notifications through dedicated workflows and pass output to Medusa notification providers
+- Customize translations and register external templates without changing core plugin code
 
 ## Compatibility
 
