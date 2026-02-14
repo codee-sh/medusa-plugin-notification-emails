@@ -1,299 +1,282 @@
 # Templates Documentation
 
-This plugin provides a flexible, block-based template system for multiple channels (Email and Slack). Templates are defined as arrays of blocks with automatic variable interpolation and translation support. This guide explains how to use existing templates in your code and create custom subscribers.
+This plugin supports three template sources in `v1.0.0`:
 
-## Template Service Architecture
+- `system` - built-in templates shipped with the plugin
+- `db` - templates created and edited in the builder (stored in database)
+- `external` - templates registered from your own packages/files via plugin options
 
-The plugin uses a service-based architecture with channel-specific template services:
+The primary rendering path is workflow-based and uses `template_id`.
 
-- **`AbstractTemplateService`** - Base abstract class providing common functionality
-- **`EmailTemplateService`** - Email template service (extends `AbstractTemplateService`)
-- **`SlackTemplateService`** - Slack template service (extends `AbstractTemplateService`)
+## Template Types and Services
 
-Each service is a singleton instance exported from the respective channel module:
-- `emailService` - Email template service instance
-- `slackService` - Slack template service instance
+### Template types
 
-## Available Templates
+- `system`
+- `db`
+- `external`
 
-### Email Templates
+### Template services (channels)
 
-- **[Order Placed](./templates/order-placed.md)** (`order-placed`) - Order confirmation email template
-- **Order Completed** (`order-completed`) - Order completion notification email template
-- **[Contact Form](./templates/contact-form.md)** (`contact-form`) - Contact form submission email template
-- **Order Updated** (`order-updated`) - Order update notification template
-- **Inventory Level** (`inventory-level`) - Inventory level notification template
+- `email`
+- `slack`
 
-### Slack Templates
+Type/service combinations are available through Admin API:
 
-- **Inventory Level** (`inventory-level`) - Inventory level notification for Slack
-- **Product** (`product`) - Product notification for Slack
-- **Product Variant** (`product-variant`) - Product variant notification for Slack
+- `GET /api/admin/mpn/templates/types`
+- `GET /api/admin/mpn/templates/types/:type/services`
+- `GET /api/admin/mpn/templates/types/:type/services/:service/templates`
 
-## Using Email Templates
+## How templates are resolved at runtime
 
-### Basic Usage
+Rendering workflows read `template_id` and resolve source automatically:
 
-Use the `emailService` singleton to render email templates:
+- `template_id` starting with `system_` -> `system` template registry
+- any other `template_id` -> DB lookup (`db` template)
+- `external` templates are available in service registry when registered in config
+
+Main workflows:
+
+- `emailServiceWorkflow` (`mpn-builder-email-service`)
+- `slackServiceWorkflow` (`mpn-builder-slack-service`)
+
+## Translations vs locale by template type
+
+`v1.0.0` uses two different mechanisms depending on template source:
+
+- `system` and `external` templates: can use `{{translations.*}}`, because they provide translation dictionaries in template config
+- `db` templates: language is selected by template `locale` stored in DB (`channel` + `locale` are set during template creation)
+
+In practice for `db` templates:
+
+- prefer `{{data.*}}` and explicit text in block `metadata`
+- do not rely on `{{translations.*}}` in DB block payload
+- create separate DB templates per language when needed (e.g. `pl`, `en`)
+
+## Creating templates
+
+## 1) System templates (code-owned)
+
+Use this when template should be part of plugin codebase and versioned with release.
+
+System templates are registered inside local services:
+
+- `src/modules/mpn-builder/services-local/email-template-service.ts`
+- `src/modules/mpn-builder/services-local/slack-template-service.ts`
+
+Each template provides:
+
+- `blocks`
+- `translations`
+
+Example IDs:
+
+- email: `system_order-placed`, `system_contact-form`
+- slack: `system_inventory-level`, `system_product`
+
+System templates are read-only from builder DB perspective.
+
+## 2) DB templates (builder-owned)
+
+Use this when template should be editable from Admin UI.
+
+### Create template record
+
+Endpoint:
+
+- `POST /api/admin/mpn/templates`
+
+Payload shape:
 
 ```typescript
-import { emailService, TEMPLATES_NAMES } from "@codee-sh/medusa-plugin-notification-emails/templates/emails"
+{
+  items: [
+    {
+      name: "my-order-template",
+      label: "My order template",
+      description: "DB editable template",
+      channel: "email", // or "slack"
+      locale: "pl", // language assigned to this DB template
+      subject: "Order {{data.order.id}}",
+      is_active: true
+    }
+  ]
+}
+```
 
-const { html, text, subject } = await emailService.render({
-  templateName: TEMPLATES_NAMES.ORDER_PLACED,
-  data: {
-    order: {
-      id: "order_123",
-      transformed: {
-        order_number: "ORD-12345",
-        order_date: "2024-01-15",
-        // ... other order data
+### Save/update blocks
+
+Endpoint:
+
+- `POST /api/admin/mpn/templates/:id/blocks`
+
+Payload shape:
+
+```typescript
+{
+  template_id: "tmpl_123",
+  blocks: [
+    {
+      type: "heading",
+      position: 0,
+      parent_id: null,
+      metadata: {
+        value: "Podsumowanie zamowienia"
+      }
+    },
+    {
+      type: "row",
+      position: 1,
+      parent_id: null,
+      metadata: {
+        label: "Numer zamowienia",
+        value: "{{data.order.transformed.order_number}}"
       }
     }
-  },
-  options: {
-    locale: "pl"
-  }
-})
+  ]
+}
 ```
 
-**Returns**:
-- `html` - HTML version of the email (string)
-- `text` - Plain text version of the email (string)
-- `subject` - Email subject line (string, generated from translations)
+DB model stores blocks as:
 
-### Synchronous Rendering (for Previews)
+- `type`
+- `position`
+- `parent_id`
+- `metadata` (block config)
 
-For React-based previews, use `renderSync`:
+## 3) External templates (config-owned)
 
-```typescript
-const { reactNode } = emailService.renderSync({
-  templateName: TEMPLATES_NAMES.ORDER_PLACED,
-  data: templateData,
-  options: { locale: "en" }
-})
-```
+Use this when templates live outside plugin repo (e.g. dedicated package).
 
-**Returns**:
-- `reactNode` - React node for rendering in preview components
-
-## Using Slack Templates
-
-### Basic Usage
-
-Use the `slackService` singleton to render Slack templates:
+Register via `options.extend.services` in `medusa-config.ts`:
 
 ```typescript
-import { slackService, TEMPLATES_NAMES } from "@codee-sh/medusa-plugin-notification-emails/templates/slack"
+import path from "path"
 
-const { blocks } = await slackService.render({
-  templateName: TEMPLATES_NAMES.INVENTORY_LEVEL,
-  data: {
-    inventory_level: {
-      id: "il_123",
-      stock_locations: [
-        { name: "Warehouse A", quantity: 10 }
-      ],
-      inventory_item: {
-        id: "item_123"
-      }
-    }
-  },
-  options: {
-    locale: "en"
-  }
-})
-```
-
-**Returns**:
-- `blocks` - Array of Slack Block Kit blocks ready to send to Slack API
-
-**Supported locales**: `pl` (Polish), `en` (English, default)
-
-### Custom Blocks
-
-You can override template blocks by providing custom blocks in options:
-
-```typescript
-const { html, text, subject } = await emailService.render({
-  templateName: TEMPLATES_NAMES.ORDER_PLACED,
-  data: templateData,
-  options: {
-    locale: "pl",
-    blocks: [
-      {
-        type: "section",
-        props: {
-          blocks: [
+module.exports = defineConfig({
+  plugins: [
+    {
+      resolve: "@codee-sh/medusa-plugin-notification-emails",
+      options: {
+        extend: {
+          services: [
             {
-              type: "heading",
-              props: {
-                value: "Custom Header"
-              }
+              id: "email",
+              templates: [
+                {
+                  name: "external_order-summary",
+                  path: path.resolve(
+                    require.resolve("@your-scope/templates/email/order-summary")
+                  )
+                }
+              ]
             }
           ]
         }
       }
-    ]
+    }
+  ]
+})
+```
+
+After registration, template becomes available as type `external` for that service.
+
+## Rendering templates in your code
+
+### Email workflow
+
+```typescript
+import { emailServiceWorkflow } from "@codee-sh/medusa-plugin-notification-emails/workflows/mpn-builder-services/email-service"
+
+const {
+  result: { html, text, subject },
+} = await emailServiceWorkflow(container).run({
+  input: {
+    template_id: "system_order-placed", // or db template id
+    data: templateData,
+    options: {
+      locale: "en",
+      translations: {
+        headerTitle: "Custom title"
+      }
+    }
   }
 })
 ```
 
-When custom blocks are provided, they replace the template's default blocks. Variables in custom blocks are still interpolated automatically.
-
-## Variable Interpolation
-
-Templates use a powerful interpolation system that processes variables in two formats. For detailed information about the interpolation system, see [Translations Documentation](./translations.md).
-
-## Creating Custom Subscribers
-
-You can create your own subscribers that use the plugin's templates. This is useful when you want to send notifications for custom events or with custom logic.
-
-### Example: Custom Email Event Subscriber
+### Slack workflow
 
 ```typescript
-import {
-  SubscriberArgs,
-  type SubscriberConfig,
-} from "@medusajs/medusa"
-import { Modules } from "@medusajs/framework/utils"
-import { emailService, TEMPLATES_NAMES } from "@codee-sh/medusa-plugin-notification-emails/templates/emails"
+import { slackServiceWorkflow } from "@codee-sh/medusa-plugin-notification-emails/workflows/mpn-builder-services/slack-service"
 
-export default async function customEventHandler({
-  event: { data },
-  container,
-}: SubscriberArgs<{ userId: string, message: string }>) {
+const {
+  result: { blocks },
+} = await slackServiceWorkflow(container).run({
+  input: {
+    template_id: "system_inventory-level",
+    data: templateData,
+    options: {
+      locale: "en"
+    }
+  }
+})
+```
+
+## Working with template lists
+
+Useful API endpoints:
+
+- `GET /api/admin/mpn/templates` - DB templates
+- `GET /api/admin/mpn/templates/types` - available template types
+- `GET /api/admin/mpn/templates/types/:type/services` - services by type
+- `GET /api/admin/mpn/templates/types/:type/services/:service/templates` - templates by type+service
+- `GET /api/admin/mpn/available-templates` - template services and builder metadata
+
+## Custom subscribers (workflow-first)
+
+In custom subscriber logic, call rendering workflow first, then pass rendered content to notification module.
+
+```typescript
+import { Modules } from "@medusajs/framework/utils"
+import { emailServiceWorkflow } from "@codee-sh/medusa-plugin-notification-emails/workflows/mpn-builder-services/email-service"
+
+export default async function customEventHandler({ event: { data }, container }: any) {
   const notificationModuleService = container.resolve(Modules.NOTIFICATION)
 
-  // Use contact form template for custom notifications
-  const { html, text, subject } = await emailService.render({
-    templateName: TEMPLATES_NAMES.CONTACT_FORM,
-    data: {
-      name: "System Notification",
-      email: "system@example.com",
-      message: data.message,
+  const {
+    result: { html, text, subject },
+  } = await emailServiceWorkflow(container).run({
+    input: {
+      template_id: "system_contact-form",
+      data: {
+        name: "System Notification",
+        email: "system@example.com",
+        message: data.message,
+      },
+      options: { locale: "en" },
     },
-    options: { locale: "en" }
   })
 
   await notificationModuleService.createNotifications({
     to: "admin@example.com",
     channel: "email",
-    content: {
-      subject,
-      html,
-      text,
-    },
+    content: { subject, html, text },
   })
 }
-
-export const config: SubscriberConfig = {
-  event: "custom.event.name",
-}
-```
-
-### Example: Custom Slack Event Subscriber
-
-```typescript
-import {
-  SubscriberArgs,
-  type SubscriberConfig,
-} from "@medusajs/medusa"
-import { Modules } from "@medusajs/framework/utils"
-import { slackService, TEMPLATES_NAMES } from "@codee-sh/medusa-plugin-notification-emails/templates/slack"
-
-export default async function inventoryEventHandler({
-  event: { data },
-  container,
-}: SubscriberArgs<{ inventory_level: any }>) {
-  const notificationModuleService = container.resolve(Modules.NOTIFICATION)
-
-  const { blocks } = await slackService.render({
-    templateName: TEMPLATES_NAMES.INVENTORY_LEVEL,
-    data: {
-      inventory_level: data.inventory_level,
-    },
-    options: { locale: "en" }
-  })
-
-  await notificationModuleService.createNotifications({
-    to: "#inventory-alerts",
-    channel: "slack",
-    content: {
-      text: "Inventory level update",
-      blocks: blocks,
-    },
-  })
-}
-
-export const config: SubscriberConfig = {
-  event: "inventory_level.updated",
-}
-```
-
-## Registering Custom Templates
-
-You can register custom templates at runtime using the service's `registerTemplate` method:
-
-```typescript
-import { emailService } from "@codee-sh/medusa-plugin-notification-emails/templates/emails"
-
-// Register a custom template
-emailService.registerTemplate("custom-template", {
-  ...emailService.getBaseTemplate(),
-  getConfig: () => ({
-    blocks: [
-      {
-        type: "section",
-        props: {
-          blocks: [
-            {
-              type: "heading",
-              props: {
-                value: "{{translations.title}}"
-              }
-            }
-          ]
-        }
-      }
-    ],
-    translations: {
-      pl: {
-        general: {
-          title: "Tytuł"
-        }
-      },
-      en: {
-        general: {
-          title: "Title"
-        }
-      }
-    }
-  })
-})
-
-// Use the custom template
-const { html, text, subject } = await emailService.render({
-  templateName: "custom-template",
-  data: {},
-  options: { locale: "pl" }
-})
 ```
 
 ## Best Practices
 
-1. **Use existing templates**: Check available templates before creating custom ones
-2. **Follow data structure**: Ensure template data matches the expected structure (see template-specific docs)
-3. **Handle errors**: Always check if data exists before rendering
-4. **Use translations**: Leverage the translation system for multi-language support
-5. **Test rendering**: Test templates with sample data before deploying
-6. **Use block system**: Define templates as blocks for flexibility and future database storage
-7. **Leverage interpolation**: Use `{{data.*}}` and `{{translations.*}}` for dynamic content
+1. Prefer workflow-based rendering (`emailServiceWorkflow`, `slackServiceWorkflow`)
+2. Use `system` for release-owned templates, `db` for admin-editable templates, `external` for package-owned templates
+3. Keep template IDs stable and explicit (`system_*` for built-ins)
+4. For `db` templates keep user-facing text directly in block `metadata` and control language through template `locale`
+5. Validate template data shape before rendering
+6. Test rendering for all locales and for each template source (`system/db/external`)
 
 ## See Also
 
-- [Blocks System Documentation](./blocks.md) - Understanding the block-based template system
-- [Template-specific Documentation](./templates/) - Detailed docs for each template
-- [Translations Documentation](./translations.md) - How translations and interpolation work
-- [Configuration Documentation](./configuration.md) - Plugin configuration
-- [Creating Custom Templates](./contributing/creating-templates.md) - Guide for creating new templates
+- [Blocks Documentation](./blocks.md) - Block types, behavior, and DB structure
+- [Translations Documentation](./translations.md) - Interpolation and translation overrides
+- [Configuration Documentation](./configuration.md) - Plugin options and external template registration
+- [Creating Custom Templates](./contributing/creating-templates.md) - Contributor-focused guide

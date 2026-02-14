@@ -1,36 +1,32 @@
-# Admin Panel Documentation
+# Admin Panel Guide
 
-The plugin provides an admin interface for previewing and testing email templates.
+This page describes the administrator experience in the plugin panel.
 
-## Accessing the Admin Panel
+## What you can do
 
-Navigate to **Notifications > Preview Template** in your Medusa Admin dashboard, or directly access:
+### Notifications
 
-```
-/app/notifications/render
-```
+- view notification history
+- review notification details
+- verify which events triggered notifications
 
-## Features
+### Templates
 
-### Template Selection
+- browse available templates
+- create and edit template content
+- organize block order and structure
+- update text and content fields
 
-Choose from available templates:
-- **Order Placed**: Order confirmation email template
-- **Contact Form**: Contact form submission email template
+## Typical admin workflow
 
-### Template Preview
+1. Open templates and select the template you want to update.
+2. Edit content and block layout.
+3. Save changes.
+4. Trigger or wait for a notification event.
+5. Check notification history to confirm output.
 
-Each template group provides:
+## Related documentation
 
-1. **Live Preview**: See how the email will look with sample data
-2. **Locale Switching**: Test different language versions
-3. **Custom Data**: Modify template data to see how it affects the output
-4. **HTML/Text View**: Toggle between HTML and plain text versions
-
-## Using the Preview
-
-1. **Select Template**: Choose a template type from the dropdown
-2. **Fill Data**: Enter or modify template data
-3. **Choose Locale**: Select language (Polish or English)
-4. **Preview**: View the rendered email template
-5. **Test**: Use the preview to verify translations and formatting
+- [Templates Documentation](./templates.md)
+- [Blocks Documentation](./blocks.md)
+- [Configuration Documentation](./configuration.md)
