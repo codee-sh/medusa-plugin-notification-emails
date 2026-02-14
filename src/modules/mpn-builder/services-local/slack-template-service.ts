@@ -341,14 +341,14 @@ export class SlackTemplateService extends BaseTemplateService {
           break
         }
 
-        case "group": {
-          // group → flatten children blocks
-          if (children.length > 0) {
-            const transformedChildren = this.transformBlocksForRendering(children)
-            result.push(...transformedChildren)
-          }
-          break
-        }
+        // case "group": {
+        //   // group → flatten children blocks
+        //   if (children.length > 0) {
+        //     const transformedChildren = this.transformBlocksForRendering(children)
+        //     result.push(...transformedChildren)
+        //   }
+        //   break
+        // }
 
         case "repeater": {
           // repeater → keep structure for later processing during interpolation

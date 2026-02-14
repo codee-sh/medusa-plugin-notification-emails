@@ -14,7 +14,7 @@ export const translations: Record<any, any> = {
  */
 export const templateBlocks = [
   {
-    type: "section",
+    type: "group",
     id: "section-1",
     props: {
       blocks: [
@@ -40,7 +40,7 @@ export const templateBlocks = [
     type: "separator",
   },
   {
-    type: "section",
+    type: "group",
     id: "section-2",
     props: {
       blocks: [
@@ -116,7 +116,7 @@ export const templateBlocks = [
     type: "separator",
   },
   {
-    type: "section",
+    type: "group",
     id: "section-3",
     props: {
       blocks: [
