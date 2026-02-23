@@ -48,7 +48,6 @@ Each file has a strict scope. Do not mix responsibilities between files.
 ## Checklist (run before finishing)
 
 - [ ] Does the content match the current architecture?
-- [ ] Are examples correct for the template type (`system`/`db`/`external`)?
 - [ ] Is `docs/admin.md` still non-technical (no raw endpoints)?
 - [ ] Is `README.md` still short and navigational?
 - [ ] Are there any dead links?
