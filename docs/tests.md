@@ -44,6 +44,15 @@ DB_USERNAME=postgres
 DB_PASSWORD=postgres
 ```
 
+`medusaIntegrationTestRunner` creates a temporary database for each run,
+and overrides `projectConfig.databaseUrl`. The values above are used to
+create and drop databases. `DATABASE_URL` is not used for tests.
+
+The database user must have permission to create and drop databases.
+
+Port configuration is not supported by the test runner, so tests must
+connect through port `5432`.
+
 ## Run Tests
 
 Integration HTTP tests:
@@ -62,6 +71,14 @@ Unit tests:
 
 ```bash
 yarn test:unit
+```
+
+## Cleanup
+
+Stop and remove the test database container and volume:
+
+```bash
+docker compose -f docker-compose.test.yml down -v
 ```
 
 ## Create Tests
