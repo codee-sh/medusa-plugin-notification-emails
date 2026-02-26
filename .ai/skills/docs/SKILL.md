@@ -20,6 +20,7 @@ Each file has a strict scope. Do not mix responsibilities between files.
 | `docs/blocks.md` | Block types, DB model vs final render model, block catalog | Technical reference |
 | `docs/translations.md` | i18n system, interpolation, custom translations, adding locales | Technical reference |
 | `docs/admin.md` | Admin panel user guide — what you can do, typical workflow | User-facing, no endpoints |
+| `docs/tests.md` | Tests | User-facing, no endpoints |
 | `docs/contributing/creating-templates.md` | Step-by-step guide for contributors creating new templates | Tutorial |
 
 ## Writing Rules
