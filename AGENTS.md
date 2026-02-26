@@ -23,7 +23,19 @@ yarn prepublishOnly     # build before publish (medusa plugin:build)
 yarn publish-local      # publish locally (npx medusa plugin:publish)
 yarn publish-package    # publish to npm (dotenv npm publish --access public)
 yarn email:dev          # preview email templates (react-email dev server)
+yarn test:unit          # run unit tests
+yarn test:integration:http     # run integration HTTP tests
+yarn test:integration:modules  # run integration module tests
+yarn test:db:up         # start test Postgres (Docker)
+yarn test:db:down       # stop and remove test Postgres (Docker)
 ```
+
+## Shell Scripts
+
+Daily workflow helpers in `scripts/`:
+
+- `scripts/create-pr.sh` — create a PR (used by `yarn pr:create`).
+- `scripts/prepare-release.sh` — prepare a release branch (used by `yarn prepare-release`).
 
 ## Code Style
 
@@ -156,6 +168,7 @@ Do not rely on `{{translations.*}}`.
 - `docs/blocks.md` — block system, DB model, final catalog
 - `docs/translations.md` — i18n system, interpolation
 - `docs/admin.md` — admin panel user guide
+- `docs/tests.md` — tests guide
 - `docs/contributing/creating-templates.md` — contributor template guide
 - `CONTRIBUTING.md` — branch model, PR rules, release process
 
@@ -165,10 +178,7 @@ Project skills are in `.ai/skills/` (symlinked to `.cursor/skills/` and `.codex/
 
 | Skill | When to use |
 |-------|-------------|
-| `plugin-docs-authoring` | Writing or updating documentation |
-| `template-blocks-architecture` | Changes to template/block system |
-| `release-pr-hygiene` | Preparing release PRs and changesets |
-| `medusa-plugin-context` | Quick domain context before any work |
+| `docs` | Writing or updating documentation |
 
 ## Rules for Agents
 
@@ -176,5 +186,5 @@ Project skills are in `.ai/skills/` (symlinked to `.cursor/skills/` and `.codex/
 2. Follow the branch model: feature work from `develop`, PRs to `develop`.
 3. Add a changeset (`yarn changeset`) for any user-facing change.
 4. Use consistent terminology: `system`, `db`, `external`, `blocks`, `mpn-builder`, `workflow`.
-5. When changing docs, follow the `plugin-docs-authoring` skill.
+5. When changing docs, follow the `docs` skill.
 6. Do not commit `.env`, `node_modules`, `.medusa/`, or build artifacts.

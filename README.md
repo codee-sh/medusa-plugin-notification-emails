@@ -59,6 +59,7 @@ Template IDs are resolved by prefix:
 - [Blocks](./docs/blocks.md)
 - [Translations](./docs/translations.md)
 - [Admin](./docs/admin.md)
+- [Tests](./docs/tests.md)
 - [Creating Templates](./docs/contributing/creating-templates.md)
 
 ## Exports
