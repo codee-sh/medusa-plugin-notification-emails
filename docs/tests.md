@@ -17,7 +17,7 @@ This document explains how to run and create tests for this plugin.
 Start the Docker Postgres used by integration tests:
 
 ```bash
-docker compose -f docker-compose.test.yml up -d
+yarn test:db:up
 ```
 
 The container binds to `localhost:5432`. If port `5432` is already in use,
@@ -78,7 +78,7 @@ yarn test:unit
 Stop and remove the test database container and volume:
 
 ```bash
-docker compose -f docker-compose.test.yml down -v
+yarn test:db:down
 ```
 
 ## Create Tests
