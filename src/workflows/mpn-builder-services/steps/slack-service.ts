@@ -46,11 +46,13 @@ export const slackServiceStep = createStep(
 
     const templateId = input.template_id
     const isSystemTemplateId = templateId?.startsWith(TEMPLATE_TYPES.SYSTEM_TEMPLATE)
+    const isExternalTemplateId = templateId?.startsWith(TEMPLATE_TYPES.EXTERNAL_TEMPLATE)
+    const isRegistryTemplate = isSystemTemplateId || isExternalTemplateId
 
     let blocks: any[] = []
 
-    // If it's not a system template, get the blocks from the database
-    if (!isSystemTemplateId) {
+    // If it's not a registry template, get the blocks from the database
+    if (!isRegistryTemplate) {
       const { result: templateData } = await getTemplateWorkflow(container).run({
         input: {
           template_id: templateId,
@@ -68,7 +70,7 @@ export const slackServiceStep = createStep(
     // TODO CHECK WHY .config is undefined in the prepareData method when using external templates
     const { blocks: renderedBlocks } =
       await templateSlackService.render({
-        templateName: isSystemTemplateId
+        templateName: isRegistryTemplate
           ? templateId
           : "base-template",
         data: input.data,
