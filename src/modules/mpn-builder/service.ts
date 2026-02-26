@@ -119,9 +119,8 @@ class MpnBuilderService extends MedusaService({
                   const templateModule = await import(
                     templateValue
                   )
-                  const template = templateModule.default
-                  // renderer = template?.default || template
-                  renderer = template?.default || templateModule
+                  renderer =
+                    templateModule?.default || templateModule
 
                   if (!renderer) {
                     this.logger_.warn(
@@ -129,6 +128,12 @@ class MpnBuilderService extends MedusaService({
                     )
                     return
                   }
+
+                  renderer =
+                    this.normalizeExternalRenderer(
+                      renderer,
+                      templateService
+                    )
                 } catch (error: any) {
                   this.logger_.warn(
                     `Failed to load template from "${templateValue}": ${error?.message || "Unknown error"}`
@@ -153,6 +158,34 @@ class MpnBuilderService extends MedusaService({
         }
       })
     )
+  }
+
+  /**
+   * Normalize external template modules to match system template shape.
+   * Ensures getConfig() exists and base template renderers are included.
+   */
+  private normalizeExternalRenderer(
+    renderer: any,
+    templateService: BaseTemplateService
+  ) {
+    if (!renderer) {
+      return renderer
+    }
+
+    const templateBlocks = renderer.templateBlocks
+    const translations = renderer.translations
+
+    const baseTemplateConfig = (templateService as any)
+      ?.baseTemplateConfig
+
+    return {
+      ...(baseTemplateConfig || {}),
+      ...renderer,
+      getConfig: () => ({
+        blocks: templateBlocks || [],
+        translations: translations || {},
+      }),
+    }
   }
 
   /**

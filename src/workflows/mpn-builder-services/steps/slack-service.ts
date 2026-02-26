@@ -51,6 +51,12 @@ export const slackServiceStep = createStep(
 
     let blocks: any[] = []
 
+    console.log('templateId', templateId);
+    console.log('isSystemTemplateId', isSystemTemplateId);
+    console.log('isExternalTemplateId', isExternalTemplateId);
+    console.log('isRegistryTemplate', isRegistryTemplate);
+
+
     // If it's not a registry template, get the blocks from the database
     if (!isRegistryTemplate) {
       const { result: templateData } = await getTemplateWorkflow(container).run({
