@@ -83,8 +83,6 @@ export const slackServiceStep = createStep(
         },
       })
 
-    console.log("renderedBlocks", renderedBlocks)
-
     return new StepResponse({
       blocks: renderedBlocks,
     })
