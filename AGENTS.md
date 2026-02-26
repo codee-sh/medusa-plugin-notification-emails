@@ -23,7 +23,19 @@ yarn prepublishOnly     # build before publish (medusa plugin:build)
 yarn publish-local      # publish locally (npx medusa plugin:publish)
 yarn publish-package    # publish to npm (dotenv npm publish --access public)
 yarn email:dev          # preview email templates (react-email dev server)
+yarn test:unit          # run unit tests
+yarn test:integration:http     # run integration HTTP tests
+yarn test:integration:modules  # run integration module tests
+yarn test:db:up         # start test Postgres (Docker)
+yarn test:db:down       # stop and remove test Postgres (Docker)
 ```
+
+## Shell Scripts
+
+Daily workflow helpers in `scripts/`:
+
+- `scripts/create-pr.sh` — create a PR (used by `yarn pr:create`).
+- `scripts/prepare-release.sh` — prepare a release branch (used by `yarn prepare-release`).
 
 ## Code Style
 
