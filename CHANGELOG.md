@@ -1,5 +1,13 @@
 # @codee-sh/medusa-plugin-notification-emails
 
+## 1.0.2
+
+### Patch Changes
+
+- bff5e4e: Normalize external template registration to use a single shape
+  (`templateBlocks` + `translations`) and ensure `getConfig` is
+  always available for external templates.
+
 ## 1.0.1
 
 ### Patch Changes
