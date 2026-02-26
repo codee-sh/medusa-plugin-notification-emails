@@ -46,12 +46,14 @@ export const emailServiceStep = createStep(
 
     const templateId = input.template_id
     const isSystemTemplateId = templateId?.startsWith(TEMPLATE_TYPES.SYSTEM_TEMPLATE)
+    const isExternalTemplateId = templateId?.startsWith(TEMPLATE_TYPES.EXTERNAL_TEMPLATE)
+    const isRegistryTemplate = isSystemTemplateId || isExternalTemplateId
 
     let blocks: any[] = []
     let template: any = {}
 
-    // If it's not a system template, get the blocks from the database
-    if (!isSystemTemplateId) {
+    // If it's not a registry template, get the blocks from the database
+    if (!isRegistryTemplate) {
       const { result: templateData } = await getTemplateWorkflow(container).run({
         input: {
           template_id: templateId,
@@ -68,7 +70,7 @@ export const emailServiceStep = createStep(
 
     const { html, text, subject } =
       await templateEmailService.render({
-        templateName: isSystemTemplateId
+        templateName: isRegistryTemplate
           ? templateId
           : "base-template",
         data: input.data,
