@@ -47,6 +47,11 @@ module.exports = defineConfig({
 
 Then continue with configuration and usage guides in `docs/`.
 
+Template IDs are resolved by prefix:
+
+- IDs starting with `system` or `external` are rendered from the in-memory registry (no DB lookup).
+- Other IDs are treated as DB templates and must exist in `mpn_builder_template`.
+
 ## Documentation
 
 - [Configuration](./docs/configuration.md)

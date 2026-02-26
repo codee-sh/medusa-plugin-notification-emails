@@ -137,6 +137,11 @@ Notes:
 - if service id is unknown, template registration is skipped
 - registered templates are available as type `external`
 
+Template ID resolution:
+
+- IDs starting with `system` or `external` are rendered from the registry and are not looked up in the database.
+- Any other ID is treated as a DB template and must exist in `mpn_builder_template`.
+
 ## Minimal complete example
 
 ```typescript
