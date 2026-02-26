@@ -43,7 +43,9 @@ if [[ -d .changeset ]]; then
     if [[ -n "$summary" ]]; then
       changeset_summaries+=("$summary")
     fi
-  done < <(find .changeset -type f -name "*.md" -print0)
+  done < <(git diff --name-only "$BASE_BRANCH"...HEAD -- .changeset \
+    | grep -E '\.md$' \
+    | tr '\n' '\0')
 fi
 
 BODY_FILE="${BODY_FILE:-/tmp/pr-body-$$.md}"
