@@ -1,5 +1,14 @@
 # @codee-sh/medusa-plugin-notification-emails
 
+## 1.0.1
+
+### Patch Changes
+
+- 132cc21: Add Medusa integration test setup and local Docker DB config for workflow testing.
+- 5303f02: Add skils
+- 5d51ecc: Fix external template rendering for Slack and Email workflows by treating `external_*` IDs as registry templates instead of DB templates. Update docs to clarify template ID resolution.
+- a13023d: Rename blocks type
+
 ## 1.0.0
 
 ### Major Changes
