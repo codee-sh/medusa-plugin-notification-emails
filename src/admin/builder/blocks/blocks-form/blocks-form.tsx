@@ -1,39 +1,26 @@
 import {
   Button
 } from "@medusajs/ui"
-import { Trash } from "@medusajs/icons"
 import { toast } from "@medusajs/ui"
-import { useMemo, useState, useEffect } from "react"
-import { useForm, useFieldArray } from "react-hook-form"
+import { useMemo, useEffect } from "react"
+import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import {
-  DndContext,
-  closestCenter,
   KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
 } from "@dnd-kit/core"
 import {
-  SortableContext,
   sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
 } from "@dnd-kit/sortable"
 
-import { handleDragEnd } from "../../../../utils"
-import { BlockList } from "../components/block-list"
-import { BlockItem } from "../components/block-item"
-import { BlockItemWrapper } from "../components/block-item-wrapper"
-import { BlockItemFields } from "../components/block-item-fields"
 import { createBlockFormSchema } from "../../templates/templates-form/utils/block-form-schema"
 import { baseBlocksSchema } from "../../templates/templates-form/types/schema"
-import { BlockDropdownMenu } from "../components/block-dropdown"
 import { useEditTemplateBlocks } from "../../../../hooks/api/templates/blocks"
 import { useQueryClient } from "@tanstack/react-query"
-import { BlocksChildren } from "../blocks-children"
-import { BlocksRepeater } from "../blocks-repeater"
-import { resolveBlockUiState } from "../utils/block-ui-resolver"
+import { BlocksTreeList } from "../components/blocks-tree-list"
 
 type BlockFormValues = z.infer<typeof baseBlocksSchema>
 
@@ -54,17 +41,13 @@ export const BlocksForm = (props: any) => {
 
   const itemsPath = "items"
 
-  const { fields, append, remove, move, replace } = useFieldArray({
-    control: form.control,
-    name: itemsPath,
-    keyName: "rhf_id"
-  })
-
   useEffect(() => {
     if (items) {
-      replace(items)
+      form.reset({
+        items,
+      })
     }
-  }, [items])
+  }, [items, form])
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -112,68 +95,17 @@ export const BlocksForm = (props: any) => {
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)}>
-      <DndContext
+      <BlocksTreeList
+        path={itemsPath}
+        blocks={blocks}
+        form={form}
         sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragEnd={(event) => handleDragEnd({ form, path: itemsPath, event, fields, move })}
-      >
-        <SortableContext
-          items={fields.map((f) => f.rhf_id)}
-          strategy={verticalListSortingStrategy}
-        >
-          <BlockList>
-            {fields.map((field, index) => {
-              const {
-                isRepeater,
-                canHaveChildren,
-              } = resolveBlockUiState(
-                blocks,
-                field.type
-              )
-
-              return (
-                <BlockItem key={field.rhf_id} id={field.rhf_id} item={field} index={index} form={form} remove={remove}>
-                  <BlockItemWrapper index={index} field={field} blocks={blocks}>
-                    {isRepeater && (
-                      <BlocksRepeater
-                        path={`items.${index}`}
-                        blocks={blocks}
-                        form={form}
-                        sensors={sensors}
-                        handleDragEnd={handleDragEnd}
-                      />
-                    )}
-                    {!isRepeater && (
-                      <BlockItemFields
-                        path={`items.${index}`}
-                        index={index}
-                        field={field}
-                        blocks={blocks}
-                        form={form}
-                      />
-                    )}
-                    {!isRepeater && canHaveChildren && (
-                      <BlocksChildren
-                        path={`items.${index}`}
-                        blocks={blocks}
-                        form={form}
-                        sensors={sensors}
-                        handleDragEnd={handleDragEnd}
-                      />
-                    ) }
-                  </BlockItemWrapper>
-                </BlockItem>
-              )
-            })}
-          </BlockList>
-        </SortableContext>
-      </DndContext>
-
-      <div className="flex justify-between gap-2 mt-4">
-        <BlockDropdownMenu items={blocks} append={append} />
-
-        <Button type="submit" variant="primary">Save</Button>
-      </div>
+        footerRight={
+          <Button type="submit" variant="primary">
+            Save
+          </Button>
+        }
+      />
     </form>
   )
 }
