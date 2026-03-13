@@ -15,24 +15,28 @@ export const OrderContextContainer = ({ contextType, templateId }: { contextType
 
   return (
     <>
-      <div className="flex items-center justify-between px-6 py-4">
-        <Text className="w-1/4">Select order:</Text>
-        <Select
-          value={selectedOrder}
-          onValueChange={(value) => setSelectedOrder(value)}
-          disabled={isOrdersLoading}
-        >
-          <Select.Trigger>
-            <Select.Value placeholder="Select an order" />
-          </Select.Trigger>
-          <Select.Content>
-            {orders?.orders?.map((order: any) => (
-              <Select.Item key={order.id} value={order.id}>
-                #{order.display_id}
-              </Select.Item>
-            ))}
-          </Select.Content>
-        </Select>
+      <div className="flex items-center justify-between px-4 py-3">
+        <Text size="xsmall" className="w-1/4 text-ui-fg-subtle">
+          Select order
+        </Text>
+        <div className="w-full">
+          <Select
+            value={selectedOrder}
+            onValueChange={(value) => setSelectedOrder(value)}
+            disabled={isOrdersLoading}
+          >
+            <Select.Trigger>
+              <Select.Value placeholder="Select an order" />
+            </Select.Trigger>
+            <Select.Content>
+              {orders?.orders?.map((order: any) => (
+                <Select.Item key={order.id} value={order.id}>
+                  #{order.display_id}
+                </Select.Item>
+              ))}
+            </Select.Content>
+          </Select>
+        </div>
       </div>
       {selectedOrder && (
         <OrderContext contextType={contextType} templateId={templateId} orderId={selectedOrder} />
