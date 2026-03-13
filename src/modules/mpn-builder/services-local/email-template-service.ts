@@ -38,6 +38,7 @@ import {
   TemplateOptionsType,
   TemplateRenderOptionsType,
 } from "../types"
+import { BlockDefinition } from "../../../fields"
 
 export class EmailTemplateService extends BaseTemplateService {
   id = "email"
@@ -151,10 +152,12 @@ export class EmailTemplateService extends BaseTemplateService {
     })
   }
 
-  blocks: any[] = [
+  blocks: BlockDefinition[] = [
     {
-      type: "heading",
+      type: "group",
+      runtimeType: "heading",
       label: "Headline",
+      hasChildren: false,
       fields: [
         {
           key: "value",
@@ -162,14 +165,23 @@ export class EmailTemplateService extends BaseTemplateService {
           type: "text",
           required: true,
           name: "value",
-          value: "",
+          defaultValue: "",
+        },
+        {
+          key: "value2",
+          label: "Value2",
+          type: "text",
+          required: true,
+          name: "value2",
           defaultValue: "",
         }
       ],
     },
     {
-      type: "text",
+      type: "group",
+      runtimeType: "text",
       label: "Text",
+      hasChildren: false,
       fields: [
         {
           key: "value",
@@ -177,14 +189,15 @@ export class EmailTemplateService extends BaseTemplateService {
           type: "textarea",
           required: true,
           name: "value",
-          value: "",
           defaultValue: "",
         }
       ],
     },
     {
-      type: "row",
+      type: "group",
+      runtimeType: "row",
       label: "Row",
+      hasChildren: false,
       fields: [
         {
           key: "label",
@@ -192,7 +205,6 @@ export class EmailTemplateService extends BaseTemplateService {
           type: "text",
           required: true,
           name: "label",
-          value: "",
           defaultValue: "",
         },
         {
@@ -201,14 +213,15 @@ export class EmailTemplateService extends BaseTemplateService {
           type: "text",
           required: true,
           name: "value",
-          value: "",
           defaultValue: "",
         },
       ],
     },
     {
       type: "repeater",
+      runtimeType: "repeater",
       label: "Repeater",
+      hasChildren: true,
       fields: [
         {
           key: "arrayPath",
@@ -216,24 +229,29 @@ export class EmailTemplateService extends BaseTemplateService {
           type: "text",
           required: true,
           name: "arrayPath",
-          value: "",
           defaultValue: "",
         },
       ],
     },
     {
       type: "group",
+      runtimeType: "group",
       label: "group",
+      hasChildren: true,
       fields: [],
     },
     {
-      type: "separator",
+      type: "group",
+      runtimeType: "separator",
       label: "Separator",
+      hasChildren: false,
       fields: [],
     },
     {
-      type: "product-item",
+      type: "group",
+      runtimeType: "product-item",
       label: "Product Item",
+      hasChildren: false,
       fields: [
         {
           key: "label",
@@ -241,7 +259,6 @@ export class EmailTemplateService extends BaseTemplateService {
           type: "text",
           required: false,
           name: "label",
-          value: "",
           defaultValue: "",
         },
         {
@@ -250,7 +267,6 @@ export class EmailTemplateService extends BaseTemplateService {
           type: "text",
           required: false,
           name: "thumbnail",
-          value: "",
           defaultValue: "",
         },
         {
@@ -259,12 +275,22 @@ export class EmailTemplateService extends BaseTemplateService {
           type: "textarea",
           required: true,
           name: "value",
-          value: "",
           defaultValue: "",
         },
       ],
     },
   ]
+
+  private resolveRuntimeType(type?: string): string {
+    if (!type) {
+      return ""
+    }
+
+    const byRuntimeType = this.blocks.find(
+      (block) => block.runtimeType === type
+    )
+    return byRuntimeType?.runtimeType || ""
+  }
 
   /**
    * Transform blocks from database format (with metadata) to rendering format (with props)
@@ -306,10 +332,19 @@ export class EmailTemplateService extends BaseTemplateService {
     }
 
     return blocks.map((block) => {
+      const runtimeType = block.runtimeType
+        ? String(block.runtimeType)
+        : this.resolveRuntimeType(block.type)
+      if (!runtimeType) {
+        throw new Error(
+          `Block runtimeType not found for type "${block.type}"`
+        )
+      }
+
       // Create base block structure
       const transformedBlock: any = {
         id: block.id,
-        type: block.type,
+        type: runtimeType,
       }
 
       // Transform metadata to props
@@ -323,12 +358,13 @@ export class EmailTemplateService extends BaseTemplateService {
       if (block.children && Array.isArray(block.children) && block.children.length > 0) {
         const transformedChildren = this.transformBlocksForRendering(block.children)
 
-        if (block.type === "repeater") {
+        if (runtimeType === "repeater") {
           // For repeater, children become itemBlocks
           transformedBlock.props.itemBlocks = transformedChildren
         } else if (
-          block.type === "section" ||
-          block.type === "group"
+          runtimeType === "section" ||
+          runtimeType === "group" ||
+          runtimeType === "container"
         ) {
           // For section/group, children become props.blocks
           transformedBlock.props.blocks = transformedChildren

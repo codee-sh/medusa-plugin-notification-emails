@@ -1,9 +1,10 @@
-import { BaseTemplateServiceInterface, BlockType, TemplateRenderer } from "../types"
+import { BaseTemplateServiceInterface, TemplateRenderer } from "../types"
 import { TEMPLATE_TYPES } from "../types/constants"
 import {
   createTranslator,
   mergeTranslations,
 } from "../../../utils"
+import { BlockDefinition } from "../../../fields"
 
 /**
  * Base action service class
@@ -22,7 +23,7 @@ export class BaseTemplateService implements BaseTemplateServiceInterface {
   configComponentKey = "BaseConfigComponent"
 
   // Fields for the Template configuration rendered in the admin panel then saved in the metadata config
-  blocks: BlockType[] = []
+  blocks: BlockDefinition[] = []
 
   // Template registry - each service manages its own templates
   protected templates_: Map<string, TemplateRenderer> =
@@ -135,7 +136,7 @@ export class BaseTemplateService implements BaseTemplateServiceInterface {
     const optionsTranslations = params.options?.translations
 
     // If blocks are not provided in options, use basic blocks from config
-    const blocks: BlockType[] =
+    const blocks =
       optionsBlocks.length > 0
         ? optionsBlocks
         : configBlocks

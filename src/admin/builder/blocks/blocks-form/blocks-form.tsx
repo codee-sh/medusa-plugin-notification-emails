@@ -33,6 +33,7 @@ import { useEditTemplateBlocks } from "../../../../hooks/api/templates/blocks"
 import { useQueryClient } from "@tanstack/react-query"
 import { BlocksChildren } from "../blocks-children"
 import { BlocksRepeater } from "../blocks-repeater"
+import { resolveBlockUiState } from "../utils/block-ui-resolver"
 
 type BlockFormValues = z.infer<typeof baseBlocksSchema>
 
@@ -122,19 +123,18 @@ export const BlocksForm = (props: any) => {
         >
           <BlockList>
             {fields.map((field, index) => {
+              const {
+                isRepeater,
+                canHaveChildren,
+              } = resolveBlockUiState(
+                blocks,
+                field.type
+              )
+
               return (
                 <BlockItem key={field.rhf_id} id={field.rhf_id} item={field} index={index} form={form} remove={remove}>
                   <BlockItemWrapper index={index} field={field} blocks={blocks}>
-                    {field.type === "group" && (
-                      <BlocksChildren
-                        path={`items.${index}`}
-                        blocks={blocks}
-                        form={form}
-                        sensors={sensors}
-                        handleDragEnd={handleDragEnd}
-                      />
-                    ) }
-                    {field.type === "repeater" && (
+                    {isRepeater && (
                       <BlocksRepeater
                         path={`items.${index}`}
                         blocks={blocks}
@@ -142,8 +142,8 @@ export const BlocksForm = (props: any) => {
                         sensors={sensors}
                         handleDragEnd={handleDragEnd}
                       />
-                    ) }
-                    {field.type !== "group" && field.type !== "repeater" && (
+                    )}
+                    {!isRepeater && (
                       <BlockItemFields
                         path={`items.${index}`}
                         index={index}
@@ -152,6 +152,15 @@ export const BlocksForm = (props: any) => {
                         form={form}
                       />
                     )}
+                    {!isRepeater && canHaveChildren && (
+                      <BlocksChildren
+                        path={`items.${index}`}
+                        blocks={blocks}
+                        form={form}
+                        sensors={sensors}
+                        handleDragEnd={handleDragEnd}
+                      />
+                    ) }
                   </BlockItemWrapper>
                 </BlockItem>
               )

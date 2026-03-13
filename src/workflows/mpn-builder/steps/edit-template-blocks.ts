@@ -4,31 +4,45 @@ import {
 } from "@medusajs/framework/workflows-sdk"
 import MpnBuilderService from "../../../modules/mpn-builder/service"
 import { MPN_BUILDER_MODULE } from "../../../modules/mpn-builder"
-import flatMapDeep from "lodash/flatMapDeep"
-import { BlockType } from "../../../modules/mpn-builder/types/types"
+import { BlockInstance } from "../../../fields/types"
 
 type EditTemplateBlocksStepInput = {
   template_id: string
-  blocks: BlockType[]
+  blocks: BlockInstance[]
 }
 
-const configWithUndefined = (config: any) => {
-  return config
-    ? Object.entries(config).reduce(
-        (acc, [key, value]) => {
-          if (value === "") {
-            acc[key] = undefined
-          } else if (
-            value !== null &&
-            value !== undefined
-          ) {
-            acc[key] = value
-          }
-          return acc
-        },
-        {} as Record<string, any>
-      )
-    : null
+const compactMetadata = (
+  value: Record<string, unknown> | null | undefined
+) => {
+  if (!value) {
+    return null
+  }
+
+  return Object.entries(value).reduce(
+    (acc, [key, item]) => {
+      if (item === "") {
+        return acc
+      }
+
+      if (item === undefined || item === null) {
+        return acc
+      }
+
+      acc[key] = item
+      return acc
+    },
+    {} as Record<string, unknown>
+  )
+}
+
+const collectIds = (blocks: BlockInstance[]): string[] => {
+  return blocks.flatMap((block) => {
+    const self = block.id ? [block.id] : []
+    return [
+      ...self,
+      ...collectIds(block.children || []),
+    ]
+  })
 }
 
 /**
@@ -46,140 +60,84 @@ export const editTemplateBlocksStep = createStep(
     { template_id, blocks }: EditTemplateBlocksStepInput,
     { container }
   ) => {
-    const MpnBuilderService: MpnBuilderService =
+    const mpnBuilderService: MpnBuilderService =
       container.resolve(MPN_BUILDER_MODULE)
-
-    // Flatten the blocks and children
-    const flatBlocks = flatMapDeep(blocks, (node: any) => [
-      node,
-      ...(node.children || []),
-    ])
-  
-    // Get existing blocks for this template
     const existingBlocks =
-      await MpnBuilderService.listMpnBuilderTemplateBlocks({
-        template_id: template_id,
+      await mpnBuilderService.listMpnBuilderTemplateBlocks({
+        template_id,
       })
-
-    // Get the existing block ids
-    const existingBlockIds = existingBlocks.map(
-      (block: any) => block.id
+    const existingIds = new Set(
+      existingBlocks.map((block: any) => block.id)
     )
+    const incomingIds = new Set(collectIds(blocks))
+    const deletedIds = existingBlocks
+      .map((item: any) => item.id)
+      .filter((id: string) => !incomingIds.has(id))
 
-    // Get the incoming block ids
-    const incomingBlockIds = flatBlocks
-      .filter((block: any) => block.id)
-      .map((block: any) => block.id)
-
-    // Find blocks to delete (existing but not in incoming data)
-    const blocksToDelete = existingBlockIds.filter(
-      (id: string) => !incomingBlockIds.includes(id)
-    )
-
-    // Delete actions that are no longer in the incoming data
-    if (blocksToDelete.length > 0) {
-      await MpnBuilderService.deleteMpnBuilderTemplateBlocks(
-        blocksToDelete
+    if (deletedIds.length > 0) {
+      await mpnBuilderService.deleteMpnBuilderTemplateBlocks(
+        deletedIds
       )
     }
 
-    /**
-     * Create a new block
-     * @param block - The block to create
-     * @returns The created block
-     */
-    const createBlock = async (block: BlockType): Promise<BlockType> => {
-      const blockData = {
-        template_id: template_id,
+    const upsertNode = async (
+      block: BlockInstance,
+      params: {
+        parentId: string | null
+        position: number
+      }
+    ): Promise<string> => {
+      const payload = {
+        template_id,
         type: block.type,
-        position: block.position,
-        metadata: configWithUndefined(block.metadata),
-        parent_id: block.parent_id,
+        parent_id: params.parentId,
+        position: params.position,
+        metadata: compactMetadata(block.metadata),
       }
-      
-      const newBlock =
-        await MpnBuilderService.createMpnBuilderTemplateBlocks(
-          [blockData]
-        )
 
-      return newBlock[0] as BlockType
-    }
+      let persistedId = block.id || ""
 
-    /**
-     * Update a block
-     * @param block - The block to update
-     * @returns The updated block
-     */
-    const updateBlock = async (block: BlockType): Promise<BlockType> => {
-      const existingBlock = existingBlocks.find(
-        (b: any) => b.id === block.id
+      if (block.id && existingIds.has(block.id)) {
+        const [updated] =
+          await mpnBuilderService.updateMpnBuilderTemplateBlocks(
+            [
+              {
+                id: block.id,
+                ...payload,
+              },
+            ]
+          )
+        persistedId = updated.id
+      } else {
+        const [created] =
+          await mpnBuilderService.createMpnBuilderTemplateBlocks(
+            [payload]
+          )
+        persistedId = created.id
+      }
+
+      const children = block.children || []
+      await Promise.all(
+        children.map((child, index) => {
+          return upsertNode(child, {
+            parentId: persistedId,
+            position: index,
+          })
+        })
       )
 
-      if (!existingBlock) {
-        throw new Error(
-          `Block with id ${block.id} does not exist`
-        )
-      }
-
-      const updatedBlock =
-        await MpnBuilderService.updateMpnBuilderTemplateBlocks(
-          [
-            {
-              id: block.id,
-              template_id: template_id,
-              parent_id: block.parent_id,
-              position: block.position,
-              metadata: configWithUndefined(
-                block.metadata
-              ),
-            },
-          ]
-        )
-
-      return updatedBlock[0] as BlockType
+      return persistedId
     }
 
-    /**
-     * Mutate a block
-     * @param block - The block to mutate
-     * @returns The mutated block
-     */
-    const mutateBlock = async (block: BlockType): Promise<BlockType> => {
-      if (block?.id && !block.virtual) {
-        return await updateBlock(block) as BlockType
-      } else {
-        return await createBlock(block) as BlockType
-      }
-    }
-
-    // Update or create blocks
-    const updatedBlocks = await Promise.all(
-      blocks.map(async (block) => {
-        const children = block.children
-
-        if (children && children.length > 0) {
-          let block_id: string | null = null
-          let savedBlock: any
-
-          savedBlock = await mutateBlock(block)
-          block_id = savedBlock.id
-
-          const updatedChildrenBlocks = await Promise.all(
-            children.map(async (child: any) => {
-              return await mutateBlock({
-                ...child,
-                parent_id: block_id,
-              })
-            })
-          )
-
-          return updatedChildrenBlocks
-        } else {
-          return await mutateBlock(block)
-        }
-      })
+    await Promise.all(
+      blocks.map((block, index) =>
+        upsertNode(block, {
+          parentId: null,
+          position: index,
+        })
+      )
     )
 
-    return new StepResponse(updatedBlocks, updatedBlocks)
+    return new StepResponse(blocks, blocks)
   }
 )

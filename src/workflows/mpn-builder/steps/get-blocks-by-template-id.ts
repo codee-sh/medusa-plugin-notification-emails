@@ -1,22 +1,14 @@
 import {
-  ContainerRegistrationKeys,
   MedusaError,
 } from "@medusajs/framework/utils"
 import {
   StepResponse,
   createStep,
 } from "@medusajs/framework/workflows-sdk"
-
-type Block = {
-  id: string
-  template_id: string
-  parent_id: string | null
-  type?: string | null
-  position?: number | null
-  metadata?: Record<string, any> | null
-}
-
-type BlockNode = Block & { children: BlockNode[] }
+import { MPN_BUILDER_MODULE } from "../../../modules/mpn-builder"
+import MpnBuilderService from "../../../modules/mpn-builder/service"
+import { buildBlocksTree } from "../../../fields/tree"
+import { FlatBlockRecord } from "../../../fields/types"
 
 export interface GetBlocksByTemplateStepInput {
   template_id: string
@@ -28,35 +20,17 @@ export interface GetBlocksByTemplateStepOutput {
 
 export const getBlocksByTemplateStepId = "get-blocks-by-template"
 
-function buildTree(items: Block[]): BlockNode[] {
-  const byId = new Map<string, BlockNode>()
-  const roots: BlockNode[] = []
-
-  // 1) utwórz "node" dla każdego rekordu (bez relacji)
-  for (const b of items) {
-    byId.set(b.id, { ...b, children: [] })
+const normalizeRecord = (
+  record: Record<string, any>
+): FlatBlockRecord => {
+  return {
+    id: record.id,
+    template_id: record.template_id,
+    type: record.type,
+    parent_id: record.parent_id ?? null,
+    position: Number(record.position ?? 0),
+    metadata: record.metadata ?? null,
   }
-
-  // 2) podepnij do rodzica albo wrzuć do rootów
-  for (const b of items) {
-    const node = byId.get(b.id)!
-    const pid = b.parent_id
-
-    if (pid && byId.has(pid)) {
-      byId.get(pid)!.children.push(node)
-    } else {
-      roots.push(node)
-    }
-  }
-
-  // 3) sortowanie rekurencyjne po position (opcjonalne)
-  const sortRec = (arr: BlockNode[]) => {
-    arr.sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
-    for (const n of arr) sortRec(n.children)
-  }
-  sortRec(roots)
-
-  return roots
 }
 
 /**
@@ -73,9 +47,8 @@ export const getBlocksByTemplateStep = createStep(
     input: GetBlocksByTemplateStepInput,
     { container }
   ): Promise<StepResponse<GetBlocksByTemplateStepOutput>> => {
-    const query = container.resolve(
-      ContainerRegistrationKeys.QUERY
-    )
+    const mpnBuilderService: MpnBuilderService =
+      container.resolve(MPN_BUILDER_MODULE)
 
     if (!input.template_id) {
       throw new MedusaError(
@@ -84,20 +57,17 @@ export const getBlocksByTemplateStep = createStep(
       )
     }
 
-    const { data: blocks } = await query.graph({
-      entity: "mpn_builder_template_block",
-      fields: ["id", "type", "parent_id", "position", "metadata", "template_id", "template", "template.subject"],
-      filters: {
-        template_id: {
-          $in: [input.template_id],
-        },
-      },
-    })
-
-    const tree = buildTree(blocks as Block[])
+    const records =
+      await mpnBuilderService.listMpnBuilderTemplateBlocks({
+        template_id: input.template_id,
+      })
+    const blocks = records.map((record: any) =>
+      normalizeRecord(record)
+    )
+    const tree = buildBlocksTree(blocks)
 
     return new StepResponse({
-      blocks: tree
+      blocks: tree,
     })
   }
 )

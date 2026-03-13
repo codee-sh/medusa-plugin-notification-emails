@@ -2,6 +2,10 @@ import { EllipsisHorizontal, PencilSquare, Plus, Trash } from "@medusajs/icons"
 import { DropdownMenu, Button, IconButton } from "@medusajs/ui"
 
 export function BlockDropdownMenu({ items, append }: { items: any[], append: (item: any) => void }) {
+  const getRuntimeType = (item: any): string => {
+    return item.runtimeType
+  }
+
   const handleAddBlock = (type: string) => {
     append({
       id: `${Date.now()}`,
@@ -19,8 +23,16 @@ export function BlockDropdownMenu({ items, append }: { items: any[], append: (it
         </Button>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content>
-        {items.map((item) => (
-          <DropdownMenu.Item key={item.type} className="gap-x-2" onClick={() => handleAddBlock(item.type)}>
+        {items
+          .filter((item) => getRuntimeType(item))
+          .map((item) => (
+          <DropdownMenu.Item
+            key={getRuntimeType(item)}
+            className="gap-x-2"
+            onClick={() =>
+              handleAddBlock(getRuntimeType(item))
+            }
+          >
             {item.label}
           </DropdownMenu.Item>
         ))}

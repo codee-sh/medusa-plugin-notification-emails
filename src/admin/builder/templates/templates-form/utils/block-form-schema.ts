@@ -5,6 +5,7 @@ import { baseBlocksSchema } from "../types/schema"
 export function createBlockFormSchema(
   availableBlocks?: Array<{
     type: string
+    runtimeType?: string
     fields?: Array<{
       name: string
       key: string
@@ -26,7 +27,7 @@ export function createBlockFormSchema(
 
           // Find action definition
           const blockDef = availableBlocks.find(
-            (b) => b.type === item.type
+            (b) => b.runtimeType === item.type
           )
 
           if (!blockDef || !blockDef.fields) {

@@ -15,6 +15,7 @@ import { BlockItem } from "../components/block-item"
 import { BlockItemFields } from "../components/block-item-fields"
 import { BlockDropdownMenu } from "../components/block-dropdown"
 import { BlocksChildren } from "../blocks-children"
+import { resolveBlockUiState } from "../utils/block-ui-resolver"
 
 export const BlocksRepeater = (props: any) => {
   const { blocks, form, path, sensors } = props
@@ -54,19 +55,18 @@ export const BlocksRepeater = (props: any) => {
         >
           <BlockList>
             {childFields.map((field: any, index: number) => {
+              const {
+                isRepeater,
+                canHaveChildren,
+              } = resolveBlockUiState(
+                blocks,
+                field.type
+              )
+
               return (
                 <BlockItem key={field.rhf_id} id={field.rhf_id} item={field} index={index} form={form} remove={removeChild}>
                   <BlockItemWrapper index={index} field={field} blocks={blocks}>
-                    {field.type === "group" && (
-                      <BlocksChildren
-                        path={`${childrenPath}.${index}`}
-                        blocks={blocks}
-                        form={form}
-                        sensors={sensors}
-                        handleDragEnd={handleDragEnd}
-                      />
-                    )}
-                    {field.type === "repeater" && (
+                    {isRepeater && (
                       <BlocksRepeater
                         path={`${childrenPath}.${index}`}
                         blocks={blocks}
@@ -75,13 +75,22 @@ export const BlocksRepeater = (props: any) => {
                         handleDragEnd={handleDragEnd}
                       />
                     )}
-                    {field.type !== "group" && field.type !== "repeater" && (
+                    {!isRepeater && (
                       <BlockItemFields
                         path={`${childrenPath}.${index}`}
                         index={index}
                         field={field}
                         blocks={blocks}
                         form={form}
+                      />
+                    )}
+                    {!isRepeater && canHaveChildren && (
+                      <BlocksChildren
+                        path={`${childrenPath}.${index}`}
+                        blocks={blocks}
+                        form={form}
+                        sensors={sensors}
+                        handleDragEnd={handleDragEnd}
                       />
                     )}
                   </BlockItemWrapper>

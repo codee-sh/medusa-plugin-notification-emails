@@ -1,4 +1,5 @@
-import { BlockType, TemplateRenderer } from "./types"
+import { TemplateRenderer } from "./types"
+import { BlockDefinition } from "../../../fields"
 
 /**
  * Template service interface - implement this to create custom template services
@@ -22,7 +23,7 @@ export interface BaseTemplateServiceInterface {
   /**
    * Fields for the template configuration
    */
-  blocks?: BlockType[]
+  blocks?: BlockDefinition[]
 
   /**
    * Optional path to config component for dynamic import
