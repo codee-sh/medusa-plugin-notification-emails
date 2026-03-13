@@ -340,7 +340,7 @@ export const ManagerFields = ({
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {fields.map((field) => (
         <div key={field.key}>{renderField(field)}</div>
       ))}

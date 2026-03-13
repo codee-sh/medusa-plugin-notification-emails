@@ -1,4 +1,4 @@
-import { Input, Label } from "@medusajs/ui"
+import { Label } from "@medusajs/ui"
 
 interface FormFieldProps {
   label: string
@@ -13,7 +13,7 @@ export const FormField = ({
 }: FormFieldProps) => {
   return (
     <div>
-      <div className="mb-2">
+      <div className="mb-1.5">
         <Label className="block text-sm font-medium">
           {label}
           {required && (

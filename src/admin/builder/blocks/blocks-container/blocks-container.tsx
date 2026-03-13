@@ -1,6 +1,5 @@
 import {
   Container,
-  Heading,
 } from "@medusajs/ui"
 import { useMemo, useState, useEffect } from "react"
 
@@ -26,12 +25,10 @@ export const BlocksContainer = ({ id, type = "email" }: { id: string, type?: str
   }, [availableTemplates])
 
   return (
-    <Container className="px-6 py-4">
-      <Heading level="h1" className="mb-2">Blocks list for {type} template</Heading>
-
+    <div className="">
       {template && !isBlocksLoading && (
         <BlocksForm template_id={id} template={template} blocks={template.blocks} items={blocks?.tree} />
       ) }
-    </Container>
+    </div>
   )
 }

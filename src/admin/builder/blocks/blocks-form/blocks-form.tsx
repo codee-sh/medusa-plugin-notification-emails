@@ -83,6 +83,9 @@ export const BlocksForm = (props: any) => {
     queryClient.invalidateQueries({
       queryKey: ["template-blocks", template_id],
     })
+    queryClient.invalidateQueries({
+      queryKey: ["preview", template_id],
+    })
 
     toast.success(
       "Blocks updated successfully",

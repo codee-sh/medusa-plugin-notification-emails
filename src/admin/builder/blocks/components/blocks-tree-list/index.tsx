@@ -121,7 +121,7 @@ export function BlocksTreeList({
         </SortableContext>
       </DndContext>
 
-      <div className="flex justify-between gap-2 mt-4">
+      <div className="sticky bottom-0 left-0 right-0 flex justify-between gap-2 mt-2 p-2 bg-ui-bg-base border rounded-lg">
         <BlockDropdownMenu items={blocks} append={append} />
         {footerRight}
       </div>

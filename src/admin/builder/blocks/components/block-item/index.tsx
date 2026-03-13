@@ -22,14 +22,14 @@ export function BlockItem(props) {
       <div
         ref={setNodeRef}
         style={style}
-        className="flex items-start justify-between w-full py-4 relative"
+        className="flex items-start justify-between gap-2 w-full p-2 rounded-lg border border-ui-border-base bg-ui-bg-base relative"
       >
         <button
           type="button"
           {...attributes}
           {...listeners}
           aria-label="Przeciągnij"
-          className="cursor-grab mr-2 shrink-0"
+          className="cursor-grab shrink-0 text-ui-fg-subtle hover:text-ui-fg-base"
         >
           ⋮⋮
         </button>
@@ -43,9 +43,10 @@ export function BlockItem(props) {
           variant="secondary"
           size="small"
           onClick={() => props.remove(props.index)}
+          className="shrink-0"
         >
           <Trash />
-        </Button>        
+        </Button>
       </div>
     </div>
   )

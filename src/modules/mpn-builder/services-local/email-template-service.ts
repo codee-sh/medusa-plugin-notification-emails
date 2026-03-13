@@ -166,14 +166,6 @@ export class EmailTemplateService extends BaseTemplateService {
           required: true,
           name: "value",
           defaultValue: "",
-        },
-        {
-          key: "value2",
-          label: "Value2",
-          type: "text",
-          required: true,
-          name: "value2",
-          defaultValue: "",
         }
       ],
     },
