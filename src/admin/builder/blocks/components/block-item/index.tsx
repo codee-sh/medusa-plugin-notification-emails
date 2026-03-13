@@ -1,7 +1,9 @@
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import { Button } from "@medusajs/ui"
-import { Trash } from "@medusajs/icons"
+import {
+  BlockItemDeleteControls,
+  BlockItemSortControls,
+} from "../block-item-controls"
 
 export function BlockItem(props) {
   const {
@@ -27,30 +29,27 @@ export function BlockItem(props) {
         isDragging ? "opacity-80" : ""
       }`}
     >
-      <button
-        type="button"
-        ref={setActivatorNodeRef}
-        {...attributes}
-        {...listeners}
-        aria-label="Przeciągnij"
-        className="z-10 mt-1 shrink-0 rounded-md p-2 cursor-grab active:cursor-grabbing text-ui-fg-subtle hover:bg-ui-bg-subtle hover:text-ui-fg-base touch-none"
-      >
-        ⋮⋮
-      </button>
+      <BlockItemSortControls
+        index={props.index}
+        itemsCount={props.itemsCount}
+        onMoveUp={() =>
+          props.move(props.index, props.index - 1)
+        }
+        onMoveDown={() =>
+          props.move(props.index, props.index + 1)
+        }
+        setActivatorNodeRef={setActivatorNodeRef}
+        attributes={attributes}
+        listeners={listeners}
+      />
 
       <div className="flex-1 min-w-0">
         {props.children}
       </div>
 
-      <Button
-        type="button"
-        variant="secondary"
-        size="small"
-        onClick={() => props.remove(props.index)}
-        className="shrink-0"
-      >
-        <Trash />
-      </Button>
+      <BlockItemDeleteControls
+        onRemove={() => props.remove(props.index)}
+      />
     </div>
   )
 }

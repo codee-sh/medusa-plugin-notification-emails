@@ -79,7 +79,9 @@ export function BlocksTreeList({
                   id={field.rhf_id}
                   item={field}
                   index={index}
+                  itemsCount={fields.length}
                   form={form}
+                  move={move}
                   remove={remove}
                 >
                   <BlockItemWrapper
