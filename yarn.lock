@@ -1562,6 +1562,7 @@ __metadata:
     react-dom: ^18.2.0
     react-email: ^4.3.1
     react-i18next: ^15.0.0
+    react-mentions-ts: ^5.4.7
     ts-node: ^10.9.2
     typescript: ^5.6.2
     vite: ^5.2.11
@@ -17984,6 +17985,19 @@ __metadata:
     fsevents:
       optional: true
   checksum: 397353a78e37c99a16cba8526d1cde5148e5414a9f77c4c5d8db6cfee6c61df404da207237a6e4ba1d85025b5aa933934066383d68e7f9832f5e5963f6348107
+  languageName: node
+  linkType: hard
+
+"react-mentions-ts@npm:^5.4.7":
+  version: 5.4.7
+  resolution: "react-mentions-ts@npm:5.4.7"
+  peerDependencies:
+    class-variance-authority: ">=0.6.0"
+    clsx: ">=2.0.0"
+    react: ">=19.0.0"
+    react-dom: ">=19.0.0"
+    tailwind-merge: ">=3.0.0"
+  checksum: 0d45d68e80275bba0d0e5ffd414d894154e3c562eb03ea63a012fe660e802da18b5ce8185ad2644ed864d4f1d2f22a85aa53f78658172e62d7bac75435877317
   languageName: node
   linkType: hard
 

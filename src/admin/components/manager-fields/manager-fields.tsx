@@ -10,13 +10,48 @@ import {
 import { ChipInput } from "../inputs/chip-input"
 import { FieldConfig } from "../../../modules/mpn-builder/types/types"
 import { DeclarativeFieldManagerProps } from "./types/interfaces"
+import { MentionSuggestion } from "./components"
+
+const DEFAULT_MENTION_SUGGESTIONS: MentionSuggestion[] = [
+  {
+    id: "{{data.order.transformed.order_number}}",
+    display: "data.order.transformed.order_number",
+  },
+  {
+    id: "{{data.order.transformed.order_date}}",
+    display: "data.order.transformed.order_date",
+  },
+  {
+    id: "{{data.order.transformed.summary.total}}",
+    display: "data.order.transformed.summary.total",
+  },
+  {
+    id: "{{data.order.customer.email}}",
+    display: "data.order.customer.email",
+  },
+  {
+    id: "{{data.order.sales_channel.name}}",
+    display: "data.order.sales_channel.name",
+  },
+  {
+    id: "{{translations.headerTitle}}",
+    display: "translations.headerTitle",
+  },
+]
 
 export const ManagerFields = ({
   fields,
   name,
   form,
   errors,
+  mentionSuggestions,
 }: DeclarativeFieldManagerProps) => {
+  const tokenSuggestions =
+    mentionSuggestions &&
+    mentionSuggestions.length > 0
+      ? mentionSuggestions
+      : DEFAULT_MENTION_SUGGESTIONS
+
   const renderField = (groupField: FieldConfig) => {
     switch (groupField.type) {
       case "text":
@@ -41,6 +76,7 @@ export const ManagerFields = ({
                     }
                     placeholder={groupField.placeholder}
                     required={groupField.required}
+                    mentionSuggestions={tokenSuggestions}
                   />
                   {fieldState.error && (
                     <span className="text-red-500 text-sm">
@@ -80,6 +116,7 @@ export const ManagerFields = ({
                     }
                     placeholder={groupField.placeholder}
                     required={groupField.required}
+                    mentionSuggestions={tokenSuggestions}
                   />
                   {fieldState.error && (
                     <span className="text-red-500 text-sm">
@@ -119,6 +156,7 @@ export const ManagerFields = ({
                     }
                     placeholder={groupField.placeholder}
                     required={groupField.required}
+                    mentionSuggestions={tokenSuggestions}
                   />
                   {fieldState.error && (
                     <span className="text-red-500 text-sm">

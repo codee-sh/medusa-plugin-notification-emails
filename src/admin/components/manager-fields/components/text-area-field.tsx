@@ -1,4 +1,4 @@
-import { Textarea, Label } from "@medusajs/ui"
+import { MentionInput, MentionSuggestion } from "./mention-input"
 
 interface TextAreaFieldProps {
   label: string
@@ -7,7 +7,7 @@ interface TextAreaFieldProps {
   placeholder?: string
   required?: boolean
   disabled?: boolean
-  rows?: number
+  mentionSuggestions?: MentionSuggestion[]
 }
 
 export const TextAreaField = ({
@@ -17,15 +17,15 @@ export const TextAreaField = ({
   placeholder = "",
   required = false,
   disabled = false,
-  rows = 3,
+  mentionSuggestions = [],
 }: TextAreaFieldProps) => {
   return (
-    <Textarea
+    <MentionInput
       value={value}
-      onChange={(e) => onChange(e.target.value)}
+      onChange={onChange}
       placeholder={placeholder}
       disabled={disabled}
-      rows={rows}
+      suggestions={mentionSuggestions}
     />
   )
 }
