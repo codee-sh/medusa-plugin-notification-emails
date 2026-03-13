@@ -281,17 +281,6 @@ export class EmailTemplateService extends BaseTemplateService {
     },
   ]
 
-  private resolveRuntimeType(type?: string): string {
-    if (!type) {
-      return ""
-    }
-
-    const byRuntimeType = this.blocks.find(
-      (block) => block.runtimeType === type
-    )
-    return byRuntimeType?.runtimeType || ""
-  }
-
   /**
    * Transform blocks from database format (with metadata) to rendering format (with props)
    * 
@@ -301,7 +290,7 @@ export class EmailTemplateService extends BaseTemplateService {
    * 
    * Handles nested blocks recursively:
    * - children → props.blocks (for section, group)
-   * - children → props.itemBlocks (for repeater)
+   * - children → props.blocks (for repeater)
    * 
    * **Usage:** Call this method before passing blocks to emailService.render() or interpolateBlocks()
    * 
@@ -332,9 +321,10 @@ export class EmailTemplateService extends BaseTemplateService {
     }
 
     return blocks.map((block) => {
-      const runtimeType = block.runtimeType
-        ? String(block.runtimeType)
-        : this.resolveRuntimeType(block.type)
+      const runtimeType = String(
+        block.type || block.runtimeType || ""
+      )
+
       if (!runtimeType) {
         throw new Error(
           `Block runtimeType not found for type "${block.type}"`
@@ -356,28 +346,7 @@ export class EmailTemplateService extends BaseTemplateService {
 
       // Handle nested blocks based on block type
       if (block.children && Array.isArray(block.children) && block.children.length > 0) {
-        const transformedChildren = this.transformBlocksForRendering(block.children)
-
-        if (runtimeType === "repeater") {
-          // For repeater, children become itemBlocks
-          transformedBlock.props.itemBlocks = transformedChildren
-        } else if (
-          runtimeType === "section" ||
-          runtimeType === "group" ||
-          runtimeType === "container"
-        ) {
-          // For section/group, children become props.blocks
-          transformedBlock.props.blocks = transformedChildren
-        }
-      }
-
-      // If block already has props (from config.ts), merge with metadata
-      // This allows config blocks to work alongside database blocks
-      if (block.props && typeof block.props === "object") {
-        transformedBlock.props = {
-          ...transformedBlock.props,
-          ...block.props,
-        }
+        transformedBlock.props.blocks = this.transformBlocksForRendering(block.children)
       }
 
       return transformedBlock
@@ -428,11 +397,10 @@ export class EmailTemplateService extends BaseTemplateService {
         for (const [key, value] of Object.entries(
           processedProps
         )) {
-          // Skip non-string values and special properties (blocks, itemBlocks, separator, arrayPath)
+          // Skip non-string values and special properties (blocks, separator, arrayPath)
           if (
             typeof value === "string" &&
             key !== "blocks" &&
-            key !== "itemBlocks" &&
             key !== "arrayPath"
           ) {
             processedProps[key] = multiInterpolate(
@@ -463,17 +431,17 @@ export class EmailTemplateService extends BaseTemplateService {
       }
 
       if (processedBlock.type === "repeater") {
-        const { arrayPath, itemBlocks } =
+        const { arrayPath, blocks } =
           processedBlock.props || {}
 
-        if (arrayPath && itemBlocks) {
+        if (arrayPath && blocks) {
           const array = pickValueFromObject(arrayPath, data)
 
           if (Array.isArray(array) && array.length > 0) {
             const interpolatedItemBlocks = array.map(
               (item: any) =>
                 this.interpolateBlocks(
-                  itemBlocks,
+                  blocks,
                   item,
                   translator,
                   {
@@ -484,7 +452,7 @@ export class EmailTemplateService extends BaseTemplateService {
 
             processedBlock.props = {
               ...processedBlock.props,
-              itemBlocks: interpolatedItemBlocks,
+              blocks: interpolatedItemBlocks,
             }
           }
         }
@@ -524,8 +492,6 @@ export class EmailTemplateService extends BaseTemplateService {
       ...params.options,
       blocks,
     }
-
-    console.log(options)
 
     return {
       html: await template.getHtml(params.data, options),

@@ -101,7 +101,7 @@ export const templateBlocks = [
           type: "repeater",
           props: {
             arrayPath: "order.transformed.items",
-            itemBlocks: [
+            blocks: [
               {
                 id: "product-item",
                 type: "product-item",

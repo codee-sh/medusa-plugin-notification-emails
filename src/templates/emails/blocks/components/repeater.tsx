@@ -8,7 +8,7 @@ import { BlockRenderer } from "../index"
  *   type: "repeater",
  *   props: {
  *     arrayPath: "items",
- *     itemBlocks: [
+ *     blocks: [
  *       { type: "text", props: { text: "{{label}}" } }
  *     ],
  *     separator: { type: "separator" } // optional
@@ -23,13 +23,12 @@ export function RepeaterBlock({
   id?: string
   props: {
     arrayPath: string // Path to array in data (e.g., "items", "order.items")
-    itemBlocks: any[] // Blocks rendered for each item
+    blocks: any[] // Blocks rendered for each item
     separator?: any // Optional separator between items
   }
   data: any // Event data (used to retrieve the array)
 }) {
-  // Retrieve array from data
-  const array = props.itemBlocks
+  const array = props.blocks
 
   return <BlockRenderer blocks={array} data={data} />
 }

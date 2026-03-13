@@ -252,7 +252,7 @@ export class SlackTemplateService extends BaseTemplateService {
    * 
    * Handles nested blocks recursively:
    * - children → flattened blocks (for group)
-   * - children → itemBlocks for repeater (handled separately during interpolation)
+   * - children → blocks for repeater (handled separately during interpolation)
    * 
    * **Usage:** Call this method before passing blocks to interpolateBlocks()
    * 
@@ -352,12 +352,12 @@ export class SlackTemplateService extends BaseTemplateService {
 
         case "repeater": {
           // repeater → keep structure for later processing during interpolation
-          // Children will be transformed to itemBlocks
+          // Children will be transformed to blocks
           const transformedChildren = this.transformBlocksForRendering(children)
           result.push({
             type: "repeater",
             arrayPath: metadata.arrayPath || "",
-            itemBlocks: transformedChildren,
+            blocks: transformedChildren,
           })
           break
         }
@@ -391,7 +391,7 @@ export class SlackTemplateService extends BaseTemplateService {
   /**
    * Recursively interpolate text in SlackBlock[] structure
    * Finds all "text" properties in the entire tree and interpolates them
-   * Handles repeater blocks by expanding itemBlocks for each array item
+   * Handles repeater blocks by expanding blocks for each array item
    */
   private interpolateSlackBlocks(
     blocks: any[],
@@ -404,16 +404,16 @@ export class SlackTemplateService extends BaseTemplateService {
     for (const block of blocks) {
       // Handle repeater blocks
       if (block.type === "repeater") {
-        const { arrayPath, itemBlocks } = block
+        const { arrayPath, blocks } = block
 
-        if (arrayPath && itemBlocks) {
+        if (arrayPath && blocks) {
           const array = pickValueFromObject(arrayPath, data)
 
           if (Array.isArray(array) && array.length > 0) {
-            // For each item in the array, interpolate itemBlocks
+            // For each item in the array, interpolate blocks
             const interpolatedItemBlocks = array.flatMap((item: any) => {
               return this.interpolateSlackBlocks(
-                itemBlocks,
+                blocks,
                 item,
                 translator,
                 {
