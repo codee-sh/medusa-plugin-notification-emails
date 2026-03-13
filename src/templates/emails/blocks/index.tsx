@@ -1,4 +1,3 @@
-import { SectionBlock } from "./components/section"
 import { TextBlock } from "./components/text"
 import { RepeaterBlock } from "./components/repeater"
 import { HeadingBlock } from "./components/heading"
@@ -20,17 +19,6 @@ export function BlockRenderer({
     const isFirstBlock = index === 0
 
     switch (block.type) {
-      case "section":
-        return (
-          <SectionBlock
-            key={blockKey}
-            id={blockKey}
-            props={block.props}
-            data={data}
-            isLastBlock={isLastBlock}
-            isFirstBlock={isFirstBlock}
-          />
-        )
       case "group":
         return (
           <GroupBlock
