@@ -10,7 +10,7 @@ import {
   StepResponse,
   createStep,
 } from "@medusajs/framework/workflows-sdk"
-import { ORDER_QUERY_FIELDS } from "../../../utils/data/modules/order"
+import { FIELDS as ORDER_FIELDS } from "../../../utils/data/modules/order"
 import { getFieldsFromAttributes } from "../../../utils/attribute-helpers"
 
 export interface GetOrderByIdStepInput {
@@ -50,9 +50,9 @@ export const getOrderByIdStep = createStep(
       )
     }
 
-    // Generate fields from ORDER_QUERY_FIELDS which includes technical relations needed for totals calculation
+    // Generate fields from ORDER_FIELDS.query which includes technical relations needed for totals calculation
     const fields = getFieldsFromAttributes(
-      ORDER_QUERY_FIELDS.map((field) => ({ value: field })),
+      ORDER_FIELDS.query.map((field) => ({ value: field })),
       "order"
     )
 

@@ -7,7 +7,7 @@ import {
   MedusaError,
 } from "@medusajs/framework/utils"
 import { TEMPLATES_EMAILS_NAMES } from "../modules/mpn-builder/types"
-import { transformContext } from "../utils/transforms"
+import { transformContext } from "../utils/data/transform-context"
 import { getPluginOptions } from "../utils/plugins"
 import { getStoreWorkflow } from "../workflows/store/get-store-by-id"
 import { getOrderByIdWorkflow } from "../workflows/order/get-order-by-id"
@@ -55,25 +55,12 @@ export default async function orderPlacedEmailsHandler({
 
   const templateId = TEMPLATES_EMAILS_NAMES.ORDER_PLACED
 
-  // TODO: Uncomment this when we have a way to get the region from the order
-  // const { result: { store } } = await getStoreWorkflow(container).run()
-  // const { result: { region } } = await getRegionWorkflow(container).run({
-  //   input: {
-  //     region_id: store?.default_region_id,
-  //     fields: ["*", "countries.*"],
-  //   },
-  // })
-
-  // console.log(region)
-
   const { result: { html, text, subject } } = await emailServiceWorkflow(container).run({
     input: {
       template_id: templateId,
       data: context,
       options: {
-        locale: pluginOptions?.locale || "pl",
-        // translations:
-        //   pluginOptions?.customTranslations?.[templateId],
+        locale: pluginOptions?.locale || "pl"
       },
     },
   })

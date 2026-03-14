@@ -3,7 +3,7 @@ import {
   getFormattedAddress,
   getLocaleAmount,
   getTotalCaptured,
-} from "../index"
+} from "../../../"
 
 /**
  * Transform raw order data from API to email template format

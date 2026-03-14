@@ -7,7 +7,7 @@ import {
   MedusaError,
 } from "@medusajs/framework/utils"
 import { TEMPLATES_EMAILS_NAMES } from "../modules/mpn-builder/types"
-import { transformContext } from "../utils/transforms"
+import { transformContext } from "../utils/data/transform-context"
 import { getPluginOptions } from "../utils/plugins"
 import { getOrderByIdWorkflow } from "../workflows/order/get-order-by-id"
 import { emailServiceWorkflow } from "../workflows/mpn-builder-services/email-service"

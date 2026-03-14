@@ -450,3 +450,38 @@ export const ORDER_QUERY_FIELDS = [
   "order.payment_collections.*",
   "order.region.*"
 ]
+
+/**
+ * Fields for use in transformOrderData()
+ * These fields are used to transform the order data to the email template format
+ * @returns Array of fields
+ * @example
+ * ```typescript
+ * const order = {
+ *   order_number: "1234567890",
+ *   order_date: "2021-01-01",
+ *   completedDate: "2021-01-05",
+ */
+export const ORDER_TRANSFORMED_FIELD_KEYS = [
+  "order_number",
+  "order_date",
+  "completedDate",
+  "total_amount",
+  "items",
+  "items.thumbnail",
+  "items.title",
+  "items.quantity",
+  "items.price",
+  "shipping_address_text",
+  "billing_address_text",
+  "summary",
+  "summary.total",
+  "summary.paid_total",
+  "summary.tax_total",
+  "summary.discount_total",
+]
+
+export const FIELDS = {
+  query: ORDER_QUERY_FIELDS,
+  transformed: ORDER_TRANSFORMED_FIELD_KEYS
+}
