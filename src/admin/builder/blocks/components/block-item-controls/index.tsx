@@ -16,31 +16,19 @@ export function BlockItemSortControls(props) {
   const isLast = index === itemsCount - 1
 
   return (
-    <div className="flex shrink-0 items-center gap-1">
-      <div
+    <div className="flex flex-col shrink-0 items-center gap-1">
+      <button
+        type="button"
         ref={setActivatorNodeRef}
         {...attributes}
         {...listeners}
-        role="button"
-        tabIndex={0}
         aria-label="Przeciągnij"
         className="z-10 rounded-md p-1.5 cursor-grab active:cursor-grabbing text-ui-fg-subtle bg-ui-bg-subtle hover:bg-ui-bg-subtle-hover hover:text-ui-fg-base touch-none select-none"
       >
         ⋮⋮
-      </div>
+      </button>
 
-      <div className="flex items-center gap-1">
-        <Button
-          type="button"
-          variant="secondary"
-          size="small"
-          onClick={onMoveDown}
-          disabled={isLast}
-          aria-label="Przenieś niżej"
-          className="h-5 w-5 p-0"
-        >
-          <ChevronDownMini />
-        </Button>
+      <div className="flex flex-col items-center gap-1">
         <Button
           type="button"
           variant="secondary"
@@ -51,6 +39,17 @@ export function BlockItemSortControls(props) {
           className="h-5 w-5 p-0"
         >
           <ChevronUpMini />
+        </Button>
+        <Button
+          type="button"
+          variant="secondary"
+          size="small"
+          onClick={onMoveDown}
+          disabled={isLast}
+          aria-label="Przenieś niżej"
+          className="h-5 w-5 p-0"
+        >
+          <ChevronDownMini />
         </Button>
       </div>
     </div>
