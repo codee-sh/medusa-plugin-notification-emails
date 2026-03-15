@@ -31,3 +31,14 @@ export interface FlattenTreeOptions {
    */
   parentId?: string | null
 }
+
+export interface CollectTreeIdsOptions {
+  /**
+   * Key for node id (default: "id")
+   */
+  idKey?: string
+  /**
+   * Key for child nodes (default: "children")
+   */
+  childrenKey?: string
+}

@@ -1,7 +1,4 @@
-export interface CollectTreeIdsOptions {
-  idKey?: string
-  childrenKey?: string
-}
+import { CollectTreeIdsOptions } from "./types"
 
 /**
  * Recursively collects ids from a tree structure. Traverses depth-first.
