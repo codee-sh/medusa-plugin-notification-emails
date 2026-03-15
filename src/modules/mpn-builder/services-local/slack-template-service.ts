@@ -43,6 +43,7 @@ import {
   TEMPLATES_EMAILS_NAMES,
   TemplateRenderOptionsType,
 } from "../types"
+import { BlockDefinition } from "../../../fields"
 
 export class SlackTemplateService extends BaseTemplateService {
   id = "slack"
@@ -192,10 +193,12 @@ export class SlackTemplateService extends BaseTemplateService {
     })
   }
 
-  blocks: any[] = [
+  blocks: BlockDefinition[] = [
     {
-      type: "heading",
+      type: "group",
+      runtimeType: "heading",
       label: "Headline",
+      hasChildren: false,
       fields: [
         {
           key: "value",
@@ -203,14 +206,15 @@ export class SlackTemplateService extends BaseTemplateService {
           type: "text",
           required: true,
           name: "value",
-          value: "",
           defaultValue: "",
         },
       ],
     },
     {
-      type: "text",
+      type: "group",
+      runtimeType: "text",
       label: "Text",
+      hasChildren: false,
       fields: [
         {
           key: "value",
@@ -218,14 +222,15 @@ export class SlackTemplateService extends BaseTemplateService {
           type: "textarea",
           required: true,
           name: "value",
-          value: "",
           defaultValue: "",
         },
       ],
     },
     {
-      type: "row",
+      type: "group",
+      runtimeType: "row",
       label: "Row",
+      hasChildren: false,
       fields: [
         {
           key: "label",
@@ -233,7 +238,6 @@ export class SlackTemplateService extends BaseTemplateService {
           type: "text",
           required: true,
           name: "label",
-          value: "",
           defaultValue: "",
         },
         {
@@ -242,14 +246,15 @@ export class SlackTemplateService extends BaseTemplateService {
           type: "text",
           required: true,
           name: "value",
-          value: "",
           defaultValue: "",
         },
       ],
     },
     {
       type: "repeater",
+      runtimeType: "repeater",
       label: "Repeater",
+      hasChildren: true,
       fields: [
         {
           key: "arrayPath",
@@ -257,19 +262,22 @@ export class SlackTemplateService extends BaseTemplateService {
           type: "text",
           required: true,
           name: "arrayPath",
-          value: "",
           defaultValue: "",
         },
       ],
     },
     {
       type: "group",
+      runtimeType: "group",
       label: "group",
+      hasChildren: true,
       fields: [],
     },
     {
-      type: "separator",
+      type: "group",
+      runtimeType: "separator",
       label: "Separator",
+      hasChildren: false,
       fields: [],
     },
   ]
@@ -316,11 +324,21 @@ export class SlackTemplateService extends BaseTemplateService {
     const result: any[] = []
 
     for (const block of blocks) {
+      const runtimeType = String(
+        block.type || block.runtimeType || ""
+      )
+
+      if (!runtimeType) {
+        throw new Error(
+          `Block runtimeType not found for type "${block.type}"`
+        )
+      }
+
       const metadata = block.metadata || {}
       const children = block.children || []
 
       // Transform block based on type
-      switch (block.type) {
+      switch (runtimeType) {
         case "heading": {
           // heading → header block
           result.push({
@@ -397,7 +415,7 @@ export class SlackTemplateService extends BaseTemplateService {
         default: {
           // Unknown block type - keep as is (might be custom Slack block)
           const transformedBlock: any = {
-            type: block.type,
+            type: runtimeType,
           }
 
           // Copy metadata as properties
