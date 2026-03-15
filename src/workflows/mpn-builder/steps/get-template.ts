@@ -81,6 +81,7 @@ export const getTemplateStep = createStep(
       "label",
       "description",
       "channel",
+      "context_type",
       "locale",
       "subject",
       "is_active",

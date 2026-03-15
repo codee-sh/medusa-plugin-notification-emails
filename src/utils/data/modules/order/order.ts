@@ -481,7 +481,16 @@ export const ORDER_TRANSFORMED_FIELD_KEYS = [
   "summary.discount_total",
 ]
 
+// Fields available for template interpolation (data.*)
+export const ORDER_TEMPLATE_FIELDS = [
+  ...ORDER_ATTRIBUTES.map((attr) => attr.value),
+  ...ORDER_TRANSFORMED_FIELD_KEYS.map(
+    (key) => `order.transformed.${key}`
+  ),
+]
+
 export const FIELDS = {
   query: ORDER_QUERY_FIELDS,
-  transformed: ORDER_TRANSFORMED_FIELD_KEYS
+  transformed: ORDER_TRANSFORMED_FIELD_KEYS,
+  template: ORDER_TEMPLATE_FIELDS,
 }

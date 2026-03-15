@@ -36,6 +36,7 @@ export const editTemplateStep = createStep(
           description: item.description,
           label: item.label,
           channel: item.channel,
+          context_type: item.context_type ?? null,
           locale: item.locale,
           subject: item.subject ?? null,
           is_active: item.is_active

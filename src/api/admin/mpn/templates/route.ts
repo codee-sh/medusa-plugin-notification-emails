@@ -23,6 +23,7 @@ export const PostTemplateSchema = z.object({
       label: z.string(),
       description: z.string(),
       channel: z.string(),
+      context_type: z.string().nullable().optional(),
       locale: z.string(),
       subject: z.string().nullable().optional(),
       is_active: z.boolean(),

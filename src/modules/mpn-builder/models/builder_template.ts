@@ -7,6 +7,7 @@ const MpnBuilderTemplate = model.define("mpn_builder_template", {
   label: model.text().nullable(),
   description: model.text().nullable(),
   channel: model.text(), // "email" | "slack" | "sms"
+  context_type: model.text().nullable(), // "order" | "inventory_level" | ...
   locale: model.text(), // "pl" | "en" | ...
   // event_type: model.text().nullable(), // "order.placed", "inventory.updated"
   subject: model.text().nullable(),

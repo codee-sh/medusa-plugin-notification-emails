@@ -11,10 +11,19 @@ export function TemplatesGeneralForm({
   form,
   isOpen,
   isEditMode = false,
+  contextOptions = [],
 }: {
   form: any
   isOpen?: boolean
   isEditMode?: boolean
+  contextOptions?: Array<{
+    source: "internal" | "external"
+    label: string
+    items: Array<{
+      id: string
+      label: string
+    }>
+  }>
 }) {
   const availableChannels = [
     { value: "email", label: "Email" },
@@ -158,6 +167,64 @@ export function TemplatesGeneralForm({
               )}
             />
           </div> 
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="context_type" className="block">
+              Data Context
+            </Label>
+            <Controller
+              name="general.context_type"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <>
+                  <Select
+                    value={field.value ?? "__none__"}
+                    onValueChange={(value) => {
+                      field.onChange(
+                        value === "__none__"
+                          ? null
+                          : value
+                      )
+                    }}
+                  >
+                    <Select.Trigger>
+                      <Select.Value placeholder="Select data context" />
+                    </Select.Trigger>
+                    <Select.Content>
+                      <Select.Item value="__none__">
+                        Brak
+                      </Select.Item>
+                      {contextOptions.map((group) => (
+                        <Select.Group key={group.source}>
+                          <Select.Label>
+                            {group.label}
+                          </Select.Label>
+                          {group.items.map((item) => (
+                            <Select.Item
+                              key={item.id}
+                              value={item.id}
+                            >
+                              {item.label}
+                            </Select.Item>
+                          ))}
+                        </Select.Group>
+                      ))}
+                    </Select.Content>
+                  </Select>
+                  <Text
+                    size="small"
+                    className="text-ui-fg-subtle"
+                  >
+                    Context danych używany do podpowiedzi pól `data.*` w builderze.
+                  </Text>
+                  {fieldState.error && (
+                    <span className="text-red-500 text-sm">
+                      {fieldState.error.message}
+                    </span>
+                  )}
+                </>
+              )}
+            />
+          </div>
           <div className="flex flex-col gap-2">
             <Label htmlFor="locale" className="block">
               Locale

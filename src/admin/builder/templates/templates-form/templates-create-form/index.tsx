@@ -11,7 +11,8 @@ import { useForm, useWatch } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useQueryClient } from "@tanstack/react-query"
 import {
-  useCreateTemplate
+  useCreateTemplate,
+  useListTemplateContexts,
 } from "../../../../../hooks/api/templates"
 import { useListTemplates } from "../../../../../hooks/api/templates"
 import { TemplatesGeneralForm } from "../templates-general-form"
@@ -51,6 +52,11 @@ export function TemplatesCreateForm() {
     isPending: isCreateTemplatePending,
   } = useCreateTemplate()
 
+  const { data: templateContextsData } =
+    useListTemplateContexts({
+      enabled: open,
+    })
+
   // // Create dynamic schema 
   // const templateFormSchema = useMemo(() => {
   //   return baseTemplateFormSchema
@@ -64,6 +70,7 @@ export function TemplatesCreateForm() {
         label: "",
         description: "",
         channel: "email",
+        context_type: null,
         locale: "en",
         subject: null,
         is_active: true
@@ -79,6 +86,7 @@ export function TemplatesCreateForm() {
           label: "",
           description: "",
           channel: "email",
+          context_type: null,
           locale: "en",
           subject: null,
           is_active: true,
@@ -99,6 +107,8 @@ export function TemplatesCreateForm() {
         label: data.general.label,
         description: data.general.description,
         channel: data.general.channel,
+        context_type:
+          data.general.context_type ?? null,
         locale: data.general.locale,
         subject: data.general.subject,
         is_active: data.general.is_active,
@@ -163,6 +173,10 @@ export function TemplatesCreateForm() {
                 <TemplatesGeneralForm
                   form={form}
                   isOpen={open}
+                  contextOptions={
+                    templateContextsData?.list ||
+                    []
+                  }
                 />
               )}
             </form>

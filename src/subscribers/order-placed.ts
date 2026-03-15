@@ -13,6 +13,7 @@ import { getStoreWorkflow } from "../workflows/store/get-store-by-id"
 import { getOrderByIdWorkflow } from "../workflows/order/get-order-by-id"
 import { emailServiceWorkflow } from "../workflows/mpn-builder-services/email-service"
 import { getRegionWorkflow } from "../workflows/region/get-region-by-id"
+import { FIELDS as ORDER_FIELDS } from "../utils/data/modules/order"
 
 export default async function orderPlacedEmailsHandler({
   event: {

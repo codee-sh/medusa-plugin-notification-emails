@@ -19,6 +19,7 @@ export const baseTemplateFormSchema = z.object({
     channel: z.enum(["email", "slack"]).transform((val) => val.toLowerCase()).refine((val) => val === "email" || val === "slack", {
       message: "Channel must be either Email or Slack",
     }),
+    context_type: z.string().nullable().optional(),
     locale: z.string().min(1, "Locale is required"),
     subject: z.string().nullable().optional(),
     is_active: z.boolean(),

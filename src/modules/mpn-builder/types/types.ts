@@ -31,6 +31,11 @@ export type FieldConfig = FieldDefinition
  */
 export type ModuleOptions = {
   extend?: {
+    contexts?: Array<{
+      id: string
+      label?: string
+      description?: string
+    }>
     services?: Array<{
       id: string
       templates?: Array<{

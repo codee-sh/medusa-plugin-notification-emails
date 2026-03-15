@@ -4,6 +4,7 @@ export interface Template {
   label: string | null
   description: string | null
   channel: string
+  context_type?: string | null
   locale: string
   subject: string | null
   is_active: boolean

@@ -12,6 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useQueryClient } from "@tanstack/react-query"
 import {
   useEditTemplate,
+  useListTemplateContexts,
   useListTemplates,
 } from "../../../../../hooks/api/templates"
 import {
@@ -59,6 +60,11 @@ export function TemplatesEditForm({
     isPending: isEditTemplatePending,
   } = useEditTemplate()
 
+  const { data: templateContextsData } =
+    useListTemplateContexts({
+      enabled: open,
+    })
+
   const form = useForm<TemplateFormValues>({
     resolver: zodResolver(baseTemplateFormSchema),
     defaultValues: {
@@ -67,6 +73,7 @@ export function TemplatesEditForm({
         label: "",
         description: "",
         channel: "email",
+        context_type: null,
         locale: "en",
         subject: null,
         is_active: true,
@@ -86,6 +93,8 @@ export function TemplatesEditForm({
           label: template.label || "",
           description: template.description || "",
           channel: template.channel || "email",
+          context_type:
+            template.context_type || null,
           locale: template.locale || "en",
           subject: template.subject || null,
           is_active: template.is_active || true,
@@ -106,6 +115,7 @@ export function TemplatesEditForm({
           label: "",
           description: "",
           channel: "email",
+          context_type: null,
           locale: "en",
           subject: null,
           is_active: true,
@@ -122,6 +132,8 @@ export function TemplatesEditForm({
         label: data.general.label,
         description: data.general.description,
         channel: data.general.channel,
+        context_type:
+          data.general.context_type ?? null,
         locale: data.general.locale,
         subject: data.general.subject,
         is_active: data.general.is_active,
@@ -184,6 +196,10 @@ export function TemplatesEditForm({
                   form={form}
                   isOpen={open}
                   isEditMode={!!id}
+                  contextOptions={
+                    templateContextsData?.list ||
+                    []
+                  }
                 />
               )}
             </form>

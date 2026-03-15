@@ -14,6 +14,7 @@ import { EmailTemplateService } from "./services-local/email-template-service"
 import { BaseTemplateService } from "./services-local/base-template-service"
 import { SlackTemplateService } from "./services-local/slack-template-service"
 import { TEMPLATE_TYPES, TEMPLATE_TYPES_NAMES } from "./types/constants"
+import { INTERNAL_DATA_CONTEXTS } from "../../utils/data/modules"
 
 type InjectedDependencies = {
   logger: Logger
@@ -206,6 +207,39 @@ class MpnBuilderService extends MedusaService({
       {
         id: TEMPLATE_TYPES.EXTERNAL_TEMPLATE,
         name: TEMPLATE_TYPES_NAMES.EXTERNAL_TEMPLATE,
+      },
+    ]
+  }
+
+  listAvailableContexts() {
+    const internalItems = INTERNAL_DATA_CONTEXTS.map(
+      (context) => ({
+        ...context,
+        source: "internal" as const,
+      })
+    )
+
+    const externalItems = (
+      this.options_.extend?.contexts || []
+    )
+      .map((context) => ({
+        id: context.id,
+        label: context.label || context.id,
+        description: context.description || null,
+        source: "external" as const,
+      }))
+      .filter((context) => !!context.id)
+
+    return [
+      {
+        source: "internal",
+        label: "Wbudowane",
+        items: internalItems,
+      },
+      {
+        source: "external",
+        label: "Pluginy",
+        items: externalItems,
       },
     ]
   }
