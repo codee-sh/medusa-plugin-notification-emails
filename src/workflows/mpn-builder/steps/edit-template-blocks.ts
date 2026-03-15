@@ -5,41 +5,14 @@ import {
 import MpnBuilderService from "../../../modules/mpn-builder/service"
 import { MPN_BUILDER_MODULE } from "../../../modules/mpn-builder"
 import { BlockInstance } from "../../../fields/types"
+import {
+  compactObject,
+  collectTreeIds,
+} from "../../../utils"
 
 type EditTemplateBlocksStepInput = {
   template_id: string
   blocks: BlockInstance[]
-}
-
-const compactMetadata = (
-  value: Record<string, unknown> | null | undefined
-) => {
-  if (!value) {
-    return null
-  }
-
-  return Object.entries(value).reduce(
-    (acc, [key, item]) => {
-      if (item === "") {
-        return acc
-      }
-
-      if (item === undefined || item === null) {
-        return acc
-      }
-
-      acc[key] = item
-      return acc
-    },
-    {} as Record<string, unknown>
-  )
-}
-
-const collectIds = (blocks: BlockInstance[]): string[] => {
-  return blocks.flatMap((block) => {
-    const self = block.id ? [block.id] : []
-    return [...self, ...collectIds(block.children || [])]
-  })
 }
 
 /**
@@ -66,7 +39,7 @@ export const editTemplateBlocksStep = createStep(
     const existingIds = new Set(
       existingBlocks.map((block: any) => block.id)
     )
-    const incomingIds = new Set(collectIds(blocks))
+    const incomingIds = new Set(collectTreeIds(blocks))
     const deletedIds = existingBlocks
       .map((item: any) => item.id)
       .filter((id: string) => !incomingIds.has(id))
@@ -89,7 +62,7 @@ export const editTemplateBlocksStep = createStep(
         type: block.type,
         parent_id: params.parentId,
         position: params.position,
-        metadata: compactMetadata(block.metadata),
+        metadata: compactObject(block.metadata),
       }
 
       let persistedId = block.id || ""
