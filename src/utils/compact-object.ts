@@ -18,7 +18,11 @@ export function compactObject(
 
   return Object.entries(value).reduce(
     (acc, [key, item]) => {
-      if (item === "" || item === undefined || item === null) {
+      if (
+        item === "" ||
+        item === undefined ||
+        item === null
+      ) {
         return acc
       }
       acc[key] = item

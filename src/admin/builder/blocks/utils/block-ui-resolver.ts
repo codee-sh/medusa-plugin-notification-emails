@@ -1,22 +1,22 @@
-import { BlockDefinition } from "../../../../fields"
+import { FormBlockDefinition } from "../../../../modules/mpn-builder/types"
 
 type BlockUiState = {
-  definition?: BlockDefinition
+  definition?: FormBlockDefinition
   isRepeater: boolean
   canHaveChildren: boolean
 }
 
 export function resolveBlockDefinition(
-  blocks: BlockDefinition[] = [],
+  blocks: FormBlockDefinition[] = [],
   runtimeType?: string
-): BlockDefinition | undefined {
+): FormBlockDefinition | undefined {
   return blocks.find(
     (block) => block.runtimeType === runtimeType
   )
 }
 
 export function resolveBlockUiState(
-  blocks: BlockDefinition[] = [],
+  blocks: FormBlockDefinition[] = [],
   runtimeType?: string
 ): BlockUiState {
   const definition = resolveBlockDefinition(

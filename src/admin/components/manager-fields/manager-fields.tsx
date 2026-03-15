@@ -8,8 +8,7 @@ import {
   CheckboxField,
 } from "./components"
 import { ChipInput } from "../inputs/chip-input"
-import { FieldConfig } from "../../../modules/mpn-builder/types/types"
-import { DeclarativeFieldManagerProps } from "./types/interfaces"
+import { FormFieldDefinition, FormManagerFieldsProps } from "../../../fields"
 import { MentionSuggestion } from "./components"
 
 const DEFAULT_MENTION_SUGGESTIONS: MentionSuggestion[] = [
@@ -45,13 +44,13 @@ export const ManagerFields = ({
   form,
   errors,
   mentionSuggestions,
-}: DeclarativeFieldManagerProps) => {
+}: FormManagerFieldsProps) => {
   const tokenSuggestions =
     mentionSuggestions && mentionSuggestions.length > 0
       ? mentionSuggestions
       : DEFAULT_MENTION_SUGGESTIONS
 
-  const renderField = (groupField: FieldConfig) => {
+  const renderField = (groupField: FormFieldDefinition) => {
     switch (groupField.type) {
       case "text":
         return (
@@ -235,7 +234,11 @@ export const ManagerFields = ({
                     onChange={(value) =>
                       field.onChange(value)
                     }
-                    options={groupField.options || []}
+                    options={
+                      Array.isArray(groupField.options)
+                        ? groupField.options
+                        : []
+                    }
                     required={groupField.required}
                   />
                   {fieldState.error && (

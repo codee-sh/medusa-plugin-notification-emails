@@ -43,7 +43,7 @@ import {
   TEMPLATES_EMAILS_NAMES,
   TemplateRenderOptionsType,
 } from "../types"
-import { BlockDefinition } from "../../../fields"
+import { FormBlockDefinition } from "../types"
 
 export class SlackTemplateService extends BaseTemplateService {
   id = "slack"
@@ -193,7 +193,7 @@ export class SlackTemplateService extends BaseTemplateService {
     })
   }
 
-  blocks: BlockDefinition[] = [
+  blocks: FormBlockDefinition[] = [
     {
       type: "group",
       runtimeType: "heading",

@@ -48,7 +48,7 @@ export const getBlocksByTemplateStep = createStep(
       await mpnBuilderService.listMpnBuilderTemplateBlocks({
         template_id: input.template_id,
       })
-      
+
     const blocks = items.map((item: any) => ({
       id: item.id,
       template_id: item.template_id,

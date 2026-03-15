@@ -4,7 +4,7 @@ import {
 } from "@medusajs/framework/workflows-sdk"
 import MpnBuilderService from "../../../modules/mpn-builder/service"
 import { MPN_BUILDER_MODULE } from "../../../modules/mpn-builder"
-import { BlockInstance } from "../../../fields/types"
+import { BlockType } from "../../../modules/mpn-builder/types"
 import {
   compactObject,
   collectTreeIds,
@@ -12,7 +12,7 @@ import {
 
 type EditTemplateBlocksStepInput = {
   template_id: string
-  blocks: BlockInstance[]
+  blocks: BlockType[]
 }
 
 /**
@@ -51,7 +51,7 @@ export const editTemplateBlocksStep = createStep(
     }
 
     const upsertNode = async (
-      block: BlockInstance,
+      block: BlockType,
       params: {
         parentId: string | null
         position: number

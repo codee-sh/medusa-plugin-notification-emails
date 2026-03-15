@@ -1,8 +1,8 @@
 import {
+  FormBlockDefinition,
   RegisterTemplateInput,
   TemplateRenderer,
 } from "./types"
-import { BlockDefinition } from "../../../fields"
 
 /**
  * Template service interface - implement this to create custom template services
@@ -26,7 +26,7 @@ export interface BaseTemplateServiceInterface {
   /**
    * Fields for the template configuration
    */
-  blocks?: BlockDefinition[]
+  blocks?: FormBlockDefinition[]
 
   /**
    * Optional path to config component for dynamic import

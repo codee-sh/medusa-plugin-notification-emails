@@ -1,5 +1,3 @@
-import { FieldDefinition } from "../../../fields"
-
 /**
  * Template renderer function type - can be sync or async
  */
@@ -22,22 +20,18 @@ export type RegisteredTemplate = {
 }
 
 /**
- * Block type
+ * Block type for template builder (input/output).
+ * id and parent_id are optional for new/root blocks.
  */
 export type BlockType = {
-  id: string
+  id?: string
   type: string
-  position: number
-  metadata: Record<string, any>
-  parent_id: string
+  position?: number
+  metadata?: Record<string, any> | null
+  parent_id?: string | null
   virtual?: boolean
   children?: BlockType[]
 }
-
-/**
- * Field config type
- */
-export type FieldConfig = FieldDefinition
 
 /**
  * Module options type

@@ -9,7 +9,7 @@ import {
   createTranslator,
   mergeTranslations,
 } from "../../../utils"
-import { BlockDefinition } from "../../../fields"
+import { FormBlockDefinition } from "../types"
 
 /**
  * Base action service class
@@ -28,7 +28,7 @@ export class BaseTemplateService implements BaseTemplateServiceInterface {
   configComponentKey = "BaseConfigComponent"
 
   // Fields for the Template configuration rendered in the admin panel then saved in the metadata config
-  blocks: BlockDefinition[] = []
+  blocks: FormBlockDefinition[] = []
 
   // Template registry - each service manages its own templates
   protected templates_: Map<string, RegisteredTemplate> =

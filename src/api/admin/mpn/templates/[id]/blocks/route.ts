@@ -61,12 +61,13 @@ export async function GET(
   )
   const { template_id } = req.query
 
-  const { result: { isRegistryTemplate } } =
-    await validTemplateTypeWorkflow(req.scope).run({
-      input: {
-        template_id: template_id as string,
-      },
-    })
+  const {
+    result: { isRegistryTemplate },
+  } = await validTemplateTypeWorkflow(req.scope).run({
+    input: {
+      template_id: template_id as string,
+    },
+  })
 
   if (isRegistryTemplate) {
     res.json({
