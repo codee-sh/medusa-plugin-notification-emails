@@ -1,6 +1,4 @@
-import {
-  Container
-} from "@medusajs/ui"
+import { Container } from "@medusajs/ui"
 import { useListTemplateServices } from "../../../../hooks/api/templates/services"
 import { Heading } from "@medusajs/ui"
 import { TemplatesList } from "../templates-list"
@@ -22,11 +20,18 @@ export const TemplatesServices = ({
   return (
     <>
       {templateServicesData?.list.map((service: any) => (
-        <Container key={service.id} className="pb-2 pt-0 px-0 mb-4">
+        <Container
+          key={service.id}
+          className="pb-2 pt-0 px-0 mb-4"
+        >
           {isTemplateServicesLoading ? (
             <div className="p-6">Loading...</div>
           ) : (
-            <TemplatesList title={service.label} service_id={service.id} type_id={type_id} />
+            <TemplatesList
+              title={service.label}
+              service_id={service.id}
+              type_id={type_id}
+            />
           )}
         </Container>
       ))}

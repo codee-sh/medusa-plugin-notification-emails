@@ -3,10 +3,11 @@ import {
   StepResponse,
 } from "@medusajs/framework/workflows-sdk"
 import { getTemplateWorkflow } from "../../mpn-builder/get-template"
+import { validTemplateTypeWorkflow } from "../../mpn-builder/valid-template-type"
 import { buildTree } from "../../../utils"
-import { TEMPLATE_TYPES } from "../../../modules/mpn-builder/types"
 
-export const slackServiceStepId = "mpn-builder-slack-service-step"
+export const slackServiceStepId =
+  "mpn-builder-slack-service-step"
 
 /**
  * This step renders a Slack template using the Slack service.
@@ -26,7 +27,7 @@ export const slackServiceStepId = "mpn-builder-slack-service-step"
  *     locale: "en",
  *   },
  * })
- * 
+ *
  * @returns The blocks of the rendered template.
  */
 export const slackServiceStep = createStep(
@@ -45,32 +46,33 @@ export const slackServiceStep = createStep(
       )?.templateService
 
     const templateId = input.template_id
-    const isSystemTemplateId = templateId?.startsWith(TEMPLATE_TYPES.SYSTEM_TEMPLATE)
-    const isExternalTemplateId = templateId?.startsWith(TEMPLATE_TYPES.EXTERNAL_TEMPLATE)
-    const isRegistryTemplate = isSystemTemplateId || isExternalTemplateId
+
+    const { result: templateTypeResult } =
+      await validTemplateTypeWorkflow(container).run({
+        input: { template_id: templateId },
+      })
+    const { isRegistryTemplate } = templateTypeResult
 
     let blocks: any[] = []
 
-    console.log('templateId', templateId);
-    console.log('isSystemTemplateId', isSystemTemplateId);
-    console.log('isExternalTemplateId', isExternalTemplateId);
-    console.log('isRegistryTemplate', isRegistryTemplate);
-
-
     // If it's not a registry template, get the blocks from the database
     if (!isRegistryTemplate) {
-      const { result: templateData } = await getTemplateWorkflow(container).run({
-        input: {
-          template_id: templateId,
-          fields: ["blocks.*"],
-        }
-      })
+      const { result: templateData } =
+        await getTemplateWorkflow(container).run({
+          input: {
+            template_id: templateId,
+            fields: ["blocks.*"],
+          },
+        })
 
-      const blocksTree = buildTree(templateData?.templates[0]?.blocks)
-
-      blocks = templateSlackService?.transformBlocksForRendering(
-        blocksTree
+      const blocksTree = buildTree(
+        templateData?.templates[0]?.blocks
       )
+
+      blocks =
+        templateSlackService?.transformBlocksForRendering(
+          blocksTree
+        )
     }
 
     // TODO CHECK WHY .config is undefined in the prepareData method when using external templates

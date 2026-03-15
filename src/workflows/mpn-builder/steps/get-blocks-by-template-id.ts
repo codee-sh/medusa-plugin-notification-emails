@@ -1,13 +1,11 @@
-import {
-  MedusaError,
-} from "@medusajs/framework/utils"
+import { MedusaError } from "@medusajs/framework/utils"
 import {
   StepResponse,
   createStep,
 } from "@medusajs/framework/workflows-sdk"
 import { MPN_BUILDER_MODULE } from "../../../modules/mpn-builder"
 import MpnBuilderService from "../../../modules/mpn-builder/service"
-import { buildBlocksTree } from "../../../fields/tree"
+import { buildTree } from "../../../utils"
 import { FlatBlockRecord } from "../../../fields/types"
 
 export interface GetBlocksByTemplateStepInput {
@@ -18,7 +16,8 @@ export interface GetBlocksByTemplateStepOutput {
   blocks: any[]
 }
 
-export const getBlocksByTemplateStepId = "get-blocks-by-template"
+export const getBlocksByTemplateStepId =
+  "get-blocks-by-template"
 
 const normalizeRecord = (
   record: Record<string, any>
@@ -46,7 +45,9 @@ export const getBlocksByTemplateStep = createStep(
   async (
     input: GetBlocksByTemplateStepInput,
     { container }
-  ): Promise<StepResponse<GetBlocksByTemplateStepOutput>> => {
+  ): Promise<
+    StepResponse<GetBlocksByTemplateStepOutput>
+  > => {
     const mpnBuilderService: MpnBuilderService =
       container.resolve(MPN_BUILDER_MODULE)
 
@@ -64,11 +65,10 @@ export const getBlocksByTemplateStep = createStep(
     const blocks = records.map((record: any) =>
       normalizeRecord(record)
     )
-    const tree = buildBlocksTree(blocks)
+    const tree = buildTree(blocks)
 
     return new StepResponse({
       blocks: tree,
     })
   }
 )
-

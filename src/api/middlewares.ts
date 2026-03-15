@@ -43,25 +43,22 @@ export default defineMiddlewares({
         authenticate("user", ["session", "bearer"], {
           allowUnauthenticated: false,
         }),
-        validateAndTransformQuery(
-          AdminTemplateListParams,
-          {
-            defaults: [
-              "id",
-              "name",
-              "label",
-              "description",
-              "created_at",
-              "updated_at",
-              "channel",
-              "locale",
-              "is_active",
-              "subject",
-              "blocks",
-            ],
-            isList: true,
-          }
-        ),
+        validateAndTransformQuery(AdminTemplateListParams, {
+          defaults: [
+            "id",
+            "name",
+            "label",
+            "description",
+            "created_at",
+            "updated_at",
+            "channel",
+            "locale",
+            "is_active",
+            "subject",
+            "blocks",
+          ],
+          isList: true,
+        }),
       ],
     },
     {
@@ -82,7 +79,7 @@ export default defineMiddlewares({
               "position",
               "metadata",
               "template",
-              "template.subject"
+              "template.subject",
             ],
             isList: true,
           }
@@ -95,7 +92,7 @@ export default defineMiddlewares({
       middlewares: [
         authenticate("user", ["session", "bearer"], {
           allowUnauthenticated: false,
-        })
+        }),
       ],
     },
     {

@@ -1,9 +1,6 @@
 import { ReactNode } from "react"
 import { useFieldArray } from "react-hook-form"
-import {
-  DndContext,
-  closestCenter,
-} from "@dnd-kit/core"
+import { DndContext, closestCenter } from "@dnd-kit/core"
 import {
   SortableContext,
   verticalListSortingStrategy,
@@ -33,12 +30,7 @@ export function BlocksTreeList({
   sensors,
   footerRight,
 }: BlocksTreeListProps) {
-  const {
-    fields,
-    append,
-    move,
-    remove,
-  } = useFieldArray({
+  const { fields, append, move, remove } = useFieldArray({
     control: form.control,
     name: path,
     keyName: "rhf_id",
@@ -56,7 +48,8 @@ export function BlocksTreeList({
             fields,
             move,
             path,
-          })}
+          })
+        }
       >
         <SortableContext
           items={fields.map((f) => f.rhf_id)}
@@ -65,13 +58,8 @@ export function BlocksTreeList({
           <BlockList>
             {fields.map((field: any, index: number) => {
               const itemPath = `${path}.${index}`
-              const {
-                isRepeater,
-                canHaveChildren,
-              } = resolveBlockUiState(
-                blocks,
-                field.type
-              )
+              const { isRepeater, canHaveChildren } =
+                resolveBlockUiState(blocks, field.type)
 
               return (
                 <BlockItem

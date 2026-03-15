@@ -1,34 +1,66 @@
-import {
-  Container,
-} from "@medusajs/ui"
-import { useMemo, useState, useEffect } from "react"
+import { Container } from "@medusajs/ui"
+import { useMemo } from "react"
 
 import { useAvailableTemplates } from "../../../../hooks/api/available-templates"
 import { BlocksForm } from "../blocks-form/blocks-form"
 import { useListTemplateBlocks } from "../../../../hooks/api/templates/blocks"
+import { useTemplateDetails } from "../../../../hooks/api/templates"
 
-export const BlocksContainer = ({ id, type = "email" }: { id: string, type?: string }) => {
-  const { data: availableTemplates } = useAvailableTemplates({
-    type: type,
+export const BlocksContainer = ({
+  id,
+  type = "email",
+}: {
+  id: string
+  type?: string
+}) => {
+  const {
+    data: templateDetailsData,
+    isLoading: isTemplateLoading,
+  } = useTemplateDetails({
+    template_id: id,
+    enabled: Boolean(id),
   })
 
-  const { data: blocks, isLoading: isBlocksLoading } = useListTemplateBlocks({
-    template_id: id
-  })
+  const templateDetails = templateDetailsData?.template
 
-  const [template, setTemplate] = useState<any>(null)
+  const { data: availableTemplates } =
+    useAvailableTemplates({
+      type: templateDetails?.channel || type,
+    })
 
-  useEffect(() => {
-    if (availableTemplates?.templates && type) {
-      setTemplate(availableTemplates.templates.find((t) => t.id === type))
+  const { data: blocks, isLoading: isBlocksLoading } =
+    useListTemplateBlocks({
+      template_id: id,
+    })
+
+  const templateService = useMemo(() => {
+    if (
+      !availableTemplates?.templates ||
+      !templateDetails?.channel
+    ) {
+      return null
     }
-  }, [availableTemplates])
+
+    return availableTemplates.templates.find(
+      (service: any) =>
+        service.id === templateDetails.channel
+    )
+  }, [availableTemplates, templateDetails?.channel])
+
+  const blocksDefinitions = templateService?.blocks || []
 
   return (
     <div className="">
-      {template && !isBlocksLoading && (
-        <BlocksForm template_id={id} template={template} blocks={template.blocks} items={blocks?.tree} />
-      ) }
+      {templateDetails &&
+        !isBlocksLoading &&
+        !isTemplateLoading && (
+          <BlocksForm
+            template_id={id}
+            template={templateDetails}
+            blocks={blocksDefinitions}
+            items={blocks?.tree}
+          />
+        )}
     </div>
   )
 }

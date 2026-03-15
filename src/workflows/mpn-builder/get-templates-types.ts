@@ -3,11 +3,11 @@ import {
   WorkflowData,
   WorkflowResponse,
 } from "@medusajs/framework/workflows-sdk"
-import { getTemplateTypesStep } from "./steps/get-template-types" 
-export interface GetTemplateTypesWorkflowInput {
-}
+import { getTemplateTypesStep } from "./steps/get-template-types"
+export interface GetTemplateTypesWorkflowInput {}
 
-export const getTemplateTypesWorkflowName = "get-template-types"
+export const getTemplateTypesWorkflowName =
+  "get-template-types"
 
 /**
  * Retrieves all available template types.

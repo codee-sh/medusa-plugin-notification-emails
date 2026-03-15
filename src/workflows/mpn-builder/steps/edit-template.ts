@@ -39,7 +39,7 @@ export const editTemplateStep = createStep(
           context_type: item.context_type ?? null,
           locale: item.locale,
           subject: item.subject ?? null,
-          is_active: item.is_active
+          is_active: item.is_active,
         }))
       )
 

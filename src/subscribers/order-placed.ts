@@ -56,12 +56,14 @@ export default async function orderPlacedEmailsHandler({
 
   const templateId = TEMPLATES_EMAILS_NAMES.ORDER_PLACED
 
-  const { result: { html, text, subject } } = await emailServiceWorkflow(container).run({
+  const {
+    result: { html, text, subject },
+  } = await emailServiceWorkflow(container).run({
     input: {
       template_id: templateId,
       data: context,
       options: {
-        locale: pluginOptions?.locale || "pl"
+        locale: pluginOptions?.locale || "pl",
       },
     },
   })

@@ -11,10 +11,13 @@ export const useEditTemplateBlocks = (options?: any) => {
   return useMutation<void, FetchError, Record<string, any>>(
     {
       mutationFn: async (data) => {
-        await sdk.client.fetch(`/admin/mpn/templates/${data.template_id}/blocks`, {
-          method: "POST",
-          body: data,
-        })
+        await sdk.client.fetch(
+          `/admin/mpn/templates/${data.template_id}/blocks`,
+          {
+            method: "POST",
+            body: data,
+          }
+        )
       },
     }
   )
@@ -56,7 +59,7 @@ export const useListTemplateBlocks = (
 
   const queryKey: QueryKey = [
     "template-blocks",
-    template_id
+    template_id,
   ]
 
   const query: any = {

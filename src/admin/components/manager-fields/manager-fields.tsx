@@ -47,8 +47,7 @@ export const ManagerFields = ({
   mentionSuggestions,
 }: DeclarativeFieldManagerProps) => {
   const tokenSuggestions =
-    mentionSuggestions &&
-    mentionSuggestions.length > 0
+    mentionSuggestions && mentionSuggestions.length > 0
       ? mentionSuggestions
       : DEFAULT_MENTION_SUGGESTIONS
 

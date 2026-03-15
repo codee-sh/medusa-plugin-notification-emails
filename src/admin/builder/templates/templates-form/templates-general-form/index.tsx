@@ -55,7 +55,9 @@ export function TemplatesGeneralForm({
                     size="small"
                     className="text-ui-fg-subtle"
                   >
-                    The name of the template. It will be used to identify the template in the system.
+                    The name of the template. It will be
+                    used to identify the template in the
+                    system.
                   </Text>
                   {fieldState.error && (
                     <span className="text-red-500 text-sm">
@@ -83,7 +85,9 @@ export function TemplatesGeneralForm({
                     size="small"
                     className="text-ui-fg-subtle"
                   >
-                    The label of the template. It will be used to display the template in the system.
+                    The label of the template. It will be
+                    used to display the template in the
+                    system.
                   </Text>
                   {fieldState.error && (
                     <span className="text-red-500 text-sm">
@@ -111,7 +115,9 @@ export function TemplatesGeneralForm({
                     size="small"
                     className="text-ui-fg-subtle"
                   >
-                    The description of the template. It will be used to display the template in the system.
+                    The description of the template. It will
+                    be used to display the template in the
+                    system.
                   </Text>
                   {fieldState.error && (
                     <span className="text-red-500 text-sm">
@@ -156,7 +162,9 @@ export function TemplatesGeneralForm({
                     size="small"
                     className="text-ui-fg-subtle"
                   >
-                    The channel of the template. It will be used to send the template to the channel.
+                    The channel of the template. It will be
+                    used to send the template to the
+                    channel.
                   </Text>
                   {fieldState.error && (
                     <span className="text-red-500 text-sm">
@@ -166,7 +174,7 @@ export function TemplatesGeneralForm({
                 </>
               )}
             />
-          </div> 
+          </div>
           <div className="flex flex-col gap-2">
             <Label htmlFor="context_type" className="block">
               Data Context
@@ -180,9 +188,7 @@ export function TemplatesGeneralForm({
                     value={field.value ?? "__none__"}
                     onValueChange={(value) => {
                       field.onChange(
-                        value === "__none__"
-                          ? null
-                          : value
+                        value === "__none__" ? null : value
                       )
                     }}
                   >
@@ -214,7 +220,8 @@ export function TemplatesGeneralForm({
                     size="small"
                     className="text-ui-fg-subtle"
                   >
-                    Context danych używany do podpowiedzi pól `data.*` w builderze.
+                    Context danych używany do podpowiedzi
+                    pól `data.*` w builderze.
                   </Text>
                   {fieldState.error && (
                     <span className="text-red-500 text-sm">
@@ -259,7 +266,9 @@ export function TemplatesGeneralForm({
                     size="small"
                     className="text-ui-fg-subtle"
                   >
-                    The locale of the template. It will be used to display the template in the system.
+                    The locale of the template. It will be
+                    used to display the template in the
+                    system.
                   </Text>
                   {fieldState.error && (
                     <span className="text-red-500 text-sm">
@@ -338,7 +347,7 @@ export function TemplatesGeneralForm({
                 )}
               />
             </div>
-          </div>          
+          </div>
         </div>
       </div>
     </div>

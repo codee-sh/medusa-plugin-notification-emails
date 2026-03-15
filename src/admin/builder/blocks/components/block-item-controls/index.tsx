@@ -1,4 +1,8 @@
-import { Trash, ChevronUpMini, ChevronDownMini } from "@medusajs/icons"
+import {
+  Trash,
+  ChevronUpMini,
+  ChevronDownMini,
+} from "@medusajs/icons"
 import { Button, Text } from "@medusajs/ui"
 
 export function BlockItemSortControls(props) {

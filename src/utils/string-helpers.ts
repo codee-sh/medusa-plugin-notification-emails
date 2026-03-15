@@ -1,6 +1,6 @@
 /**
  * Converts a string to kebab-case format
- * 
+ *
  * @example
  * toKebabCase("Order Placed") // "order-placed"
  * toKebabCase("order_placed") // "order-placed"

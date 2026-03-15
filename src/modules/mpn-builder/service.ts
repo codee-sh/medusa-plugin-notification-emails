@@ -6,14 +6,15 @@ import {
   MpnBuilderTemplate,
   MpnBuilderTemplateBlock,
 } from "./models"
-import {
-  ModuleOptions,
-} from "./types"
+import { ModuleOptions } from "./types"
 import { Logger } from "@medusajs/framework/types"
 import { EmailTemplateService } from "./services-local/email-template-service"
 import { BaseTemplateService } from "./services-local/base-template-service"
 import { SlackTemplateService } from "./services-local/slack-template-service"
-import { TEMPLATE_TYPES, TEMPLATE_TYPES_NAMES } from "./types/constants"
+import {
+  TEMPLATE_TYPES,
+  TEMPLATE_TYPES_NAMES,
+} from "./types/constants"
 import { INTERNAL_DATA_CONTEXTS } from "../../utils/data/modules"
 
 type InjectedDependencies = {
@@ -26,8 +27,14 @@ class MpnBuilderService extends MedusaService({
 }) {
   private options_: ModuleOptions
   private logger_: Logger
-  private templateServices_: Map<string, { templateService: BaseTemplateService; enabled: boolean }> = new Map()
-  
+  private templateServices_: Map<
+    string,
+    {
+      templateService: BaseTemplateService
+      enabled: boolean
+    }
+  > = new Map()
+
   constructor(
     { logger }: InjectedDependencies,
     options?: ModuleOptions
@@ -38,7 +45,7 @@ class MpnBuilderService extends MedusaService({
     this.options_ = options || {}
 
     // Initialize default templates
-    this.initializeTemplateServices()    
+    this.initializeTemplateServices()
 
     // Initialize extended services (custom handlers and templates)
     // Note: templates with import paths will be loaded asynchronously
@@ -46,7 +53,7 @@ class MpnBuilderService extends MedusaService({
       this.logger_.error(
         `Failed to initialize extended services: ${error?.message || "Unknown error"}`
       )
-    })    
+    })
   }
 
   /**
@@ -68,10 +75,9 @@ class MpnBuilderService extends MedusaService({
 
       this.logger_.info(
         `Template service for ${templateService.id} registered`
-      )      
+      )
     })
   }
-
 
   /**
    * Initialize extended actions (custom handlers and templates)
@@ -80,14 +86,13 @@ class MpnBuilderService extends MedusaService({
    * @returns Promise<void>
    */
   private async initializeExtendedServices(): Promise<void> {
-    const extendedServices = this.options_.extend?.services || []
+    const extendedServices =
+      this.options_.extend?.services || []
 
     await Promise.all(
       extendedServices.map(async (serviceConfig: any) => {
         // 2. Register templates (for existing or newly registered handler)
-        if (
-          serviceConfig.templates
-        ) {
+        if (serviceConfig.templates) {
           const handlerData = this.getTemplateService(
             serviceConfig.id
           )
@@ -121,7 +126,8 @@ class MpnBuilderService extends MedusaService({
                     templateValue
                   )
                   renderer =
-                    templateModule?.default || templateModule
+                    templateModule?.default ||
+                    templateModule
 
                   if (!renderer) {
                     this.logger_.warn(
@@ -130,11 +136,10 @@ class MpnBuilderService extends MedusaService({
                     return
                   }
 
-                  renderer =
-                    this.normalizeExternalRenderer(
-                      renderer,
-                      templateService
-                    )
+                  renderer = this.normalizeExternalRenderer(
+                    renderer,
+                    templateService
+                  )
                 } catch (error: any) {
                   this.logger_.warn(
                     `Failed to load template from "${templateValue}": ${error?.message || "Unknown error"}`
@@ -143,16 +148,13 @@ class MpnBuilderService extends MedusaService({
                 }
 
                 if (templateName) {
-                  templateService.registerTemplate!(
-                    {
-                      name: templateName,
-                      renderer,
-                      type: "external",
-                      context_type:
-                        template.context_type ||
-                        null,
-                    }
-                  )
+                  templateService.registerTemplate!({
+                    name: templateName,
+                    renderer,
+                    type: "external",
+                    context_type:
+                      template.context_type || null,
+                  })
 
                   this.logger_.info(
                     `Custom template "${templateName}" registered for handler "${serviceConfig.id}"`
@@ -256,7 +258,10 @@ class MpnBuilderService extends MedusaService({
    */
   private getTemplateServices(): Map<
     string,
-    { templateService: BaseTemplateService; enabled: boolean }
+    {
+      templateService: BaseTemplateService
+      enabled: boolean
+    }
   > {
     return this.templateServices_
   }
@@ -267,10 +272,11 @@ class MpnBuilderService extends MedusaService({
    * @param templateServiceId - Template service ID
    * @returns Template service
    */
-  getTemplateService(
-    templateServiceId: string
-  ):
-    | { templateService: BaseTemplateService; enabled: boolean }
+  getTemplateService(templateServiceId: string):
+    | {
+        templateService: BaseTemplateService
+        enabled: boolean
+      }
     | undefined {
     const templateServices = this.getTemplateServices()
     return templateServices.get(templateServiceId)
@@ -299,23 +305,25 @@ class MpnBuilderService extends MedusaService({
           configComponentKey: template?.configComponentKey,
           blocks: templateBlocks,
           enabled: enabled,
-        }
+        },
       ]
     }
 
-    return Array.from(templates.values()).map((template) => {
-      let blocks = template.templateService.blocks || []
+    return Array.from(templates.values()).map(
+      (template) => {
+        let blocks = template.templateService.blocks || []
 
-      return {
-        id: template.templateService.id,
-        label: template.templateService.label,
-        description: template.templateService.description,
-        configComponentKey:
-          template.templateService.configComponentKey,
-        blocks: blocks,
-        enabled: template.enabled,
+        return {
+          id: template.templateService.id,
+          label: template.templateService.label,
+          description: template.templateService.description,
+          configComponentKey:
+            template.templateService.configComponentKey,
+          blocks: blocks,
+          enabled: template.enabled,
+        }
       }
-    })
+    )
   }
 }
 

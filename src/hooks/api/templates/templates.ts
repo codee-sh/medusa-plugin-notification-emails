@@ -44,21 +44,19 @@ export const useDeleteTemplate = (
     DeleteTemplateInput
   >
 ) => {
-  return useMutation<
-    void,
-    FetchError,
-    DeleteTemplateInput
-  >({
-    mutationFn: async ({ id }) => {
-      await sdk.client.fetch("/admin/mpn/templates", {
-        method: "DELETE",
-        body: {
-          id: id,
-        },
-      })
-    },
-    ...(options as any),
-  })
+  return useMutation<void, FetchError, DeleteTemplateInput>(
+    {
+      mutationFn: async ({ id }) => {
+        await sdk.client.fetch("/admin/mpn/templates", {
+          method: "DELETE",
+          body: {
+            id: id,
+          },
+        })
+      },
+      ...(options as any),
+    }
+  )
 }
 
 export type useListTemplatesParams = {

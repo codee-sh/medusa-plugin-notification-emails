@@ -31,10 +31,7 @@ export class BaseTemplateService implements BaseTemplateServiceInterface {
   blocks: BlockDefinition[] = []
 
   // Template registry - each service manages its own templates
-  protected templates_: Map<
-    string,
-    RegisteredTemplate
-  > =
+  protected templates_: Map<string, RegisteredTemplate> =
     new Map()
 
   /**
@@ -43,16 +40,11 @@ export class BaseTemplateService implements BaseTemplateServiceInterface {
    * @param renderer - Template renderer function
    * @param type - Template type (default: "system")
    */
-  registerTemplate(
-    params: RegisterTemplateInput
-  ): void {
+  registerTemplate(params: RegisterTemplateInput): void {
     this.templates_.set(params.name, {
       renderer: params.renderer,
-      type:
-        params.type ||
-        TEMPLATE_TYPES.SYSTEM_TEMPLATE,
-      context_type:
-        params.context_type ?? null,
+      type: params.type || TEMPLATE_TYPES.SYSTEM_TEMPLATE,
+      context_type: params.context_type ?? null,
     })
   }
 
@@ -95,7 +87,8 @@ export class BaseTemplateService implements BaseTemplateServiceInterface {
         is_system: type === TEMPLATE_TYPES.SYSTEM_TEMPLATE,
         is_active: true,
         type: renderer.type,
-        blocks: renderer.renderer?.getConfig?.()?.blocks || [],
+        blocks:
+          renderer.renderer?.getConfig?.()?.blocks || [],
       }))
   }
 
@@ -104,7 +97,9 @@ export class BaseTemplateService implements BaseTemplateServiceInterface {
    * @returns Array of system templates
    */
   getSystemTemplates() {
-    return this.getTemplatesByType(TEMPLATE_TYPES.SYSTEM_TEMPLATE)
+    return this.getTemplatesByType(
+      TEMPLATE_TYPES.SYSTEM_TEMPLATE
+    )
   }
 
   /**
@@ -112,7 +107,9 @@ export class BaseTemplateService implements BaseTemplateServiceInterface {
    * @returns Array of external templates
    */
   getExternalTemplates() {
-    return this.getTemplatesByType(TEMPLATE_TYPES.EXTERNAL_TEMPLATE)
+    return this.getTemplatesByType(
+      TEMPLATE_TYPES.EXTERNAL_TEMPLATE
+    )
   }
 
   /**
@@ -141,7 +138,7 @@ export class BaseTemplateService implements BaseTemplateServiceInterface {
 
     // Get registered template
     const template = this.getTemplate(params.templateName)
-    const config = (template)?.getConfig?.() || {}
+    const config = template?.getConfig?.() || {}
 
     const configTranslations = config?.translations || {}
     const configBlocks = config?.blocks || []

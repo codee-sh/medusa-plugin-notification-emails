@@ -9,7 +9,8 @@ export interface GetTemplateServicesWorkflowInput {
   type: string
 }
 
-export const getTemplateServicesWorkflowName = "get-template-services"
+export const getTemplateServicesWorkflowName =
+  "get-template-services"
 
 /**
  * Retrieves available template services filtered by type.
@@ -23,7 +24,9 @@ export const getTemplateServicesWorkflowName = "get-template-services"
  */
 export const getTemplateServicesWorkflow = createWorkflow(
   getTemplateServicesWorkflowName,
-  (input: WorkflowData<GetTemplateServicesWorkflowInput>) => {
+  (
+    input: WorkflowData<GetTemplateServicesWorkflowInput>
+  ) => {
     const template = getTemplateServicesStep(input)
 
     return new WorkflowResponse(template)

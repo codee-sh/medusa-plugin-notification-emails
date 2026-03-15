@@ -16,7 +16,8 @@ export interface GetTemplatesByTypeServiceStepOutput {
   templates: any[]
 }
 
-export const getTemplatesByTypeServiceStepId = "get-templates-by-type-service"
+export const getTemplatesByTypeServiceStepId =
+  "get-templates-by-type-service"
 
 /**
  * This step retrieves templates filtered by type and service.
@@ -32,7 +33,9 @@ export const getTemplatesByTypeServiceStep = createStep(
   async (
     input: GetTemplatesByTypeServiceStepInput,
     { container }
-  ): Promise<StepResponse<GetTemplatesByTypeServiceStepOutput>> => {
+  ): Promise<
+    StepResponse<GetTemplatesByTypeServiceStepOutput>
+  > => {
     const query = container.resolve(
       ContainerRegistrationKeys.QUERY
     )

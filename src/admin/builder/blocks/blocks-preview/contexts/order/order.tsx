@@ -6,10 +6,10 @@ import { BlocksPreview } from "../../blocks-preview"
 export const OrderContext = ({
   contextType,
   templateId,
-  orderId
+  orderId,
 }: {
-  contextType: string,
-  templateId: string,
+  contextType: string
+  templateId: string
   orderId: string
 }) => {
   const [context, setContext] = useState<any>(null)
@@ -36,7 +36,11 @@ export const OrderContext = ({
         </Alert>
       )}
       {context && (
-        <BlocksPreview contextType={contextType} templateId={templateId} context={context} />
+        <BlocksPreview
+          contextType={contextType}
+          templateId={templateId}
+          context={context}
+        />
       )}
     </div>
   )

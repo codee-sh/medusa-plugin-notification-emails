@@ -15,19 +15,11 @@ import {
   useListTemplateContexts,
   useListTemplates,
 } from "../../../../../hooks/api/templates"
-import {
-  TemplateFormValues,
-  Tab,
-  TabState,
-} from "../types"
+import { TemplateFormValues, Tab, TabState } from "../types"
 import { baseTemplateFormSchema } from "../types/schema"
 import { TemplatesGeneralForm } from "../templates-general-form"
 
-export function TemplatesEditForm({
-  id,
-}: {
-  id: string
-}) {
+export function TemplatesEditForm({ id }: { id: string }) {
   const [open, setOpen] = useState(false)
   const [tab, setTab] = useState<Tab>(Tab.GENERAL)
   const [tabState, setTabState] = useState<TabState>({
@@ -83,9 +75,7 @@ export function TemplatesEditForm({
 
   // Update form when data is loaded and modal is open
   useEffect(() => {
-    if (
-      templatesData
-    ) {
+    if (templatesData) {
       const template = templatesData?.templates?.[0]
       form.reset({
         general: {
@@ -93,8 +83,7 @@ export function TemplatesEditForm({
           label: template.label || "",
           description: template.description || "",
           channel: template.channel || "email",
-          context_type:
-            template.context_type || null,
+          context_type: template.context_type || null,
           locale: template.locale || "en",
           subject: template.subject || null,
           is_active: template.is_active || true,
@@ -132,8 +121,7 @@ export function TemplatesEditForm({
         label: data.general.label,
         description: data.general.description,
         channel: data.general.channel,
-        context_type:
-          data.general.context_type ?? null,
+        context_type: data.general.context_type ?? null,
         locale: data.general.locale,
         subject: data.general.subject,
         is_active: data.general.is_active,
@@ -197,8 +185,7 @@ export function TemplatesEditForm({
                   isOpen={open}
                   isEditMode={!!id}
                   contextOptions={
-                    templateContextsData?.list ||
-                    []
+                    templateContextsData?.list || []
                   }
                 />
               )}
@@ -215,12 +202,10 @@ export function TemplatesEditForm({
             type="submit"
             onClick={form.handleSubmit(handleSubmit)}
             disabled={
-              isEditTemplatePending ||
-              isTemplatesLoading
-            } 
+              isEditTemplatePending || isTemplatesLoading
+            }
             isLoading={
-              isEditTemplatePending ||
-              isTemplatesLoading
+              isEditTemplatePending || isTemplatesLoading
             }
           >
             {buttonText}

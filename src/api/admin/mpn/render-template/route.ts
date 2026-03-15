@@ -42,7 +42,9 @@ export async function POST(
     locale
   )
 
-  const { result: { html, text, subject } } = await emailServiceWorkflow(req.scope).run({
+  const {
+    result: { html, text, subject },
+  } = await emailServiceWorkflow(req.scope).run({
     input: {
       template_id: templateId,
       data: transformedTemplateData,

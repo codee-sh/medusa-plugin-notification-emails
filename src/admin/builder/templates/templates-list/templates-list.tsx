@@ -1,6 +1,4 @@
-import {
-  Container
-} from "@medusajs/ui"
+import { Container } from "@medusajs/ui"
 import { useListTemplates } from "../../../../hooks/api/templates/services/templates"
 import { TemplatesListTable } from "./templates-list-table"
 
@@ -28,7 +26,12 @@ export const TemplatesList = ({
       {isTemplatesLoading ? (
         <div className="p-6">Loading...</div>
       ) : (
-          <TemplatesListTable title={title} data={templatesData?.list || []} isLoading={isTemplatesLoading} type={type_id} />
+        <TemplatesListTable
+          title={title}
+          data={templatesData?.list || []}
+          isLoading={isTemplatesLoading}
+          type={type_id}
+        />
       )}
     </>
   )

@@ -43,9 +43,7 @@ export function BlockItem(props) {
         listeners={listeners}
       />
 
-      <div className="flex-1 min-w-0">
-        {props.children}
-      </div>
+      <div className="flex-1 min-w-0">{props.children}</div>
 
       <BlockItemDeleteControls
         onRemove={() => props.remove(props.index)}

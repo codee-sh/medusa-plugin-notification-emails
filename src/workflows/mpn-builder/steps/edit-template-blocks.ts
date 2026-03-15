@@ -38,10 +38,7 @@ const compactMetadata = (
 const collectIds = (blocks: BlockInstance[]): string[] => {
   return blocks.flatMap((block) => {
     const self = block.id ? [block.id] : []
-    return [
-      ...self,
-      ...collectIds(block.children || []),
-    ]
+    return [...self, ...collectIds(block.children || [])]
   })
 }
 

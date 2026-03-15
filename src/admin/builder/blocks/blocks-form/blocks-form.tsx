@@ -1,6 +1,4 @@
-import {
-  Button
-} from "@medusajs/ui"
+import { Button } from "@medusajs/ui"
 import { toast } from "@medusajs/ui"
 import { useMemo, useEffect } from "react"
 import { useForm } from "react-hook-form"
@@ -12,9 +10,7 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core"
-import {
-  sortableKeyboardCoordinates,
-} from "@dnd-kit/sortable"
+import { sortableKeyboardCoordinates } from "@dnd-kit/sortable"
 
 import { createBlockFormSchema } from "../../templates/templates-form/utils/block-form-schema"
 import { baseBlocksSchema } from "../../templates/templates-form/types/schema"
@@ -28,14 +24,17 @@ export const BlocksForm = (props: any) => {
   const { template_id, template, blocks, items } = props
 
   const blockFormSchema = useMemo(() => {
-    return createBlockFormSchema(
-      blocks ?? []
-    )
+    return createBlockFormSchema(blocks ?? [])
   }, [blocks])
 
   const form = useForm<BlockFormValues>({
     resolver: zodResolver(blockFormSchema),
-    defaultValues: { items: items.map((i: any) => ({ ...i, children: i.children ?? [] })) },
+    defaultValues: {
+      items: items.map((i: any) => ({
+        ...i,
+        children: i.children ?? [],
+      })),
+    },
     mode: "onChange",
   })
 
@@ -65,7 +64,7 @@ export const BlocksForm = (props: any) => {
   const {
     mutateAsync: editTemplateBlocks,
     isPending: isEditTemplateBlocksPending,
-  } = useEditTemplateBlocks()  
+  } = useEditTemplateBlocks()
 
   async function onSubmit(values: BlockFormValues) {
     const payload = values.items.map((item, index) => ({
@@ -87,13 +86,10 @@ export const BlocksForm = (props: any) => {
       queryKey: ["preview", template_id],
     })
 
-    toast.success(
-      "Blocks updated successfully",
-      {
-        position: "top-right",
-        duration: 3000,
-      }
-    )
+    toast.success("Blocks updated successfully", {
+      position: "top-right",
+      duration: 3000,
+    })
   }
 
   return (

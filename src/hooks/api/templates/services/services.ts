@@ -1,8 +1,5 @@
 import { FetchError } from "@medusajs/js-sdk"
-import {
-  QueryKey,
-  useQuery
-} from "@tanstack/react-query"
+import { QueryKey, useQuery } from "@tanstack/react-query"
 import { sdk } from "../../../../admin/lib/sdk"
 
 export type useListTemplateServicesParams = {

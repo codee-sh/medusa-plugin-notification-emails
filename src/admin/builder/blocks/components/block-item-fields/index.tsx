@@ -18,9 +18,8 @@ export function BlockItemFields(props) {
         form={form}
         fields={fields}
         errors={
-          form.formState.errors?.items?.[index]?.metadata as
-            | Record<string, string>
-            | undefined
+          form.formState.errors?.items?.[index]
+            ?.metadata as Record<string, string> | undefined
         }
       />
     </>

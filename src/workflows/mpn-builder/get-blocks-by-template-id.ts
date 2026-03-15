@@ -9,7 +9,8 @@ export interface GetBlocksByTemplateWorkflowInput {
   template_id: string
 }
 
-export const getBlocksByTemplateStepId = "get-blocks-by-template"
+export const getBlocksByTemplateStepId =
+  "get-blocks-by-template"
 
 /**
  * Retrieves all blocks for a specific template, organized as a tree structure.
@@ -23,7 +24,9 @@ export const getBlocksByTemplateStepId = "get-blocks-by-template"
  */
 export const getBlocksByTemplateWorkflow = createWorkflow(
   getBlocksByTemplateStepId,
-  (input: WorkflowData<GetBlocksByTemplateWorkflowInput>) => {
+  (
+    input: WorkflowData<GetBlocksByTemplateWorkflowInput>
+  ) => {
     const blocks = getBlocksByTemplateStep({
       template_id: input.template_id,
     })
@@ -31,4 +34,3 @@ export const getBlocksByTemplateWorkflow = createWorkflow(
     return new WorkflowResponse(blocks)
   }
 )
-

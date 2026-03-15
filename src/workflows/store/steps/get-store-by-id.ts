@@ -42,7 +42,14 @@ export const getStoreStep = createStep(
 
     const { data: store } = await query.graph({
       entity: "store",
-      fields: ["id", "name", "default_sales_channel_id", "default_region_id", "default_location_id", "metadata"],
+      fields: [
+        "id",
+        "name",
+        "default_sales_channel_id",
+        "default_region_id",
+        "default_location_id",
+        "metadata",
+      ],
     })
 
     return new StepResponse({

@@ -1,4 +1,7 @@
-import { MentionInput, MentionSuggestion } from "./mention-input"
+import {
+  MentionInput,
+  MentionSuggestion,
+} from "./mention-input"
 
 interface TextFieldProps {
   label: string

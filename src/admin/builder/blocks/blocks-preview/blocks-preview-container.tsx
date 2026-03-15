@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
   Container,
   Heading,
@@ -6,6 +6,7 @@ import {
   Text,
 } from "@medusajs/ui"
 import { OrderContextContainer } from "./contexts/order"
+import { useTemplateDetails } from "../../../../hooks/api/templates"
 // import { ContactFormTemplateGroup } from "../../../notifications-templates/groups/contact-form"
 
 export const BlocksPreviewContainer = ({
@@ -15,6 +16,13 @@ export const BlocksPreviewContainer = ({
 }) => {
   const [selectedContextType, setSelectedContextType] =
     useState<string>("")
+  const { data: templateDetailsData } = useTemplateDetails({
+    template_id: templateId,
+    enabled: Boolean(templateId),
+  })
+
+  const templateContextType =
+    templateDetailsData?.template?.context_type
 
   const contextTypes = [
     {
@@ -24,6 +32,18 @@ export const BlocksPreviewContainer = ({
     { label: "Order", value: "order" },
   ]
 
+  useEffect(() => {
+    if (
+      !selectedContextType &&
+      templateContextType &&
+      contextTypes.some(
+        (context) => context.value === templateContextType
+      )
+    ) {
+      setSelectedContextType(templateContextType)
+    }
+  }, [selectedContextType, templateContextType])
+
   return (
     <Container className="divide-y py-0 px-0">
       <div className="flex items-center justify-between px-4 py-3">
@@ -31,7 +51,10 @@ export const BlocksPreviewContainer = ({
       </div>
       <div className="divide-y p-0">
         <div className="flex items-center justify-between gap-3 px-4 py-2.5">
-          <Text size="xsmall" className="w-1/4 text-ui-fg-subtle">
+          <Text
+            size="xsmall"
+            className="w-1/4 text-ui-fg-subtle"
+          >
             Choose context
           </Text>
           <div className="w-full">
@@ -65,7 +88,10 @@ export const BlocksPreviewContainer = ({
               </Heading>
             </div>
             {selectedContextType === "order" && (
-              <OrderContextContainer contextType={selectedContextType} templateId={templateId} />
+              <OrderContextContainer
+                contextType={selectedContextType}
+                templateId={templateId}
+              />
             )}
             {/* {selectedContextType === "contact_form" && (
               <ContactFormTemplateGroup />

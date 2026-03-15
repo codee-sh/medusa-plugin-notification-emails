@@ -1,9 +1,4 @@
-import {
-  Badge,
-  Input,
-  Text,
-  Textarea,
-} from "@medusajs/ui"
+import { Badge, Input, Text, Textarea } from "@medusajs/ui"
 import {
   KeyboardEvent,
   Ref,
@@ -47,8 +42,9 @@ export const MentionInput = ({
     0,
     selectionStart
   )
-  const triggerMatch =
-    beforeCursor.match(/#([a-zA-Z0-9._-]*)$/)
+  const triggerMatch = beforeCursor.match(
+    /#([a-zA-Z0-9._-]*)$/
+  )
   const query = triggerMatch?.[1] || ""
   const triggerStart =
     triggerMatch === null
@@ -63,9 +59,7 @@ export const MentionInput = ({
     const normalized = query.toLowerCase()
     return suggestions.filter((item) => {
       return (
-        item.display
-          .toLowerCase()
-          .includes(normalized) ||
+        item.display.toLowerCase().includes(normalized) ||
         item.id.toLowerCase().includes(normalized)
       )
     })
@@ -73,7 +67,9 @@ export const MentionInput = ({
 
   const isOpen = filteredSuggestions.length > 0
 
-  const insertSuggestion = (suggestion: MentionSuggestion) => {
+  const insertSuggestion = (
+    suggestion: MentionSuggestion
+  ) => {
     if (triggerStart < 0 || !inputRef.current) {
       return
     }
@@ -111,10 +107,7 @@ export const MentionInput = ({
     if (event.key === "ArrowDown") {
       event.preventDefault()
       setActiveIndex((prev) =>
-        Math.min(
-          prev + 1,
-          filteredSuggestions.length - 1
-        )
+        Math.min(prev + 1, filteredSuggestions.length - 1)
       )
       return
     }
@@ -169,48 +162,51 @@ export const MentionInput = ({
       {isOpen && (
         <div className="absolute left-0 right-0 z-50 mt-2 overflow-hidden rounded-lg border border-ui-border-base bg-ui-bg-base shadow-elevation-card-rest">
           <div className="border-b border-ui-border-base bg-ui-bg-subtle px-3 py-2">
-            <Text size="xsmall" className="text-ui-fg-muted">
+            <Text
+              size="xsmall"
+              className="text-ui-fg-muted"
+            >
               Add variable
             </Text>
           </div>
           <div className="max-h-64 overflow-y-auto py-1">
-          {filteredSuggestions.map((item, index) => {
-            const isActive = index === activeIndex
-            return (
-              <button
-                key={item.id}
-                type="button"
-                className={`w-full px-3 py-2 text-left transition-colors ${
-                  isActive
-                    ? "bg-ui-bg-field-hover text-ui-fg-base"
-                    : "bg-ui-bg-base text-ui-fg-subtle hover:bg-ui-bg-subtle"
-                }`}
-                onMouseDown={(event) =>
-                  event.preventDefault()
-                }
-                onClick={() => insertSuggestion(item)}
-              >
-                <div className="flex items-center gap-2">
-                  <Badge size="2xsmall">#</Badge>
-                  <Text
-                    size="small"
-                    weight="plus"
-                    className="truncate text-ui-fg-base"
-                  >
-                    {item.display}
-                  </Text>
-                </div>
-                {item.id !== item.display && (
-                  <Text
-                    size="xsmall"
-                    className="mt-0.5 truncate text-ui-fg-muted"
-                  >
-                    {item.id}
-                  </Text>
-                )}
-              </button>
-            )
-          })}
+            {filteredSuggestions.map((item, index) => {
+              const isActive = index === activeIndex
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  className={`w-full px-3 py-2 text-left transition-colors ${
+                    isActive
+                      ? "bg-ui-bg-field-hover text-ui-fg-base"
+                      : "bg-ui-bg-base text-ui-fg-subtle hover:bg-ui-bg-subtle"
+                  }`}
+                  onMouseDown={(event) =>
+                    event.preventDefault()
+                  }
+                  onClick={() => insertSuggestion(item)}
+                >
+                  <div className="flex items-center gap-2">
+                    <Badge size="2xsmall">#</Badge>
+                    <Text
+                      size="small"
+                      weight="plus"
+                      className="truncate text-ui-fg-base"
+                    >
+                      {item.display}
+                    </Text>
+                  </div>
+                  {item.id !== item.display && (
+                    <Text
+                      size="xsmall"
+                      className="mt-0.5 truncate text-ui-fg-muted"
+                    >
+                      {item.id}
+                    </Text>
+                  )}
+                </button>
+              )
+            })}
           </div>
         </div>
       )}

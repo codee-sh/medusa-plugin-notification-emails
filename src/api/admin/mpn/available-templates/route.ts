@@ -14,12 +14,11 @@ export async function GET(
   ) as MpnBuilderService
 
   // Get blockType from query params if provided
-  const type = req.query.type as
-    | string
-    | undefined
+  const type = req.query.type as string | undefined
 
-  const templates =
-    builderService.listTemplateServices(type ?? "")
+  const templates = builderService.listTemplateServices(
+    type ?? ""
+  )
 
   res.json({
     templates: templates,

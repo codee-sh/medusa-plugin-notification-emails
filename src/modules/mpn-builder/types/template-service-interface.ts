@@ -50,9 +50,7 @@ export interface BaseTemplateServiceInterface {
    * @param renderer - Template renderer function
    * @param type - Template type (default: "system")
    */
-  registerTemplate?: (
-    params: RegisterTemplateInput
-  ) => void
+  registerTemplate?: (params: RegisterTemplateInput) => void
 
   /**
    * Get template renderer by name

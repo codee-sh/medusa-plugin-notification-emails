@@ -1,9 +1,7 @@
 import { BaseTemplateService } from "./base-template-service"
 
 import React from "react"
-import {
-  TemplateRenderParams,
-} from "../types"
+import { TemplateRenderParams } from "../types"
 import {
   pickValueFromObject,
   multiInterpolate,
@@ -187,7 +185,7 @@ export class EmailTemplateService extends BaseTemplateService {
           required: true,
           name: "value",
           defaultValue: "",
-        }
+        },
       ],
     },
     {
@@ -203,7 +201,7 @@ export class EmailTemplateService extends BaseTemplateService {
           required: true,
           name: "value",
           defaultValue: "",
-        }
+        },
       ],
     },
     {
@@ -296,20 +294,20 @@ export class EmailTemplateService extends BaseTemplateService {
 
   /**
    * Transform blocks from database format (with metadata) to rendering format (with props)
-   * 
+   *
    * This method acts as a proxy/map layer between database storage and rendering:
    * - Database stores: { type: "heading", metadata: { value: "..." } }
    * - Rendering expects: { type: "heading", props: { value: "..." } }
-   * 
+   *
    * Handles nested blocks recursively:
    * - children → props.blocks (for section, group)
    * - children → props.blocks (for repeater)
-   * 
+   *
    * **Usage:** Call this method before passing blocks to emailService.render() or interpolateBlocks()
-   * 
+   *
    * @param blocks - Blocks from database with metadata property
    * @returns Blocks transformed to rendering format with props property
-   * 
+   *
    * @example
    * // Input (from database):
    * [
@@ -318,7 +316,7 @@ export class EmailTemplateService extends BaseTemplateService {
    *     { type: "text", metadata: { value: "Hello" } }
    *   ]}
    * ]
-   * 
+   *
    * // Output (for rendering):
    * [
    *   { type: "heading", props: { value: "{{data.order.id}}" } },
@@ -326,7 +324,7 @@ export class EmailTemplateService extends BaseTemplateService {
    *     { type: "text", props: { value: "Hello" } }
    *   ]}}
    * ]
-   * 
+   *
    */
   public transformBlocksForRendering(blocks: any[]): any[] {
     if (!blocks || !Array.isArray(blocks)) {
@@ -351,15 +349,23 @@ export class EmailTemplateService extends BaseTemplateService {
       }
 
       // Transform metadata to props
-      if (block.metadata && typeof block.metadata === "object") {
+      if (
+        block.metadata &&
+        typeof block.metadata === "object"
+      ) {
         transformedBlock.props = { ...block.metadata }
       } else {
         transformedBlock.props = {}
       }
 
       // Handle nested blocks based on block type
-      if (block.children && Array.isArray(block.children) && block.children.length > 0) {
-        transformedBlock.props.blocks = this.transformBlocksForRendering(block.children)
+      if (
+        block.children &&
+        Array.isArray(block.children) &&
+        block.children.length > 0
+      ) {
+        transformedBlock.props.blocks =
+          this.transformBlocksForRendering(block.children)
       }
 
       return transformedBlock

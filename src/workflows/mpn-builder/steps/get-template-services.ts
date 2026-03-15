@@ -1,6 +1,4 @@
-import {
-  ContainerRegistrationKeys,
-} from "@medusajs/framework/utils"
+import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
 import {
   StepResponse,
   createStep,
@@ -16,7 +14,8 @@ export interface GetTemplateServicesStepOutput {
   list: any[]
 }
 
-export const getTemplateServicesStepId = "get-template-services"
+export const getTemplateServicesStepId =
+  "get-template-services"
 
 /**
  * Retrieves available template services filtered by type.
@@ -31,7 +30,9 @@ export const getTemplateServicesStep = createStep(
   async (
     input: GetTemplateServicesStepInput,
     { container }
-  ): Promise<StepResponse<GetTemplateServicesStepOutput>> => {
+  ): Promise<
+    StepResponse<GetTemplateServicesStepOutput>
+  > => {
     const query = container.resolve(
       ContainerRegistrationKeys.QUERY
     )
@@ -40,10 +41,11 @@ export const getTemplateServicesStep = createStep(
       MPN_BUILDER_MODULE
     ) as MpnBuilderService
 
-    const listTemplateServices = mpnBuilderService.listTemplateServices(input.type)
+    const listTemplateServices =
+      mpnBuilderService.listTemplateServices(input.type)
 
     return new StepResponse({
-      list: listTemplateServices
+      list: listTemplateServices,
     })
   }
 )

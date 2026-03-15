@@ -56,4 +56,3 @@ export interface RenderTemplateSyncParams {
   data: any
   options?: TemplateRenderOptionsType
 }
-

@@ -1,4 +1,4 @@
-  import {
+import {
   createStep,
   StepResponse,
 } from "@medusajs/framework/workflows-sdk"
@@ -27,9 +27,7 @@ export const deleteTemplateStep = createStep(
       container.resolve(MPN_BUILDER_MODULE)
 
     // Delete the trigger (cascade delete will handle related rules, states, and actions)
-    await mpnBuilderService.deleteMpnBuilderTemplates([
-      id,
-    ])
+    await mpnBuilderService.deleteMpnBuilderTemplates([id])
 
     return new StepResponse(
       { id, deleted: true },

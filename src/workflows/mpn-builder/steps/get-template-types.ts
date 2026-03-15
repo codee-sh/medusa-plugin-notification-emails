@@ -1,6 +1,4 @@
-import {
-  ContainerRegistrationKeys,
-} from "@medusajs/framework/utils"
+import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
 import {
   StepResponse,
   createStep,
@@ -8,8 +6,7 @@ import {
 import MpnBuilderService from "../../../modules/mpn-builder/service"
 import { MPN_BUILDER_MODULE } from "../../../modules/mpn-builder"
 
-export interface GetTemplateTypesStepInput {
-}
+export interface GetTemplateTypesStepInput {}
 
 export interface GetTemplateTypesStepOutput {
   list: any[]
@@ -37,10 +34,11 @@ export const getTemplateTypesStep = createStep(
       MPN_BUILDER_MODULE
     ) as MpnBuilderService
 
-    const listTemplateTypes = mpnBuilderService.getTemplateTypes()
+    const listTemplateTypes =
+      mpnBuilderService.getTemplateTypes()
 
     return new StepResponse({
-      list: listTemplateTypes
+      list: listTemplateTypes,
     })
   }
 )

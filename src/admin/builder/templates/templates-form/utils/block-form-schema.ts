@@ -16,49 +16,44 @@ export function createBlockFormSchema(
     }>
   }>
 ) {
-  return baseBlocksSchema.superRefine(
-    (data, ctx) => {
-      // Validate action config fields dynamically
-      if (data.items && availableBlocks) {
-        data.items.forEach((item, index) => {
-          if (!item.type) {
-            return // Skip if no action type selected
-          }
+  return baseBlocksSchema.superRefine((data, ctx) => {
+    // Validate action config fields dynamically
+    if (data.items && availableBlocks) {
+      data.items.forEach((item, index) => {
+        if (!item.type) {
+          return // Skip if no action type selected
+        }
 
-          // Find action definition
-          const blockDef = availableBlocks.find(
-            (b) => b.runtimeType === item.type
-          )
+        // Find action definition
+        const blockDef = availableBlocks.find(
+          (b) => b.runtimeType === item.type
+        )
 
-          if (!blockDef || !blockDef.fields) {
-            return // Skip if no fields defined
-          }
+        if (!blockDef || !blockDef.fields) {
+          return // Skip if no fields defined
+        }
 
-          // Validate each required field
-          blockDef.fields.forEach((field) => {
-            if (field.required) {
-              const fieldValue =
-                item.metadata?.[field.name || field.key]
+        // Validate each required field
+        blockDef.fields.forEach((field) => {
+          if (field.required) {
+            const fieldValue =
+              item.metadata?.[field.name || field.key]
 
-              if (
-                !fieldValue ||
-                !String(fieldValue).trim()
-              ) {
-                ctx.addIssue({
-                  code: z.ZodIssueCode.custom,
-                  message: `${field.label} is required`,
-                  path: [
-                    "items",
-                    index,
-                    "metadata",
-                    field.name || field.key,
-                  ],
-                })
-              }
+            if (!fieldValue || !String(fieldValue).trim()) {
+              ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: `${field.label} is required`,
+                path: [
+                  "items",
+                  index,
+                  "metadata",
+                  field.name || field.key,
+                ],
+              })
             }
-          })
+          }
         })
-      }
+      })
     }
-  )
+  })
 }

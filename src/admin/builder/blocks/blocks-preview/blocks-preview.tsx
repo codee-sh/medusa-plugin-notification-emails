@@ -4,7 +4,15 @@ import { usePreview } from "../../../../hooks/api/preview"
 import { contactFormMockData } from "../../../../../emails-previews/contact-form"
 import { TEMPLATES_EMAILS_NAMES } from "../../../../modules/mpn-builder/types"
 
-export const BlocksPreview = ({ contextType, templateId, context }: { contextType: string, templateId: string, context: any }) => {
+export const BlocksPreview = ({
+  contextType,
+  templateId,
+  context,
+}: {
+  contextType: string
+  templateId: string
+  context: any
+}) => {
   const [previewContext, setPreviewData] =
     useState<any>(null)
 

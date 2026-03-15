@@ -1,8 +1,6 @@
 import { BaseTemplateService } from "./base-template-service"
 
-import {
-  TemplateRenderParams,
-} from "../types"
+import { TemplateRenderParams } from "../types"
 import {
   pickValueFromObject,
   multiInterpolate,
@@ -207,7 +205,7 @@ export class SlackTemplateService extends BaseTemplateService {
           name: "value",
           value: "",
           defaultValue: "",
-        }
+        },
       ],
     },
     {
@@ -222,7 +220,7 @@ export class SlackTemplateService extends BaseTemplateService {
           name: "value",
           value: "",
           defaultValue: "",
-        }
+        },
       ],
     },
     {
@@ -278,20 +276,20 @@ export class SlackTemplateService extends BaseTemplateService {
 
   /**
    * Transform blocks from database format (with metadata) to Slack Block Kit format
-   * 
+   *
    * This method transforms blocks from database storage format to Slack Block Kit format:
    * - Database stores: { type: "heading", metadata: { value: "..." } }
    * - Slack Block Kit expects: { type: "header", text: { type: "plain_text", text: "..." } }
-   * 
+   *
    * Handles nested blocks recursively:
    * - children → flattened blocks (for group)
    * - children → blocks for repeater (handled separately during interpolation)
-   * 
+   *
    * **Usage:** Call this method before passing blocks to interpolateBlocks()
-   * 
+   *
    * @param blocks - Blocks from database with metadata property
    * @returns Blocks transformed to Slack Block Kit format
-   * 
+   *
    * @example
    * // Input (from database):
    * [
@@ -301,14 +299,14 @@ export class SlackTemplateService extends BaseTemplateService {
    *     { type: "text", metadata: { value: "Hello" } }
    *   ]}
    * ]
-   * 
+   *
    * // Output (Slack Block Kit):
    * [
    *   { type: "header", text: { type: "plain_text", text: "{{data.order.id}}" } },
    *   { type: "divider" },
    *   { type: "section", text: { type: "mrkdwn", text: "Hello" } }
    * ]
-   * 
+   *
    */
   public transformBlocksForRendering(blocks: any[]): any[] {
     if (!blocks || !Array.isArray(blocks)) {
@@ -386,7 +384,8 @@ export class SlackTemplateService extends BaseTemplateService {
         case "repeater": {
           // repeater → keep structure for later processing during interpolation
           // Children will be transformed to blocks
-          const transformedChildren = this.transformBlocksForRendering(children)
+          const transformedChildren =
+            this.transformBlocksForRendering(children)
           result.push({
             type: "repeater",
             arrayPath: metadata.arrayPath || "",
@@ -408,7 +407,8 @@ export class SlackTemplateService extends BaseTemplateService {
 
           // Handle children if present
           if (children.length > 0) {
-            const transformedChildren = this.transformBlocksForRendering(children)
+            const transformedChildren =
+              this.transformBlocksForRendering(children)
             transformedBlock.blocks = transformedChildren
           }
 
@@ -444,16 +444,18 @@ export class SlackTemplateService extends BaseTemplateService {
 
           if (Array.isArray(array) && array.length > 0) {
             // For each item in the array, interpolate blocks
-            const interpolatedItemBlocks = array.flatMap((item: any) => {
-              return this.interpolateSlackBlocks(
-                blocks,
-                item,
-                translator,
-                {
-                  arrayPath: arrayPath,
-                }
-              )
-            })
+            const interpolatedItemBlocks = array.flatMap(
+              (item: any) => {
+                return this.interpolateSlackBlocks(
+                  blocks,
+                  item,
+                  translator,
+                  {
+                    arrayPath: arrayPath,
+                  }
+                )
+              }
+            )
 
             result.push(...interpolatedItemBlocks)
           }
@@ -632,7 +634,7 @@ export class SlackTemplateService extends BaseTemplateService {
 
     // Add backendUrl to data for interpolation
     const dataWithOptions = {
-      ...params.data
+      ...params.data,
     }
 
     const { template, translator, blocks } =

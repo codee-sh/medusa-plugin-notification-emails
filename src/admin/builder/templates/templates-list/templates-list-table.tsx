@@ -6,7 +6,7 @@ import {
   createDataTableColumnHelper,
   DataTablePaginationState,
   Tooltip,
-  Badge
+  Badge,
 } from "@medusajs/ui"
 import { useState, useMemo } from "react"
 import {
@@ -55,20 +55,20 @@ export const TemplatesListTable = ({
               <div className="py-2">
                 <div className="flex items-center gap-2 mb-2">
                   <span>{row?.original?.label}</span>
-                  {row?.original?.id &&
-                  <Tooltip
-                    content={
-                      <div
-                        dangerouslySetInnerHTML={{
-                          __html: tooltip,
-                        }}
-                      />
-                    }
-                    maxWidth={400}
-                  >
-                    <InformationCircleSolid />
-                  </Tooltip>
-                  }
+                  {row?.original?.id && (
+                    <Tooltip
+                      content={
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: tooltip,
+                          }}
+                        />
+                      }
+                      maxWidth={400}
+                    >
+                      <InformationCircleSolid />
+                    </Tooltip>
+                  )}
                 </div>
                 <div className="whitespace-normal text-xs max-w-[180px] min-w-[180px]">
                   <span>{row?.original?.description}</span>
@@ -112,7 +112,9 @@ export const TemplatesListTable = ({
           const color = row?.original?.is_active
             ? "green"
             : "red"
-          const text = row?.original?.is_active ? "Yes" : "No"
+          const text = row?.original?.is_active
+            ? "Yes"
+            : "No"
 
           return (
             <Badge size="small" color={color}>
@@ -127,18 +129,38 @@ export const TemplatesListTable = ({
           if (row?.original?.is_system) {
             return (
               <div className="flex items-center gap-2">
-                <Button size="small" variant="primary" onClick={() => navigate(`/mpn/templates/${row?.original?.name}/blocks`)}>Blocks</Button>
+                <Button
+                  size="small"
+                  variant="primary"
+                  onClick={() =>
+                    navigate(
+                      `/mpn/templates/${row?.original?.name}/blocks`
+                    )
+                  }
+                >
+                  Blocks
+                </Button>
               </div>
             )
           }
-          
+
           return (
             <div className="flex items-center gap-2">
               <TemplatesEditForm id={row?.original?.id} />
               <TemplateDeleteButton
                 id={row?.original?.id}
               />
-              <Button size="small" variant="primary" onClick={() => navigate(`/mpn/templates/${row?.original?.id}/blocks`)}>Blocks</Button>
+              <Button
+                size="small"
+                variant="primary"
+                onClick={() =>
+                  navigate(
+                    `/mpn/templates/${row?.original?.id}/blocks`
+                  )
+                }
+              >
+                Blocks
+              </Button>
             </div>
           )
         },
@@ -169,6 +191,6 @@ export const TemplatesListTable = ({
           <DataTable.Table />
         </>
       )}
-    </DataTable>  
+    </DataTable>
   )
 }

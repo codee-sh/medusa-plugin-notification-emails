@@ -40,10 +40,11 @@ export async function POST(
   res: MedusaResponse
 ) {
   if (req.body?.id) {
-    const { result: template } =
-      await editTemplateWorkflow(req.scope).run({
-        input: req.body as EditTemplateWorkflowInput,
-      })
+    const { result: template } = await editTemplateWorkflow(
+      req.scope
+    ).run({
+      input: req.body as EditTemplateWorkflowInput,
+    })
 
     res.json({
       template: template,
@@ -73,14 +74,15 @@ export async function GET(
     }
   }
 
-  const { result: templatesResult } = await getTemplateWorkflow(req.scope).run({
-    input: {
-      template_id: id as string,
-    },
-  })
+  const { result: templatesResult } =
+    await getTemplateWorkflow(req.scope).run({
+      input: {
+        template_id: id as string,
+      },
+    })
 
   res.json({
-    templates: templatesResult?.templates
+    templates: templatesResult?.templates,
   })
 }
 

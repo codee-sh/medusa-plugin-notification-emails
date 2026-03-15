@@ -448,7 +448,7 @@ export const ORDER_QUERY_FIELDS = [
   "order.credit_lines.*",
   "order.summary.*",
   "order.payment_collections.*",
-  "order.region.*"
+  "order.region.*",
 ]
 
 /**

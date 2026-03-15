@@ -10,7 +10,8 @@ export interface GetTemplatesByTypeServiceWorkflowInput {
   service_id: string
 }
 
-export const getTemplatesByTypeServiceWorkflowName = "get-templates-by-type-service"
+export const getTemplatesByTypeServiceWorkflowName =
+  "get-templates-by-type-service"
 
 /**
  * This workflow retrieves templates filtered by type and service.
@@ -23,11 +24,14 @@ export const getTemplatesByTypeServiceWorkflowName = "get-templates-by-type-serv
  *   }
  * })
  */
-export const getTemplatesByTypeServiceWorkflow = createWorkflow(
-  getTemplatesByTypeServiceWorkflowName,
-  (input: WorkflowData<GetTemplatesByTypeServiceWorkflowInput>) => {
-    const template = getTemplatesByTypeServiceStep(input)
+export const getTemplatesByTypeServiceWorkflow =
+  createWorkflow(
+    getTemplatesByTypeServiceWorkflowName,
+    (
+      input: WorkflowData<GetTemplatesByTypeServiceWorkflowInput>
+    ) => {
+      const template = getTemplatesByTypeServiceStep(input)
 
-    return new WorkflowResponse(template)
-  }
-)
+      return new WorkflowResponse(template)
+    }
+  )

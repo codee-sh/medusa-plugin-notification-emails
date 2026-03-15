@@ -16,11 +16,7 @@ import {
 } from "../../../../../hooks/api/templates"
 import { useListTemplates } from "../../../../../hooks/api/templates"
 import { TemplatesGeneralForm } from "../templates-general-form"
-import {
-  TemplateFormValues,
-  Tab,
-  TabState,
-} from "../types"
+import { TemplateFormValues, Tab, TabState } from "../types"
 import { baseTemplateFormSchema } from "../types/schema"
 
 export function TemplatesCreateForm() {
@@ -57,7 +53,7 @@ export function TemplatesCreateForm() {
       enabled: open,
     })
 
-  // // Create dynamic schema 
+  // // Create dynamic schema
   // const templateFormSchema = useMemo(() => {
   //   return baseTemplateFormSchema
   // }, [templatesData?.templates])
@@ -73,8 +69,8 @@ export function TemplatesCreateForm() {
         context_type: null,
         locale: "en",
         subject: null,
-        is_active: true
-      }
+        is_active: true,
+      },
     },
   })
 
@@ -90,7 +86,7 @@ export function TemplatesCreateForm() {
           locale: "en",
           subject: null,
           is_active: true,
-        }
+        },
       })
     }
   }, [open])
@@ -107,8 +103,7 @@ export function TemplatesCreateForm() {
         label: data.general.label,
         description: data.general.description,
         channel: data.general.channel,
-        context_type:
-          data.general.context_type ?? null,
+        context_type: data.general.context_type ?? null,
         locale: data.general.locale,
         subject: data.general.subject,
         is_active: data.general.is_active,
@@ -174,8 +169,7 @@ export function TemplatesCreateForm() {
                   form={form}
                   isOpen={open}
                   contextOptions={
-                    templateContextsData?.list ||
-                    []
+                    templateContextsData?.list || []
                   }
                 />
               )}

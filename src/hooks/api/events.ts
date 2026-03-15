@@ -43,16 +43,13 @@ export const useEvents = (
     EventsMutationVariables
   >({
     mutationFn: async (variables) => {
-      return await sdk.client.fetch(
-        "/admin/mpn/events",
-        {
-          method: "POST",
-          body: {
-            name: variables.name,
-            data: variables.data,
-          },
-        }
-      )
+      return await sdk.client.fetch("/admin/mpn/events", {
+        method: "POST",
+        body: {
+          name: variables.name,
+          data: variables.data,
+        },
+      })
     },
     ...(options as any),
   })

@@ -1,8 +1,5 @@
 import { FetchError } from "@medusajs/js-sdk"
-import {
-  QueryKey,
-  useQuery,
-} from "@tanstack/react-query"
+import { QueryKey, useQuery } from "@tanstack/react-query"
 import { sdk } from "../../../admin/lib/sdk"
 
 type ListTemplateContextsQueryData = {
@@ -18,9 +15,7 @@ type ListTemplateContextsQueryData = {
   }>
 }
 
-export const useListTemplateContexts = (
-  options?: any
-) => {
+export const useListTemplateContexts = (options?: any) => {
   const queryKey: QueryKey = ["template-contexts"]
 
   const { data, ...rest } = useQuery<
