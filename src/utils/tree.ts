@@ -1,18 +1,27 @@
-export interface BuildTreeOptions {
-  /**
-   * Key used to identify parent relationship (default: "parent_id")
-   */
-  parentKey?: string
-  /**
-   * Key used for sorting nodes (default: "position")
-   */
-  sortKey?: string
-  /**
-   * Whether to sort the tree (default: true)
-   */
-  sort?: boolean
-}
+import {
+  BuildTreeOptions,
+  FlattenTreeOptions,
+} from "./types"
 
+/**
+ * Converts a flat list of items (with parent_id references) into a hierarchical
+ * tree structure. Each node gets a `children` array. Roots are items with
+ * no parent or unknown parent. Nodes are sorted recursively by the specified
+ * sort key (default: position).
+ *
+ * @param items - Flat array of records with id and parent reference
+ * @param options - parentKey, sortKey, sort
+ * @returns Array of root nodes with nested children
+ *
+ * @example
+ * buildTree([
+ *   { id: "1", parent_id: null, position: 0 },
+ *   { id: "2", parent_id: "1", position: 0 },
+ * ])
+ * // => [{ id: "1", parent_id: null, position: 0, children: [
+ * //      { id: "2", parent_id: "1", position: 0, children: [] }
+ * //    ]}]
+ */
 export function buildTree(
   items: any[],
   options: BuildTreeOptions = {}
@@ -57,28 +66,25 @@ export function buildTree(
   return roots
 }
 
-export interface FlattenTreeOptions {
-  /**
-   * Key for child nodes (default: "children")
-   */
-  childrenKey?: string
-  /**
-   * Key for parent id in output (default: "parent_id")
-   */
-  parentKey?: string
-  /**
-   * Key for position in output (default: "position")
-   */
-  positionKey?: string
-  /**
-   * Parent id for current level (default: null for roots)
-   */
-  parentId?: string | null
-}
-
 /**
- * Converts a tree (nodes with children) into a flat array.
- * Inverse of buildTree.
+ * Converts a tree (nodes with children) into a flat array. Each node is
+ * output with parent_id, position, and children removed. Traversal is
+ * depth-first. Inverse of buildTree.
+ *
+ * @param nodes - Tree nodes with nested children
+ * @param options - childrenKey, parentKey, positionKey, parentId
+ * @returns Flat array of records with parent_id and position
+ *
+ * @example
+ * flattenTree([
+ *   { id: "1", parent_id: null, position: 0, children: [
+ *     { id: "2", parent_id: "1", position: 0, children: [] },
+ *   ]},
+ * ])
+ * // => [
+ * //   { id: "1", parent_id: null, position: 0 },
+ * //   { id: "2", parent_id: "1", position: 0 },
+ * // ]
  */
 export function flattenTree(
   nodes: any[],
