@@ -83,10 +83,11 @@ export class EmailTemplateService extends BaseTemplateService {
       this.interpolateBlocks.bind(this)
 
     // Register base template
-    this.registerTemplate(
-      TEMPLATES_EMAILS_NAMES.BASE_TEMPLATE,
-      this.baseTemplateConfig
-    )
+    this.registerTemplate({
+      name: TEMPLATES_EMAILS_NAMES.BASE_TEMPLATE,
+      renderer: this.baseTemplateConfig,
+      context_type: null,
+    })
 
     // Initialize default templates
     this.initializeSystemTemplates()
@@ -97,58 +98,78 @@ export class EmailTemplateService extends BaseTemplateService {
    */
   protected initializeSystemTemplates(): void {
     // Contact form template
-    this.registerTemplate(TEMPLATES_EMAILS_NAMES.CONTACT_FORM, {
-      ...this.baseTemplateConfig,
-      getConfig: (): any => {
-        return {
-          blocks: ContactFormTemplateBlocks,
-          translations: contactFormTranslations,
-        }
+    this.registerTemplate({
+      name: TEMPLATES_EMAILS_NAMES.CONTACT_FORM,
+      renderer: {
+        ...this.baseTemplateConfig,
+        getConfig: (): any => {
+          return {
+            blocks: ContactFormTemplateBlocks,
+            translations: contactFormTranslations,
+          }
+        },
       },
+      context_type: "contact_form",
     })
 
     // Order placed template
-    this.registerTemplate(TEMPLATES_EMAILS_NAMES.ORDER_PLACED, {
-      ...this.baseTemplateConfig,
-      getConfig: (): any => {
-        return {
-          blocks: OrderPlacedTemplateBlocks,
-          translations: orderPlacedTranslations,
-        }
+    this.registerTemplate({
+      name: TEMPLATES_EMAILS_NAMES.ORDER_PLACED,
+      renderer: {
+        ...this.baseTemplateConfig,
+        getConfig: (): any => {
+          return {
+            blocks: OrderPlacedTemplateBlocks,
+            translations: orderPlacedTranslations,
+          }
+        },
       },
+      context_type: "order",
     })
 
     // Order completed template
-    this.registerTemplate(TEMPLATES_EMAILS_NAMES.ORDER_COMPLETED, {
-      ...this.baseTemplateConfig,
-      getConfig: (): any => {
-        return {
-          blocks: OrderCompletedTemplateBlocks,
-          translations: orderCompletedTranslations,
-        }
+    this.registerTemplate({
+      name: TEMPLATES_EMAILS_NAMES.ORDER_COMPLETED,
+      renderer: {
+        ...this.baseTemplateConfig,
+        getConfig: (): any => {
+          return {
+            blocks: OrderCompletedTemplateBlocks,
+            translations: orderCompletedTranslations,
+          }
+        },
       },
+      context_type: "order",
     })
 
     // Order updated template
-    this.registerTemplate(TEMPLATES_EMAILS_NAMES.ORDER_UPDATED, {
-      ...this.baseTemplateConfig,
-      getConfig: (): any => {
-        return {
-          blocks: OrderUpdatedTemplateBlocks,
-          translations: orderUpdatedTranslations,
-        }
+    this.registerTemplate({
+      name: TEMPLATES_EMAILS_NAMES.ORDER_UPDATED,
+      renderer: {
+        ...this.baseTemplateConfig,
+        getConfig: (): any => {
+          return {
+            blocks: OrderUpdatedTemplateBlocks,
+            translations: orderUpdatedTranslations,
+          }
+        },
       },
+      context_type: "order",
     })
 
     // Inventory level template
-    this.registerTemplate(TEMPLATES_EMAILS_NAMES.INVENTORY_LEVEL, {
-      ...this.baseTemplateConfig,
-      getConfig: (): any => {
-        return {
-          blocks: InventoryLevelTemplateBlocks,
-          translations: inventoryLevelTranslations,
-        }
+    this.registerTemplate({
+      name: TEMPLATES_EMAILS_NAMES.INVENTORY_LEVEL,
+      renderer: {
+        ...this.baseTemplateConfig,
+        getConfig: (): any => {
+          return {
+            blocks: InventoryLevelTemplateBlocks,
+            translations: inventoryLevelTranslations,
+          }
+        },
       },
+      context_type: "inventory_level",
     })
   }
 

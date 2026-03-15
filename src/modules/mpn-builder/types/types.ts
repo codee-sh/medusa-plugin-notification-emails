@@ -8,6 +8,19 @@ export type TemplateRenderer = {
   [key: string]: any
 }
 
+export type RegisterTemplateInput = {
+  name: string
+  renderer: TemplateRenderer
+  type?: string
+  context_type?: string | null
+}
+
+export type RegisteredTemplate = {
+  renderer: TemplateRenderer
+  type: string
+  context_type: string | null
+}
+
 /**
  * Block type
  */
@@ -41,6 +54,7 @@ export type ModuleOptions = {
       templates?: Array<{
         name: string
         path: string
+        context_type?: string | null
       }>
     }>
   }

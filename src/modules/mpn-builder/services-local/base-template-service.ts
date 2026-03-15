@@ -1,4 +1,9 @@
-import { BaseTemplateServiceInterface, TemplateRenderer } from "../types"
+import {
+  BaseTemplateServiceInterface,
+  RegisterTemplateInput,
+  RegisteredTemplate,
+  TemplateRenderer,
+} from "../types"
 import { TEMPLATE_TYPES } from "../types/constants"
 import {
   createTranslator,
@@ -26,7 +31,10 @@ export class BaseTemplateService implements BaseTemplateServiceInterface {
   blocks: BlockDefinition[] = []
 
   // Template registry - each service manages its own templates
-  protected templates_: Map<string, TemplateRenderer> =
+  protected templates_: Map<
+    string,
+    RegisteredTemplate
+  > =
     new Map()
 
   /**
@@ -36,11 +44,16 @@ export class BaseTemplateService implements BaseTemplateServiceInterface {
    * @param type - Template type (default: "system")
    */
   registerTemplate(
-    name: string,
-    renderer: TemplateRenderer,
-    type: string = TEMPLATE_TYPES.SYSTEM_TEMPLATE
+    params: RegisterTemplateInput
   ): void {
-    this.templates_.set(name, { renderer, type: type })
+    this.templates_.set(params.name, {
+      renderer: params.renderer,
+      type:
+        params.type ||
+        TEMPLATE_TYPES.SYSTEM_TEMPLATE,
+      context_type:
+        params.context_type ?? null,
+    })
   }
 
   /**
@@ -78,6 +91,7 @@ export class BaseTemplateService implements BaseTemplateServiceInterface {
         label: name,
         description: null,
         channel: this.id,
+        context_type: renderer.context_type,
         is_system: type === TEMPLATE_TYPES.SYSTEM_TEMPLATE,
         is_active: true,
         type: renderer.type,

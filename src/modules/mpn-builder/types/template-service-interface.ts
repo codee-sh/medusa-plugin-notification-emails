@@ -1,4 +1,7 @@
-import { TemplateRenderer } from "./types"
+import {
+  RegisterTemplateInput,
+  TemplateRenderer,
+} from "./types"
 import { BlockDefinition } from "../../../fields"
 
 /**
@@ -48,9 +51,7 @@ export interface BaseTemplateServiceInterface {
    * @param type - Template type (default: "system")
    */
   registerTemplate?: (
-    name: string,
-    renderer: TemplateRenderer,
-    type?: string
+    params: RegisterTemplateInput
   ) => void
 
   /**

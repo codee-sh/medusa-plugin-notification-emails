@@ -144,9 +144,14 @@ class MpnBuilderService extends MedusaService({
 
                 if (templateName) {
                   templateService.registerTemplate!(
-                    templateName,
-                    renderer,
-                    "external"
+                    {
+                      name: templateName,
+                      renderer,
+                      type: "external",
+                      context_type:
+                        template.context_type ||
+                        null,
+                    }
                   )
 
                   this.logger_.info(
