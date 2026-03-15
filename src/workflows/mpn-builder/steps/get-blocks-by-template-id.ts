@@ -6,7 +6,6 @@ import {
 import { MPN_BUILDER_MODULE } from "../../../modules/mpn-builder"
 import MpnBuilderService from "../../../modules/mpn-builder/service"
 import { buildTree } from "../../../utils"
-import { FlatBlockRecord } from "../../../fields/types"
 
 export interface GetBlocksByTemplateStepInput {
   template_id: string
@@ -18,19 +17,6 @@ export interface GetBlocksByTemplateStepOutput {
 
 export const getBlocksByTemplateStepId =
   "get-blocks-by-template"
-
-const normalizeRecord = (
-  record: Record<string, any>
-): FlatBlockRecord => {
-  return {
-    id: record.id,
-    template_id: record.template_id,
-    type: record.type,
-    parent_id: record.parent_id ?? null,
-    position: Number(record.position ?? 0),
-    metadata: record.metadata ?? null,
-  }
-}
 
 /**
  * Retrieves all blocks for a specific template, organized as a tree structure.
@@ -58,13 +44,21 @@ export const getBlocksByTemplateStep = createStep(
       )
     }
 
-    const records =
+    const items =
       await mpnBuilderService.listMpnBuilderTemplateBlocks({
         template_id: input.template_id,
       })
-    const blocks = records.map((record: any) =>
-      normalizeRecord(record)
-    )
+      
+    const blocks = items.map((item: any) => ({
+      id: item.id,
+      template_id: item.template_id,
+      type: item.type,
+      parent_id: item.parent_id ?? null,
+      position: Number(item.position ?? 0),
+      metadata: item.metadata ?? null,
+    }))
+
+    // Convert flat array of blocks from the database to a tree structure
     const tree = buildTree(blocks)
 
     return new StepResponse({
