@@ -112,19 +112,25 @@ class MpnBuilderService extends MedusaService({
               async (template: any) => {
                 const templateName = template.name
                 const templateValue = template.path
+                const templateModule_ = template.module
 
                 let renderer = templateValue
 
                 try {
-                  const templateModule = await import(
-                    templateValue
-                  )
-                  renderer =
-                    templateModule?.default || templateModule
+                  let rawModule: any
+
+                  if (templateModule_) {
+                    rawModule = templateModule_
+                  } else {
+                    const imported = await import(templateValue)
+                    rawModule = imported?.default || imported
+                  }
+
+                  renderer = rawModule
 
                   if (!renderer) {
                     this.logger_.warn(
-                      `Template module from "${templateValue}" does not export a default function or expected named export`
+                      `Template module from "${templateValue ?? "module"}" does not export a default function or expected named export`
                     )
                     return
                   }
@@ -136,7 +142,7 @@ class MpnBuilderService extends MedusaService({
                     )
                 } catch (error: any) {
                   this.logger_.warn(
-                    `Failed to load template from "${templateValue}": ${error?.message || "Unknown error"}`
+                    `Failed to load template from "${templateValue ?? "module"}": ${error?.message || "Unknown error"}`
                   )
                   return
                 }
