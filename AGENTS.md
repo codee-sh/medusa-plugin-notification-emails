@@ -182,9 +182,10 @@ Project skills are in `.ai/skills/` (symlinked to `.cursor/skills/` and `.codex/
 
 ## Rules for Agents
 
-1. Always run `yarn format` before committing.
-2. Follow the branch model: feature work from `develop`, PRs to `develop`.
-3. Add a changeset (`yarn changeset`) for any user-facing change.
-4. Use consistent terminology: `system`, `db`, `external`, `blocks`, `mpn-builder`, `workflow`.
-5. When changing docs, follow the `docs` skill.
-6. Do not commit `.env`, `node_modules`, `.medusa/`, or build artifacts.
+1. Never run `yarn install`, `yarn dev`, `medusa develop`, or other long-running/dependency-install commands on the user's behalf, in this repo or in sibling repos (`vending-plugin`, `app/apps/venloop`, `storefront`) — the user runs these themselves to save tokens. Tell them what to run and what to check instead.
+2. Always run `yarn format` before committing.
+3. Follow the branch model: feature work from `develop`, PRs to `develop`.
+4. Add a changeset (`yarn changeset`) for any user-facing change.
+5. Use consistent terminology: `system`, `db`, `external`, `blocks`, `mpn-builder`, `workflow`.
+6. When changing docs, follow the `docs` skill.
+7. Do not commit `.env`, `node_modules`, `.medusa/`, or build artifacts.
