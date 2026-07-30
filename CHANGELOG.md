@@ -1,5 +1,11 @@
 # @codee-sh/medusa-plugin-notification-emails
 
+## 1.0.4
+
+### Patch Changes
+
+- Support registering external templates via a directly-imported module object (`template.module`), not just a resolvable file path (`template.path`). Lets host apps register a template that lives locally (not published as its own package) by statically importing it and passing the module in `extend.services[].templates[].module`.
+
 ## 1.0.2
 
 ### Patch Changes

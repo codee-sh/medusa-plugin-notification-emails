@@ -56,7 +56,8 @@ export type ModuleOptions = {
       id: string
       templates?: Array<{
         name: string
-        path: string
+        path?: string
+        module?: Record<string, any>
       }>
     }>
   }
