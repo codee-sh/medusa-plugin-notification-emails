@@ -1,4 +1,5 @@
 import { pickValueFromObject, isObject } from "../index"
+import { DEFAULT_LOCALE } from "../../modules/mpn-builder/types/constants"
 
 /**
  * Simple i18n utility for templates
@@ -48,17 +49,61 @@ export function getVariableValue(text: string): {
 }
 
 /**
+ * Options of multiInterpolate
+ */
+export type InterpolateConfig = {
+  /**
+   * Array path of the repeater item the data belongs to. Data placeholders then read
+   * `{{data.<arrayPath>.<field>}}` from the item.
+   */
+  arrayPath?: string
+  /**
+   * Applied to every value that comes from data, never to translation text, which the template
+   * author owns. Pass escapeHtml when the result is rendered as HTML.
+   */
+  escape?: (value: string) => string
+  /**
+   * Replaces a data placeholder with no value by an empty string instead of keeping it.
+   */
+  emptyMissing?: boolean
+}
+
+const VARIABLE_REGEX =
+  /\{\{((?:data\.|translations\.)?\w+(?:\.\w+)*)\}\}/g
+
+const HTML_ESCAPES: Record<string, string> = {
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  '"': "&quot;",
+  "'": "&#39;",
+}
+
+/**
+ * Escapes the characters that HTML would read as markup
+ */
+export function escapeHtml(value: string): string {
+  return value.replace(
+    /[&<>"']/g,
+    (character) => HTML_ESCAPES[character]
+  )
+}
+
+/**
  * Group interpolate - handles variables with prefixes (data. or translations.)
  *
  * Variables with prefix `data.` are resolved using pickValueFromObject function
- * Variables with prefix `translations.` are resolved using translator.t function
+ * Variables with prefix `translations.` are resolved using translator.t function, and the
+ * translation text is interpolated in turn.
+ *
+ * The text is scanned once: a value inserted from data is never interpolated again, so a
+ * `{{...}}` inside a value stays literal, and `$&` or `$1` inside a value is inserted as is.
  *
  * @param text - Text with {{data.variable}} or {{translations.key}} placeholders
  * @param data - Data object for interpolation
  * @param translator - Translator instance with t method
- * @param config - Configuration object
- * @param config - arrayPath - Array path for data object
- * @returns Interpolated text with all variables resolved
+ * @param config - Interpolation options, see InterpolateConfig
+ * @returns Interpolated text
  *
  * @example
  * multiInterpolate(
@@ -74,74 +119,53 @@ export function multiInterpolate(
   translator: {
     t: (key: string, data?: Record<string, any>) => string
   },
-  config?: any
+  config?: InterpolateConfig
 ): string {
   if (!text || typeof text !== "string") {
     return text
   }
 
-  // Find all variables in format {{...}}
-  const variableRegex =
-    /\{\{((?:data\.|translations\.)?\w+(?:\.\w+)*)\}\}/g
-  const matches = Array.from(text.matchAll(variableRegex))
-
-  if (matches.length === 0) {
-    return text
-  }
-
-  // Build dynamic data prefix array (e.g., ["data"] or ["data", "items"])
   const dataPrefix = config?.arrayPath
-    ? ["data", config.arrayPath]
-    : ["data"]
-  const dataPrefixString = dataPrefix.join(".")
+    ? `data.${config.arrayPath}.`
+    : "data."
 
-  // Process each variable separately
-  let result = text
-  for (const match of matches) {
-    const fullMatch = match[0] // e.g., "{{data.order.id}}"
-    const variable = match[1] // e.g., "data.order.id"
+  return text.replace(
+    VARIABLE_REGEX,
+    (match: string, variable: string) => {
+      if (variable.startsWith(dataPrefix)) {
+        const value = pickValueFromObject(
+          variable.slice(dataPrefix.length),
+          data
+        )
 
-    let replacement: string | undefined
+        if (value === undefined || value === null) {
+          return config?.emptyMissing ? "" : match
+        }
 
-    // Check if variable starts with dynamic data prefix
-    if (variable.startsWith(`${dataPrefixString}.`)) {
-      const escapedPrefix = dataPrefixString.replace(
-        /\./g,
-        "\\."
-      )
-      const dataPath = variable.replace(
-        new RegExp(`^${escapedPrefix}\\.`),
-        ""
-      )
-      const value = pickValueFromObject(dataPath, data)
+        const stringValue = String(value)
 
-      if (value === undefined || value === null) {
-        replacement = undefined
-      } else {
-        replacement = String(value)
+        return config?.escape
+          ? config.escape(stringValue)
+          : stringValue
       }
-    }
-    // Check if variable starts with translations. prefix
-    else if (variable.startsWith("translations.")) {
-      const translationKey = variable.replace(
-        /^translations\./,
-        ""
-      )
-      replacement = translator.t(translationKey, data)
-      replacement = multiInterpolate(
-        replacement,
-        data,
-        translator
-      )
-    }
 
-    // Replace the variable in text if we found a replacement
-    if (replacement !== undefined) {
-      result = result.replace(fullMatch, replacement)
-    }
-  }
+      if (variable.startsWith("translations.")) {
+        const translation = translator.t(
+          variable.slice("translations.".length),
+          data
+        )
 
-  return result
+        return multiInterpolate(
+          translation,
+          data,
+          translator,
+          config
+        )
+      }
+
+      return match
+    }
+  )
 }
 
 /**
@@ -158,9 +182,11 @@ export function t(
   translations: Record<string, any>,
   key: string
 ): string {
-  // Get translations for locale with fallback to 'pl'
+  // Get translations for locale with fallback to the default locale
   const localeTranslations =
-    translations[locale] || translations["pl"] || {}
+    translations[locale] ||
+    translations[DEFAULT_LOCALE] ||
+    {}
 
   // Flatten translations structure
   const flatTranslations = flattenTranslations(

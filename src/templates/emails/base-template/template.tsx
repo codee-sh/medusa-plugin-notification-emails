@@ -13,11 +13,7 @@ import {
   Heading,
   Hr,
 } from "@react-email/components"
-import {
-  render,
-  pretty,
-  toPlainText,
-} from "@react-email/render"
+import { render, pretty } from "@react-email/render"
 import { TemplateOptionsType } from "../../../modules/mpn-builder/types/interfaces"
 import { BlockRenderer } from "../blocks"
 
@@ -60,6 +56,9 @@ export async function renderText(
   data: any,
   options: TemplateOptionsType
 ): Promise<any> {
-  const html = await render(renderHTMLReact(data, options))
-  return toPlainText(html)
+  // `plainText` instead of `toPlainText`, which @react-email/render 1.1.4 - the version Medusa
+  // Cloud supports - does not export
+  return await render(renderHTMLReact(data, options), {
+    plainText: true,
+  })
 }

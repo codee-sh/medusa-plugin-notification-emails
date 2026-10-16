@@ -62,3 +62,33 @@ export type ModuleOptions = {
     }>
   }
 }
+
+/**
+ * Events the plugin's own subscribers answer
+ */
+export type PluginSubscriberEvent =
+  | "order.placed"
+  | "order.completed"
+
+/**
+ * Options of one plugin subscriber
+ */
+export type PluginSubscriberOptions = {
+  enabled: boolean
+  locale?: string
+}
+
+/**
+ * Plugin options type. The plugin passes them to its module as well, so they extend ModuleOptions.
+ */
+export type PluginOptions = ModuleOptions & {
+  /**
+   * Opt-in switches for the plugin's subscribers. A subscriber whose event is not set to
+   * `enabled: true` does nothing.
+   */
+  subscribers?: Partial<
+    Record<PluginSubscriberEvent, PluginSubscriberOptions>
+  >
+  theme?: Record<string, any>
+  customTranslations?: Record<string, Record<string, any>>
+}
