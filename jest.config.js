@@ -13,6 +13,12 @@ module.exports = {
             decorators: true,
             tsx: true,
           },
+          // Block components use the automatic JSX runtime and do not import React
+          transform: {
+            react: {
+              runtime: "automatic",
+            },
+          },
           target: "es2021",
         },
       },

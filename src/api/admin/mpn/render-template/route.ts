@@ -5,7 +5,11 @@ import {
 import { MedusaError } from "@medusajs/framework/utils"
 import { defaultTheme } from "../../../../templates/shared/theme"
 import { transformContext } from "../../../../utils/transforms"
-import { getPluginOptions } from "../../../../utils/plugins"
+import {
+  getPluginOptions,
+  PLUGIN_NAME,
+} from "../../../../utils/plugins"
+import { DEFAULT_LOCALE } from "../../../../modules/mpn-builder/types"
 import { MPN_BUILDER_MODULE } from "../../../../modules/mpn-builder"
 import { emailServiceWorkflow } from "../../../../workflows/mpn-builder-services/email-service"
 
@@ -21,14 +25,14 @@ export async function POST(
 ) {
   const pluginOptions = getPluginOptions(
     req.scope,
-    "@codee-sh/medusa-plugin-notification"
+    PLUGIN_NAME
   )
 
   const templateId = req.body?.templateId
   const context = req.body?.context
   const contextType = req.body?.contextType
 
-  const locale = req.body?.locale || "pl"
+  const locale = req.body?.locale || DEFAULT_LOCALE
 
   if (!templateId || !context || !locale) {
     throw new MedusaError(
@@ -43,7 +47,9 @@ export async function POST(
     locale
   )
 
-  const { result: { html, text, subject } } = await emailServiceWorkflow(req.scope).run({
+  const {
+    result: { html, text, subject },
+  } = await emailServiceWorkflow(req.scope).run({
     input: {
       template_id: templateId,
       data: transformedTemplateData,
