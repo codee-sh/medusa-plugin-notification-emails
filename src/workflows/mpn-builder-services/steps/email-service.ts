@@ -5,16 +5,21 @@ import {
 import { getTemplateWorkflow } from "../../mpn-builder/get-template"
 import { buildTree } from "../../../utils"
 import { TEMPLATE_TYPES } from "../../../modules/mpn-builder/types"
+import {
+  EmailServiceWorkflowInput,
+  EmailServiceWorkflowOutput,
+} from "../types"
 
-export const emailServiceStepId = "mpn-builder-email-service-step"
+export const emailServiceStepId =
+  "mpn-builder-email-service-step"
 
 /**
  * This step renders an email template using the email service.
  *
  * @param input - The input for the step.
- * - template_id: Required - The ID of the template to render. It can be a system template or a database template.
+ * - template_id: Required - The ID of the template to render. It can be a system, external or database template.
  * - data: Required - The data to render the template with.
- * - options: Optional - The options to render the template with.
+ * - options: Optional - locale, subject, theme and translations.
  *
  * @example
  * const { html, text, subject } = emailServiceStep({
@@ -26,15 +31,15 @@ export const emailServiceStepId = "mpn-builder-email-service-step"
  *     locale: "en",
  *   },
  * })
- * 
+ *
  * @returns The HTML, text, and subject of the rendered template.
  */
 export const emailServiceStep = createStep(
   emailServiceStepId,
   async (
-    input: any,
+    input: EmailServiceWorkflowInput,
     { container }
-  ): Promise<StepResponse<any>> => {
+  ): Promise<StepResponse<EmailServiceWorkflowOutput>> => {
     const mpnBuilderService = container.resolve(
       "mpnBuilder"
     ) as any
@@ -44,28 +49,37 @@ export const emailServiceStep = createStep(
         "email"
       )?.templateService
 
+    const options = input.options || {}
     const templateId = input.template_id
-    const isSystemTemplateId = templateId?.startsWith(TEMPLATE_TYPES.SYSTEM_TEMPLATE)
-    const isExternalTemplateId = templateId?.startsWith(TEMPLATE_TYPES.EXTERNAL_TEMPLATE)
-    const isRegistryTemplate = isSystemTemplateId || isExternalTemplateId
+    const isSystemTemplateId = templateId?.startsWith(
+      TEMPLATE_TYPES.SYSTEM_TEMPLATE
+    )
+    const isExternalTemplateId = templateId?.startsWith(
+      TEMPLATE_TYPES.EXTERNAL_TEMPLATE
+    )
+    const isRegistryTemplate =
+      isSystemTemplateId || isExternalTemplateId
 
     let blocks: any[] = []
-    let template: any = {}
 
     // If it's not a registry template, get the blocks from the database
     if (!isRegistryTemplate) {
-      const { result: templateData } = await getTemplateWorkflow(container).run({
-        input: {
-          template_id: templateId,
-          fields: ["blocks.*"],
-        }
-      })
+      const { result: templateData } =
+        await getTemplateWorkflow(container).run({
+          input: {
+            template_id: templateId,
+            fields: ["blocks.*"],
+          },
+        })
 
-      const blocksTree = buildTree(templateData?.templates[0]?.blocks)
-
-      blocks = templateEmailService?.transformBlocksForRendering(
-        blocksTree
+      const blocksTree = buildTree(
+        templateData?.templates[0]?.blocks
       )
+
+      blocks =
+        templateEmailService?.transformBlocksForRendering(
+          blocksTree
+        )
     }
 
     const { html, text, subject } =
@@ -75,11 +89,11 @@ export const emailServiceStep = createStep(
           : "base-template",
         data: input.data,
         options: {
-          locale: input.options.locale,
-          theme: input.options.theme,
-          translations: input.options.translations,
+          locale: options.locale,
+          theme: options.theme,
+          translations: options.translations,
           blocks: blocks,
-          subject: template?.subject,
+          subject: options.subject,
         },
       })
 

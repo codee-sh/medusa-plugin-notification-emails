@@ -1,19 +1,21 @@
 import {
   MedusaService,
   MedusaError,
+  dynamicImport,
 } from "@medusajs/framework/utils"
 import {
   MpnBuilderTemplate,
   MpnBuilderTemplateBlock,
 } from "./models"
-import {
-  ModuleOptions,
-} from "./types"
+import { ModuleOptions } from "./types"
 import { Logger } from "@medusajs/framework/types"
 import { EmailTemplateService } from "./services-local/email-template-service"
 import { BaseTemplateService } from "./services-local/base-template-service"
 import { SlackTemplateService } from "./services-local/slack-template-service"
-import { TEMPLATE_TYPES, TEMPLATE_TYPES_NAMES } from "./types/constants"
+import {
+  TEMPLATE_TYPES,
+  TEMPLATE_TYPES_NAMES,
+} from "./types/constants"
 
 type InjectedDependencies = {
   logger: Logger
@@ -25,8 +27,14 @@ class MpnBuilderService extends MedusaService({
 }) {
   private options_: ModuleOptions
   private logger_: Logger
-  private templateServices_: Map<string, { templateService: BaseTemplateService; enabled: boolean }> = new Map()
-  
+  private templateServices_: Map<
+    string,
+    {
+      templateService: BaseTemplateService
+      enabled: boolean
+    }
+  > = new Map()
+
   constructor(
     { logger }: InjectedDependencies,
     options?: ModuleOptions
@@ -37,7 +45,7 @@ class MpnBuilderService extends MedusaService({
     this.options_ = options || {}
 
     // Initialize default templates
-    this.initializeTemplateServices()    
+    this.initializeTemplateServices()
 
     // Initialize extended services (custom handlers and templates)
     // Note: templates with import paths will be loaded asynchronously
@@ -45,7 +53,7 @@ class MpnBuilderService extends MedusaService({
       this.logger_.error(
         `Failed to initialize extended services: ${error?.message || "Unknown error"}`
       )
-    })    
+    })
   }
 
   /**
@@ -67,10 +75,9 @@ class MpnBuilderService extends MedusaService({
 
       this.logger_.info(
         `Template service for ${templateService.id} registered`
-      )      
+      )
     })
   }
-
 
   /**
    * Initialize extended actions (custom handlers and templates)
@@ -79,14 +86,13 @@ class MpnBuilderService extends MedusaService({
    * @returns Promise<void>
    */
   private async initializeExtendedServices(): Promise<void> {
-    const extendedServices = this.options_.extend?.services || []
+    const extendedServices =
+      this.options_.extend?.services || []
 
     await Promise.all(
       extendedServices.map(async (serviceConfig: any) => {
         // 2. Register templates (for existing or newly registered handler)
-        if (
-          serviceConfig.templates
-        ) {
+        if (serviceConfig.templates) {
           const handlerData = this.getTemplateService(
             serviceConfig.id
           )
@@ -114,35 +120,36 @@ class MpnBuilderService extends MedusaService({
                 const templateValue = template.path
                 const templateModule_ = template.module
 
-                let renderer = templateValue
+                const source = templateModule_
+                  ? "module option"
+                  : `"${templateValue}"`
+
+                let renderer: any
 
                 try {
-                  let rawModule: any
+                  // `require` semantics: a path without extension resolves to .js, .ts
+                  // (through the TypeScript loader in development) or a directory's index
+                  const rawModule = templateModule_
+                    ? templateModule_
+                    : await dynamicImport(templateValue!)
 
-                  if (templateModule_) {
-                    rawModule = templateModule_
-                  } else {
-                    const imported = await import(templateValue)
-                    rawModule = imported?.default || imported
-                  }
-
-                  renderer = rawModule
+                  renderer =
+                    this.pickTemplateExports(rawModule)
 
                   if (!renderer) {
-                    this.logger_.warn(
-                      `Template module from "${templateValue ?? "module"}" does not export a default function or expected named export`
+                    this.logger_.error(
+                      `External template "${templateName}" from ${source} exports neither templateBlocks nor translations`
                     )
                     return
                   }
 
-                  renderer =
-                    this.normalizeExternalRenderer(
-                      renderer,
-                      templateService
-                    )
+                  renderer = this.normalizeExternalRenderer(
+                    renderer,
+                    templateService
+                  )
                 } catch (error: any) {
-                  this.logger_.warn(
-                    `Failed to load template from "${templateValue ?? "module"}": ${error?.message || "Unknown error"}`
+                  this.logger_.error(
+                    `Failed to load external template "${templateName}" from ${source}: ${error?.message || "Unknown error"}`
                   )
                   return
                 }
@@ -163,6 +170,20 @@ class MpnBuilderService extends MedusaService({
           )
         }
       })
+    )
+  }
+
+  /**
+   * Returns the object carrying the template contract: the named exports `templateBlocks` and
+   * `translations`, looked up on the module itself first and on its default export second.
+   */
+  private pickTemplateExports(rawModule: any) {
+    const candidates = [rawModule, rawModule?.default]
+
+    return candidates.find(
+      (candidate) =>
+        candidate &&
+        (candidate.templateBlocks || candidate.translations)
     )
   }
 
@@ -223,7 +244,10 @@ class MpnBuilderService extends MedusaService({
    */
   private getTemplateServices(): Map<
     string,
-    { templateService: BaseTemplateService; enabled: boolean }
+    {
+      templateService: BaseTemplateService
+      enabled: boolean
+    }
   > {
     return this.templateServices_
   }
@@ -234,10 +258,11 @@ class MpnBuilderService extends MedusaService({
    * @param templateServiceId - Template service ID
    * @returns Template service
    */
-  getTemplateService(
-    templateServiceId: string
-  ):
-    | { templateService: BaseTemplateService; enabled: boolean }
+  getTemplateService(templateServiceId: string):
+    | {
+        templateService: BaseTemplateService
+        enabled: boolean
+      }
     | undefined {
     const templateServices = this.getTemplateServices()
     return templateServices.get(templateServiceId)
@@ -266,23 +291,25 @@ class MpnBuilderService extends MedusaService({
           configComponentKey: template?.configComponentKey,
           blocks: templateBlocks,
           enabled: enabled,
-        }
+        },
       ]
     }
 
-    return Array.from(templates.values()).map((template) => {
-      let blocks = template.templateService.blocks || []
+    return Array.from(templates.values()).map(
+      (template) => {
+        let blocks = template.templateService.blocks || []
 
-      return {
-        id: template.templateService.id,
-        label: template.templateService.label,
-        description: template.templateService.description,
-        configComponentKey:
-          template.templateService.configComponentKey,
-        blocks: blocks,
-        enabled: template.enabled,
+        return {
+          id: template.templateService.id,
+          label: template.templateService.label,
+          description: template.templateService.description,
+          configComponentKey:
+            template.templateService.configComponentKey,
+          blocks: blocks,
+          enabled: template.enabled,
+        }
       }
-    })
+    )
   }
 }
 

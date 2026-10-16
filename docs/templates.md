@@ -32,8 +32,8 @@ Type/service combinations are available through Admin API:
 Rendering workflows read `template_id` and resolve source automatically:
 
 - `template_id` starting with `system_` -> `system` template registry
+- `template_id` starting with `external_` -> `external` template registry, when registered in config
 - any other `template_id` -> DB lookup (`db` template)
-- `external` templates are available in service registry when registered in config
 
 Main workflows:
 
@@ -146,9 +146,36 @@ DB model stores blocks as:
 
 ## 3) External templates (config-owned)
 
-Use this when templates live outside plugin repo (e.g. dedicated package).
+Use this when templates live outside plugin repo (in your application or a dedicated package).
 
-Register via `options.extend.services` in `medusa-config.ts`:
+An external template is a module with two named exports:
+
+- `templateBlocks` - the final blocks, the same contract as `system` templates
+- `translations` - dictionaries keyed by locale; `headerTitle` is the default email subject
+
+```typescript
+// src/notifications/email/order-summary/index.ts
+import en from "./translations/en.json"
+
+export const translations = { en }
+
+export const templateBlocks = [
+  { id: "title", type: "heading", props: { value: "{{translations.headerTitle}}" } },
+  { id: "total", type: "row", props: { label: "Total", value: "{{data.total}}" } },
+]
+```
+
+Register a template from your application as `module` (see
+[Configuration](./configuration.md#extendservices)):
+
+```typescript
+import * as orderSummaryTemplate from "./src/notifications/email/order-summary"
+
+// options.extend.services:
+[{ id: "email", templates: [{ name: "external_order-summary", module: orderSummaryTemplate }] }]
+```
+
+Register a template shipped as compiled JavaScript in a package by `path`:
 
 ```typescript
 import path from "path"
@@ -185,29 +212,74 @@ After registration, template becomes available as type `external` for that servi
 
 ### Email workflow
 
+Import the workflows, and their input types, from the `workflows` entry point:
+
 ```typescript
-import { emailServiceWorkflow } from "@codee-sh/medusa-plugin-notification-emails/workflows/mpn-builder-services/email-service"
+import {
+  emailServiceWorkflow,
+  type EmailServiceWorkflowInput,
+} from "@codee-sh/medusa-plugin-notification-emails/workflows"
 
 const {
   result: { html, text, subject },
 } = await emailServiceWorkflow(container).run({
   input: {
-    template_id: "system_order-placed", // or db template id
+    template_id: "system_order-placed", // or an external or db template id
     data: templateData,
     options: {
-      locale: "en",
+      locale: "en", // default "en"
+      subject: "Order {{data.order.id}}", // default "{{translations.headerTitle}}"
       translations: {
-        headerTitle: "Custom title"
+        en: { headerTitle: "Custom title" }
       }
     }
   }
 })
 ```
 
+`options` is optional. The workflow only renders: pass `{ subject, html, text }` to the
+Notification Module as the notification `content`. Inside your own workflow, run it with
+`emailServiceWorkflow.runAsStep({ input })`.
+
+### Rendering rules
+
+These apply to every email template, whatever its source.
+
+- **Placeholders.** `{{data.<path>}}` reads the render `data`; `{{translations.<key>}}` reads the
+  template's translations, and the translation text is interpolated in turn. A data placeholder
+  with no value renders as an empty string.
+- **Escaping.** Values from `data` are HTML-escaped wherever a block renders HTML (`text`, `row`
+  value, `product-item` value), so `A < B & C` shows as text. Translation text, which the template
+  author owns, may contain HTML. A value is inserted once: `{{...}}`, `$&` or `$1` inside a value
+  stays literal. The subject is plain text and is not escaped.
+- **Empty blocks.** A `heading`, `text` or `row` whose value is empty or whitespace after
+  interpolation is not rendered.
+- **Repeater.** Every block in `itemBlocks` renders for every item of the array at `arrayPath`, in
+  order. Item blocks, and blocks nested inside them (for example in a `section`), read the current
+  item through the array path: with `arrayPath: "rows"`, `{{data.rows.message}}` is the item's
+  `message`. With an empty or missing array the repeater renders `emptyBlocks` when given,
+  otherwise nothing.
+
+```typescript
+{
+  type: "repeater",
+  props: {
+    arrayPath: "rows",
+    itemBlocks: [
+      { type: "heading", props: { value: "{{data.rows.group_title}}" } },
+      { type: "text", props: { value: "{{data.rows.id}}: {{data.rows.message}}" } }
+    ],
+    emptyBlocks: [
+      { type: "text", props: { value: "Nothing to report." } }
+    ]
+  }
+}
+```
+
 ### Slack workflow
 
 ```typescript
-import { slackServiceWorkflow } from "@codee-sh/medusa-plugin-notification-emails/workflows/mpn-builder-services/slack-service"
+import { slackServiceWorkflow } from "@codee-sh/medusa-plugin-notification-emails/workflows"
 
 const {
   result: { blocks },
@@ -238,7 +310,7 @@ In custom subscriber logic, call rendering workflow first, then pass rendered co
 
 ```typescript
 import { Modules } from "@medusajs/framework/utils"
-import { emailServiceWorkflow } from "@codee-sh/medusa-plugin-notification-emails/workflows/mpn-builder-services/email-service"
+import { emailServiceWorkflow } from "@codee-sh/medusa-plugin-notification-emails/workflows"
 
 export default async function customEventHandler({ event: { data }, container }: any) {
   const notificationModuleService = container.resolve(Modules.NOTIFICATION)

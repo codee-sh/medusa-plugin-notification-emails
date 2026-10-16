@@ -1,12 +1,11 @@
 import { BaseTemplateService } from "./base-template-service"
 
 import React from "react"
-import {
-  TemplateRenderParams,
-} from "../types"
+import { TemplateRenderParams } from "../types"
 import {
   pickValueFromObject,
   multiInterpolate,
+  escapeHtml,
 } from "../../../utils"
 import {
   getBaseTemplateHtml,
@@ -38,6 +37,16 @@ import {
   TemplateOptionsType,
   TemplateRenderOptionsType,
 } from "../types"
+
+/**
+ * Block props rendered as HTML (dangerouslySetInnerHTML). Data values in them are escaped;
+ * every other prop renders as text, which React escapes itself.
+ */
+const HTML_PROPS: Record<string, string[]> = {
+  text: ["value"],
+  row: ["value"],
+  "product-item": ["value"],
+}
 
 export class EmailTemplateService extends BaseTemplateService {
   id = "email"
@@ -96,59 +105,74 @@ export class EmailTemplateService extends BaseTemplateService {
    */
   protected initializeSystemTemplates(): void {
     // Contact form template
-    this.registerTemplate(TEMPLATES_EMAILS_NAMES.CONTACT_FORM, {
-      ...this.baseTemplateConfig,
-      getConfig: (): any => {
-        return {
-          blocks: ContactFormTemplateBlocks,
-          translations: contactFormTranslations,
-        }
-      },
-    })
+    this.registerTemplate(
+      TEMPLATES_EMAILS_NAMES.CONTACT_FORM,
+      {
+        ...this.baseTemplateConfig,
+        getConfig: (): any => {
+          return {
+            blocks: ContactFormTemplateBlocks,
+            translations: contactFormTranslations,
+          }
+        },
+      }
+    )
 
     // Order placed template
-    this.registerTemplate(TEMPLATES_EMAILS_NAMES.ORDER_PLACED, {
-      ...this.baseTemplateConfig,
-      getConfig: (): any => {
-        return {
-          blocks: OrderPlacedTemplateBlocks,
-          translations: orderPlacedTranslations,
-        }
-      },
-    })
+    this.registerTemplate(
+      TEMPLATES_EMAILS_NAMES.ORDER_PLACED,
+      {
+        ...this.baseTemplateConfig,
+        getConfig: (): any => {
+          return {
+            blocks: OrderPlacedTemplateBlocks,
+            translations: orderPlacedTranslations,
+          }
+        },
+      }
+    )
 
     // Order completed template
-    this.registerTemplate(TEMPLATES_EMAILS_NAMES.ORDER_COMPLETED, {
-      ...this.baseTemplateConfig,
-      getConfig: (): any => {
-        return {
-          blocks: OrderCompletedTemplateBlocks,
-          translations: orderCompletedTranslations,
-        }
-      },
-    })
+    this.registerTemplate(
+      TEMPLATES_EMAILS_NAMES.ORDER_COMPLETED,
+      {
+        ...this.baseTemplateConfig,
+        getConfig: (): any => {
+          return {
+            blocks: OrderCompletedTemplateBlocks,
+            translations: orderCompletedTranslations,
+          }
+        },
+      }
+    )
 
     // Order updated template
-    this.registerTemplate(TEMPLATES_EMAILS_NAMES.ORDER_UPDATED, {
-      ...this.baseTemplateConfig,
-      getConfig: (): any => {
-        return {
-          blocks: OrderUpdatedTemplateBlocks,
-          translations: orderUpdatedTranslations,
-        }
-      },
-    })
+    this.registerTemplate(
+      TEMPLATES_EMAILS_NAMES.ORDER_UPDATED,
+      {
+        ...this.baseTemplateConfig,
+        getConfig: (): any => {
+          return {
+            blocks: OrderUpdatedTemplateBlocks,
+            translations: orderUpdatedTranslations,
+          }
+        },
+      }
+    )
 
     // Inventory level template
-    this.registerTemplate(TEMPLATES_EMAILS_NAMES.INVENTORY_LEVEL, {
-      ...this.baseTemplateConfig,
-      getConfig: (): any => {
-        return {
-          blocks: InventoryLevelTemplateBlocks,
-          translations: inventoryLevelTranslations,
-        }
-      },
-    })
+    this.registerTemplate(
+      TEMPLATES_EMAILS_NAMES.INVENTORY_LEVEL,
+      {
+        ...this.baseTemplateConfig,
+        getConfig: (): any => {
+          return {
+            blocks: InventoryLevelTemplateBlocks,
+            translations: inventoryLevelTranslations,
+          }
+        },
+      }
+    )
   }
 
   blocks: any[] = [
@@ -164,7 +188,7 @@ export class EmailTemplateService extends BaseTemplateService {
           name: "value",
           value: "",
           defaultValue: "",
-        }
+        },
       ],
     },
     {
@@ -179,7 +203,7 @@ export class EmailTemplateService extends BaseTemplateService {
           name: "value",
           value: "",
           defaultValue: "",
-        }
+        },
       ],
     },
     {
@@ -268,20 +292,20 @@ export class EmailTemplateService extends BaseTemplateService {
 
   /**
    * Transform blocks from database format (with metadata) to rendering format (with props)
-   * 
+   *
    * This method acts as a proxy/map layer between database storage and rendering:
    * - Database stores: { type: "heading", metadata: { value: "..." } }
    * - Rendering expects: { type: "heading", props: { value: "..." } }
-   * 
+   *
    * Handles nested blocks recursively:
    * - children → props.blocks (for section, group)
    * - children → props.itemBlocks (for repeater)
-   * 
+   *
    * **Usage:** Call this method before passing blocks to emailService.render() or interpolateBlocks()
-   * 
+   *
    * @param blocks - Blocks from database with metadata property
    * @returns Blocks transformed to rendering format with props property
-   * 
+   *
    * @example
    * // Input (from database):
    * [
@@ -290,7 +314,7 @@ export class EmailTemplateService extends BaseTemplateService {
    *     { type: "text", metadata: { value: "Hello" } }
    *   ]}
    * ]
-   * 
+   *
    * // Output (for rendering):
    * [
    *   { type: "heading", props: { value: "{{data.order.id}}" } },
@@ -298,7 +322,7 @@ export class EmailTemplateService extends BaseTemplateService {
    *     { type: "text", props: { value: "Hello" } }
    *   ]}}
    * ]
-   * 
+   *
    */
   public transformBlocksForRendering(blocks: any[]): any[] {
     if (!blocks || !Array.isArray(blocks)) {
@@ -313,25 +337,35 @@ export class EmailTemplateService extends BaseTemplateService {
       }
 
       // Transform metadata to props
-      if (block.metadata && typeof block.metadata === "object") {
+      if (
+        block.metadata &&
+        typeof block.metadata === "object"
+      ) {
         transformedBlock.props = { ...block.metadata }
       } else {
         transformedBlock.props = {}
       }
 
       // Handle nested blocks based on block type
-      if (block.children && Array.isArray(block.children) && block.children.length > 0) {
-        const transformedChildren = this.transformBlocksForRendering(block.children)
+      if (
+        block.children &&
+        Array.isArray(block.children) &&
+        block.children.length > 0
+      ) {
+        const transformedChildren =
+          this.transformBlocksForRendering(block.children)
 
         if (block.type === "repeater") {
           // For repeater, children become itemBlocks
-          transformedBlock.props.itemBlocks = transformedChildren
+          transformedBlock.props.itemBlocks =
+            transformedChildren
         } else if (
           block.type === "section" ||
           block.type === "group"
         ) {
           // For section/group, children become props.blocks
-          transformedBlock.props.blocks = transformedChildren
+          transformedBlock.props.blocks =
+            transformedChildren
         }
       }
 
@@ -352,10 +386,19 @@ export class EmailTemplateService extends BaseTemplateService {
    * Recursively interpolate text in blocks using the multiInterpolate function
    * Processes props.[property] in each block and nested blocks
    *
+   * Values from data are HTML-escaped in the props a block renders as HTML (HTML_PROPS); a data
+   * placeholder with no value becomes an empty string, so the block renderer skips a block left
+   * empty.
+   *
+   * A repeater renders every block of `itemBlocks` for every item of the array at `arrayPath`,
+   * in order. Item blocks, and blocks nested inside them, read the item through
+   * `{{data.<arrayPath>.<field>}}`. With an empty or missing array the repeater renders
+   * `emptyBlocks` when given, otherwise nothing.
+   *
    * @param blocks - Blocks to interpolate
-   * @param data - Data object for interpolation
+   * @param data - Data object for interpolation (the item inside a repeater)
    * @param translator - Translator instance with t method (created using createTranslator function)
-   * @param config - Configuration object
+   * @param config - Repeater context: the array path of the current item
    * @returns Interpolated blocks
    *
    * @example
@@ -363,9 +406,8 @@ export class EmailTemplateService extends BaseTemplateService {
    * const blocks = [ { type: "text", props: { value: "Order {{data.order.id}} - {{translations.headerTitle}}" } } ]
    * const data = { order: { id: "123" } }
    * const translator = translator instance (created using createTranslator function)
-   * const config = {}
    *
-   * const interpolatedBlocks = interpolateBlocks(blocks, data, translator, config)
+   * const interpolatedBlocks = interpolateBlocks(blocks, data, translator)
    *
    * Return: [ { type: "text", props: { value: "Order 123 - Order Confirmation" } } ]
    *
@@ -374,7 +416,7 @@ export class EmailTemplateService extends BaseTemplateService {
     blocks: any[],
     data: any,
     translator: any,
-    config?: any
+    config?: { arrayPath?: string }
   ): any[] {
     return blocks.map((block) => {
       const processedBlock = { ...block }
@@ -387,23 +429,26 @@ export class EmailTemplateService extends BaseTemplateService {
         const processedProps: any = {
           ...processedBlock.props,
         }
+        const htmlProps = HTML_PROPS[block.type] || []
 
-        // Iterate over all properties in props
         for (const [key, value] of Object.entries(
           processedProps
         )) {
-          // Skip non-string values and special properties (blocks, itemBlocks, separator, arrayPath)
           if (
             typeof value === "string" &&
-            key !== "blocks" &&
-            key !== "itemBlocks" &&
             key !== "arrayPath"
           ) {
             processedProps[key] = multiInterpolate(
               value,
               data,
               translator,
-              config
+              {
+                arrayPath: config?.arrayPath,
+                emptyMissing: true,
+                escape: htmlProps.includes(key)
+                  ? escapeHtml
+                  : undefined,
+              }
             )
           }
         }
@@ -411,51 +456,80 @@ export class EmailTemplateService extends BaseTemplateService {
         processedBlock.props = processedProps
       }
 
-      // Recursively process nested blocks
-      if (
-        processedBlock.props?.blocks &&
-        Array.isArray(processedBlock.props.blocks)
-      ) {
+      // Recursively process nested blocks in the same item context
+      if (Array.isArray(processedBlock.props?.blocks)) {
         processedBlock.props = {
           ...processedBlock.props,
           blocks: this.interpolateBlocks(
             processedBlock.props.blocks,
             data,
-            translator
+            translator,
+            config
           ),
         }
       }
 
       if (processedBlock.type === "repeater") {
-        const { arrayPath, itemBlocks } =
-          processedBlock.props || {}
-
-        if (arrayPath && itemBlocks) {
-          const array = pickValueFromObject(arrayPath, data)
-
-          if (Array.isArray(array) && array.length > 0) {
-            const interpolatedItemBlocks = array.map(
-              (item: any) =>
-                this.interpolateBlocks(
-                  itemBlocks,
-                  item,
-                  translator,
-                  {
-                    arrayPath: arrayPath,
-                  }
-                )[0]
-            )
-
-            processedBlock.props = {
-              ...processedBlock.props,
-              itemBlocks: interpolatedItemBlocks,
-            }
-          }
+        processedBlock.props = {
+          ...processedBlock.props,
+          itemBlocks: this.interpolateRepeaterItems(
+            processedBlock.props || {},
+            data,
+            translator,
+            config
+          ),
         }
       }
 
       return processedBlock
     })
+  }
+
+  /**
+   * Expands a repeater into the blocks it renders: every item block for every array item, or
+   * the interpolated `emptyBlocks` (none when not given) for an empty or missing array.
+   * Item block ids get the item index, so sibling blocks keep unique ids.
+   */
+  private interpolateRepeaterItems(
+    props: {
+      arrayPath?: string
+      itemBlocks?: any[]
+      emptyBlocks?: any[]
+    },
+    data: any,
+    translator: any,
+    config?: { arrayPath?: string }
+  ): any[] {
+    const { arrayPath, itemBlocks, emptyBlocks } = props
+    const array = arrayPath
+      ? pickValueFromObject(arrayPath, data)
+      : undefined
+
+    if (
+      !Array.isArray(array) ||
+      array.length === 0 ||
+      !Array.isArray(itemBlocks)
+    ) {
+      return Array.isArray(emptyBlocks)
+        ? this.interpolateBlocks(
+            emptyBlocks,
+            data,
+            translator,
+            config
+          )
+        : []
+    }
+
+    return array.flatMap((item: any, index: number) =>
+      this.interpolateBlocks(itemBlocks, item, translator, {
+        arrayPath,
+      }).map((itemBlock) => ({
+        ...itemBlock,
+        id: itemBlock.id
+          ? `${itemBlock.id}-${index}`
+          : itemBlock.id,
+      }))
+    )
   }
 
   /**
@@ -489,15 +563,15 @@ export class EmailTemplateService extends BaseTemplateService {
       blocks,
     }
 
-    console.log(options)
-
     return {
       html: await template.getHtml(params.data, options),
       text: await template.getText(params.data, options),
+      // The subject is plain text: data values are not escaped
       subject: multiInterpolate(
         options?.subject || "{{translations.headerTitle}}",
         params.data,
-        translator
+        translator,
+        { emptyMissing: true }
       ),
     }
   }

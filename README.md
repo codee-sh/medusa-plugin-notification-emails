@@ -25,6 +25,11 @@ npm install @codee-sh/medusa-plugin-notification-emails
 yarn add @codee-sh/medusa-plugin-notification-emails
 ```
 
+`react` and `react-dom` are peer dependencies: the email renderer needs them at runtime. Keep them in
+your application's `dependencies`, not `devDependencies` - Medusa Cloud does not install development
+dependencies. The plugin pins `@react-email/components` 0.3.3 and `@react-email/render` 1.1.4, the
+versions [Medusa Cloud supports](https://docs.medusajs.com/cloud/emails/react-email).
+
 ## Basic setup
 
 Register plugin in `medusa-config.ts`:
@@ -35,6 +40,8 @@ module.exports = defineConfig({
     {
       resolve: "@codee-sh/medusa-plugin-notification-emails",
       options: {
+        // The plugin's order emails are opt-in, see docs/configuration.md
+        subscribers: {},
         customTranslations: {},
         extend: {
           services: [],
@@ -46,6 +53,38 @@ module.exports = defineConfig({
 ```
 
 Then continue with configuration and usage guides in `docs/`.
+
+The plugin sends nothing on its own unless you enable its subscribers. To render an email in your
+own code, run `emailServiceWorkflow` and pass the result to the Notification Module:
+
+```typescript
+import { emailServiceWorkflow } from "@codee-sh/medusa-plugin-notification-emails/workflows"
+
+const {
+  result: { subject, html, text },
+} = await emailServiceWorkflow(container).run({
+  input: { template_id: "external_order-summary", data, options: { locale: "en" } },
+})
+```
+
+## Upgrading from 1.0.x
+
+- **Order emails are opt-in.** The `order.placed` and `order.completed` subscribers no longer
+  email customers by default. Add `subscribers` to keep order emails:
+
+  ```typescript
+  subscribers: {
+    "order.placed": { enabled: true, locale: "pl" },
+    "order.completed": { enabled: true, locale: "pl" },
+  }
+  ```
+
+  1.0.x sent them in `pl`; the default locale is now `en`.
+- **Data values are HTML-escaped** in `text`, `row` and `product-item` values. Put markup in
+  translations, not in data.
+- **Missing data renders empty.** A `{{data.*}}` placeholder with no value renders as an empty
+  string, and a `heading`, `text` or `row` left empty is not rendered.
+- **The Builder - Lexical admin page is removed.**
 
 Template IDs are resolved by prefix:
 
@@ -66,7 +105,7 @@ Template IDs are resolved by prefix:
 
 Public entrypoints:
 
-- `@codee-sh/medusa-plugin-notification-emails/workflows`
+- `@codee-sh/medusa-plugin-notification-emails/workflows` - `emailServiceWorkflow`, `slackServiceWorkflow` and their input types (`EmailServiceWorkflowInput`, `EmailServiceWorkflowOutput`, `SlackServiceWorkflowInput`)
 - `@codee-sh/medusa-plugin-notification-emails/modules/*`
 - `@codee-sh/medusa-plugin-notification-emails/providers/*`
 - `@codee-sh/medusa-plugin-notification-emails/utils`

@@ -1,7 +1,11 @@
 import { BlockRenderer } from "../index"
 
 /**
- * RepeaterBlock - Iterates over an array and renders blocks for each item
+ * RepeaterBlock - Renders the blocks a repeater expanded to during interpolation
+ *
+ * Interpolation replaces `itemBlocks` with every item block for every item of the array at
+ * `arrayPath`, or with `emptyBlocks` (none when not given) for an empty or missing array, so this
+ * component only renders what it is given.
  *
  * Example:
  * {
@@ -9,9 +13,11 @@ import { BlockRenderer } from "../index"
  *   props: {
  *     arrayPath: "items",
  *     itemBlocks: [
- *       { type: "text", props: { text: "{{label}}" } }
+ *       { type: "text", props: { value: "{{data.items.label}}" } }
  *     ],
- *     separator: { type: "separator" } // optional
+ *     emptyBlocks: [
+ *       { type: "text", props: { value: "No items" } }
+ *     ]
  *   }
  * }
  */
@@ -23,13 +29,15 @@ export function RepeaterBlock({
   id?: string
   props: {
     arrayPath: string // Path to array in data (e.g., "items", "order.items")
-    itemBlocks: any[] // Blocks rendered for each item
-    separator?: any // Optional separator between items
+    itemBlocks?: any[] // Expanded blocks after interpolation
+    emptyBlocks?: any[] // Blocks rendered for an empty array
   }
-  data: any // Event data (used to retrieve the array)
+  data: any
 }) {
-  // Retrieve array from data
-  const array = props.itemBlocks
-
-  return <BlockRenderer blocks={array} data={data} />
+  return (
+    <BlockRenderer
+      blocks={props.itemBlocks || []}
+      data={data}
+    />
+  )
 }
